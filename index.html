@@ -8,6 +8,25 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Evita a tela em branco quando a aplicação nem chega a montar
+      // (tipicamente configuração do Firebase ausente no build).
+      window.addEventListener('error', function (event) {
+        var root = document.getElementById('root');
+        if (!root || root.childElementCount > 0) return;
+        var detalhe = (event && event.message) || 'Erro desconhecido';
+        root.innerHTML =
+          '<div style="max-width:560px;margin:15vh auto;padding:28px;font:14px/1.6 system-ui,sans-serif;' +
+          'background:#fff;border:1px solid #e2e8f0;border-radius:12px;color:#0f172a">' +
+          '<h1 style="font-size:18px;margin:0 0 8px">A aplicação não pôde ser iniciada</h1>' +
+          '<p style="margin:0 0 12px;color:#64748b">Verifique se as variáveis <code>VITE_FIREBASE_*</code> ' +
+          'estão definidas no ambiente de build.</p>' +
+          '<pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;' +
+          'font-size:12px;margin:0">' +
+          detalhe.replace(/[<>&]/g, '') +
+          '</pre></div>';
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

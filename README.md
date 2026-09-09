@@ -149,6 +149,25 @@ npm run deploy:hosting
 > Firebase, a API key é pública por natureza e a proteção real vem das regras do
 > Firestore e das configurações do Authentication.
 
+### Deploy na Vercel
+
+O projeto já vem pronto para a Vercel:
+
+- [`vercel.json`](vercel.json) define o build (`npm run build` → `dist`) e a reescrita de
+  SPA, necessária para que rotas como `/tasks/123` funcionem em acesso direto e após F5.
+- [`.env.production`](.env.production) carrega a configuração do Firebase no build. Esses
+  valores são versionados de propósito: a configuração web do Firebase é embutida no bundle
+  de qualquer app cliente e é pública por definição — a proteção real vem das regras do
+  Firestore e do Authentication. Variáveis definidas no painel da Vercel têm precedência,
+  caso prefira gerenciá-las por lá.
+
+**Passo obrigatório no Firebase:** adicione o domínio da Vercel em
+*Authentication → Settings → Authorized domains*. Sem isso o login falha com
+`auth/unauthorized-domain`, mesmo com tudo o mais correto.
+
+Se a aplicação subir sem a configuração do Firebase, a tela mostra uma mensagem explicando
+o que falta, em vez de ficar em branco.
+
 ### Voltando para o emulador
 
 Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
