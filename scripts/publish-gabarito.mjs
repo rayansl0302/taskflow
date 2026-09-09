@@ -2,12 +2,12 @@
  * Publica o gabarito interno no Firestore e libera a rota /gabarito
  * exclusivamente para a conta responsável pelo desafio.
  *
- * Fonte da verdade: o arquivo JSON apontado por GABARITO_DATA (fora do repositório).
+ * Fonte da verdade: o arquivo JSON apontado por GABARITO_DATA (docs/gabarito.json).
  * A partir dele o script:
  *   1. garante a existência da conta interna;
  *   2. grava os bugs em `internal/qa-gabarito` (via Admin SDK, que ignora as regras);
  *   3. escreve o UID autorizado em firestore.rules;
- *   4. regenera o QA_GABARITO.md ao lado do JSON.
+ *   4. regenera o QA_GABARITO.md na raiz do projeto.
  *
  * Uso:
  *   npm run gabarito:publish
@@ -16,7 +16,7 @@ import { initializeApp, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
-import { resolve, dirname, join } from 'node:path';
+import { resolve } from 'node:path';
 
 // --- configuracao -----------------------------------------------------
 const env = { ...process.env };
@@ -30,7 +30,7 @@ if (existsSync('.env')) {
 const projectId = env.VITE_FIREBASE_PROJECT_ID;
 const ownerEmail = env.GABARITO_OWNER_EMAIL;
 const ownerPassword = env.GABARITO_OWNER_PASSWORD;
-const dataFile = resolve(env.GABARITO_DATA || '../TaskFlow-gabarito/gabarito.json');
+const dataFile = resolve(env.GABARITO_DATA || './docs/gabarito.json');
 const useEmulators = env.VITE_USE_EMULATORS !== 'false';
 
 function fail(message) {
@@ -165,7 +165,7 @@ async function run() {
   }
 
   // 4. markdown
-  const mdPath = env.GABARITO_MD || join(dirname(dataFile), 'QA_GABARITO.md');
+  const mdPath = env.GABARITO_MD || resolve('QA_GABARITO.md');
   writeFileSync(mdPath, toMarkdown(data), 'utf8');
   console.log(`> markdown regenerado em ${mdPath}`);
 

@@ -8,8 +8,4 @@ firestore-debug.log
 ui-debug.log
 .DS_Store
 serviceAccount.json
-
-# Material interno do desafio - nao versionar em repositorio publico
-QA_GABARITO.md
-TaskFlow_Desafio_QA_Firebase.md
 tsconfig.tsbuildinfo

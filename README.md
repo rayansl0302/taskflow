@@ -5,10 +5,11 @@ Sistema web de gestão de tarefas construído como **ambiente de avaliação pr�
 O sistema é funcional de ponta a ponta (autenticação, autorização, CRUD de usuários e de
 tarefas, dashboard, filtros, paginação) e roda sobre Firebase Authentication + Cloud Firestore.
 
-> **Aviso para quem administra o desafio:** o gabarito com o mapa dos defeitos
-> (`QA_GABARITO.md`) é material interno, fica **fora deste repositório** (o `.gitignore` o
-> bloqueia) e não deve ser entregue ao profissional avaliado. O QA recebe apenas a URL da
-> aplicação, as credenciais e o escopo funcional de [`docs/BRIEFING_QA.md`](docs/BRIEFING_QA.md).
+> **Aviso para quem administra o desafio:** este repositório contém o gabarito dos defeitos
+> ([`QA_GABARITO.md`](QA_GABARITO.md) e [`docs/gabarito.json`](docs/gabarito.json)) e a
+> especificação do desafio. É material interno: **não compartilhe o repositório com o
+> profissional avaliado**. O QA recebe apenas a URL da aplicação, as credenciais e o escopo
+> funcional de [`docs/BRIEFING_QA.md`](docs/BRIEFING_QA.md).
 
 ---
 
@@ -176,11 +177,13 @@ Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
 
 ## Rota interna do gabarito (`/gabarito`)
 
-O mapa dos defeitos não fica no repositório. A fonte da verdade é um JSON fora do projeto
-(`GABARITO_DATA`), publicado no Firestore em `internal/qa-gabarito` e exibido na rota
-`/gabarito` — uma tela de consulta com busca, filtro por área e severidade e, para cada
-defeito, **por que acontece**, **onde está no código**, **como replicar** e **resultado
-esperado × resultado atual**.
+A fonte da verdade do gabarito é [`docs/gabarito.json`](docs/gabarito.json). Ele é publicado
+no Firestore em `internal/qa-gabarito` e exibido na rota `/gabarito` — uma tela de consulta
+com busca, filtro por área e severidade e, para cada defeito, **por que acontece**, **onde
+está no código**, **como replicar** e **resultado esperado × resultado atual**.
+
+O [`QA_GABARITO.md`](QA_GABARITO.md) é **gerado** a partir desse JSON — edite sempre o JSON,
+nunca o markdown.
 
 A leitura desse documento é liberada em `firestore.rules` **apenas para o UID da conta
 responsável pelo desafio**. Nem a conta ADMIN entregue ao QA consegue abrir: ela recebe uma
@@ -188,9 +191,8 @@ tela de "página não encontrada", porque a recusa vem do servidor, não do fron
 
 Configuração:
 
-1. No `.env`, defina `GABARITO_OWNER_EMAIL` (uma conta diferente das entregues ao QA),
-   `GABARITO_OWNER_PASSWORD` (usada apenas na primeira execução, para criar a conta) e
-   `GABARITO_DATA` (caminho do JSON, fora do repositório).
+1. No `.env`, defina `GABARITO_OWNER_EMAIL` (uma conta diferente das entregues ao QA) e
+   `GABARITO_OWNER_PASSWORD` (usada apenas na primeira execução, para criar a conta).
 2. Publique o conteúdo, grave o UID nas regras e regenere o `QA_GABARITO.md`:
 
 ```bash
@@ -222,8 +224,13 @@ taskflow/
 │   ├── styles/            design system em CSS
 │   ├── types/             modelos e enums
 │   └── utils/             datas, formatação e validações
-├── scripts/seed.mjs       massa de dados para o emulador
-├── docs/BRIEFING_QA.md    material entregue ao profissional avaliado
+├── scripts/
+│   ├── seed.mjs           massa de dados para o emulador ou projeto real
+│   └── publish-gabarito.mjs
+├── docs/
+│   ├── BRIEFING_QA.md     material entregue ao profissional avaliado
+│   └── gabarito.json      fonte da verdade do gabarito (interno)
+├── QA_GABARITO.md         gabarito gerado a partir do JSON (interno)
 ├── firestore.rules
 ├── firestore.indexes.json
 └── firebase.json

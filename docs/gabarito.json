@@ -1,0 +1,844 @@
+{
+  "titulo": "Gabarito interno — TaskFlow",
+  "descricao": "Mapa dos defeitos inseridos propositalmente na aplicação. Material interno: não entregar ao profissional avaliado.",
+  "bugs": [
+    {
+      "id": "BUG-001",
+      "titulo": "Login aceita senha incorreta",
+      "area": "Autenticação",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Média",
+      "local": ["src/services/firebase/auth.ts → signIn(), constante LEGACY_PASSWORD"],
+      "porque": "O signIn() tem um fallback disfarçado de 'compatibilidade com contas migradas': quando o Firebase devolve auth/wrong-password ou auth/invalid-credential e o e-mail termina em @taskflow.com, o código refaz o login usando a senha padrão do seed (VITE_SEED_PASSWORD). Como todos os usuários de demonstração usam essa senha, qualquer senha errada acaba autenticando.",
+      "passos": [
+        "Abrir /login.",
+        "Informar admin@taskflow.com e uma senha qualquer (ex.: 'qualquercoisa').",
+        "Clicar em Entrar."
+      ],
+      "esperado": "Mensagem 'E-mail ou senha inválidos' e permanência na tela de login.",
+      "atual": "Login concluído com sucesso e redirecionamento para o dashboard.",
+      "descoberta": "Teste negativo de autenticação (senha inválida)."
+    },
+    {
+      "id": "BUG-002",
+      "titulo": "Tela protegida continua acessível após logout",
+      "area": "Autenticação",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Média",
+      "local": [
+        "src/routes/ProtectedRoute.tsx",
+        "src/contexts/AuthContext.tsx → readCachedSession() / chave taskflow:last-session"
+      ],
+      "porque": "O guard de rota aceita como prova de autenticação um retrato do perfil guardado no localStorage (criado para evitar o 'flash' de redirecionamento durante a reidratação do Firebase Auth). O logout limpa o estado em memória, mas nunca remove essa chave — então o guard continua achando que existe sessão.",
+      "passos": [
+        "Fazer login com qualquer usuário.",
+        "Clicar em Sair.",
+        "Pressionar o botão Voltar do navegador (ou digitar /dashboard na barra de endereços)."
+      ],
+      "esperado": "Redirecionamento imediato para /login.",
+      "atual": "A tela protegida é renderizada por completo — menu lateral, topbar e os indicadores do dashboard vindos do cache —, apenas sem o nome do usuário.",
+      "descoberta": "Botão voltar / digitação manual de URL após logout."
+    },
+    {
+      "id": "BUG-003",
+      "titulo": "Usuário INATIVO consegue usar o sistema",
+      "area": "Autenticação",
+      "severidade": "ALTA",
+      "dificuldade": "Baixa",
+      "local": ["src/contexts/AuthContext.tsx → loadProfile()"],
+      "porque": "O carregamento do perfil lê name, email, role e status do Firestore, mas nunca testa o status. O campo existe, é exibido na listagem de usuários e pode ser editado — só não tem efeito nenhum sobre o acesso.",
+      "passos": ["Fazer login com carlos.inativo@taskflow.com (status INATIVO)."],
+      "esperado": "Acesso bloqueado, com mensagem informando que a conta está inativa.",
+      "atual": "Login normal, com acesso a dashboard, tarefas e perfil.",
+      "descoberta": "Comparar o campo Status da tela de usuários com o comportamento real."
+    },
+    {
+      "id": "BUG-004",
+      "titulo": "Senha vazia exibe erro técnico do Firebase",
+      "area": "Autenticação / UX",
+      "severidade": "BAIXA",
+      "dificuldade": "Baixa",
+      "local": [
+        "src/pages/Login.tsx (valida apenas o e-mail)",
+        "src/utils/format.ts → friendlyError()"
+      ],
+      "porque": "O formulário valida a obrigatoriedade do e-mail, mas não a da senha, e o campo não tem o atributo required. A requisição chega ao Firebase, que devolve auth/missing-password — código não previsto no friendlyError(), que então cai no default e mostra a mensagem crua da biblioteca.",
+      "passos": [
+        "Abrir /login.",
+        "Preencher apenas o e-mail.",
+        "Clicar em Entrar."
+      ],
+      "esperado": "Mensagem 'A senha é obrigatória.' abaixo do campo, sem chamada ao servidor.",
+      "atual": "Toast com o texto 'Firebase: Error (auth/missing-password).'",
+      "descoberta": "Teste de campo obrigatório vazio."
+    },
+    {
+      "id": "BUG-005",
+      "titulo": "E-mail de login não é normalizado",
+      "area": "Autenticação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Login.tsx"],
+      "porque": "O valor do campo é enviado exatamente como digitado, sem trim() nem toLowerCase(). Espaços colados (comuns em copiar/colar de e-mail) fazem o Firebase rejeitar o formato antes mesmo de verificar as credenciais.",
+      "passos": [
+        "Copiar e colar ' admin@taskflow.com' (com um espaço à esquerda).",
+        "Informar a senha correta e entrar."
+      ],
+      "esperado": "Login efetuado — espaços nas pontas devem ser ignorados.",
+      "atual": "Erro técnico auth/invalid-email.",
+      "descoberta": "Teste de limite com espaços em branco."
+    },
+    {
+      "id": "BUG-006",
+      "titulo": "Recuperação de senha sempre informa sucesso",
+      "area": "Autenticação",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": ["src/pages/ForgotPassword.tsx"],
+      "porque": "O envio está dentro de um try/catch com catch vazio, e a mensagem de sucesso é disparada no finally — ou seja, roda mesmo quando a chamada falha. Além disso, o formulário não valida o formato do e-mail antes de enviar.",
+      "passos": [
+        "Abrir /forgot-password.",
+        "Digitar 'abc' (que nem é um e-mail).",
+        "Clicar em Enviar link de recuperação."
+      ],
+      "esperado": "Validação de formato antes do envio; falhas reais precisam ser tratadas e comunicadas.",
+      "atual": "Mensagem de sucesso e tela de confirmação, mesmo sem nenhuma requisição válida ter sido feita.",
+      "observacoes": "Não revelar se o e-mail existe é correto por segurança — o defeito é declarar sucesso para entradas inválidas e engolir falhas reais."
+    },
+    {
+      "id": "BUG-007",
+      "titulo": "Redirecionamento pós-login ignora a rota de origem",
+      "area": "Navegação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": [
+        "src/pages/Login.tsx → navigate('/dashboard')",
+        "src/routes/ProtectedRoute.tsx (envia state.from)"
+      ],
+      "porque": "O ProtectedRoute guarda a rota pretendida em location.state.from ao redirecionar para o login, mas a tela de login ignora esse estado e sempre navega para o dashboard.",
+      "passos": [
+        "Deslogado, acessar diretamente /tasks/new.",
+        "Ser redirecionado para /login.",
+        "Autenticar."
+      ],
+      "esperado": "Retorno para /tasks/new após o login.",
+      "atual": "O usuário cai sempre no /dashboard e precisa refazer a navegação."
+    },
+    {
+      "id": "BUG-008",
+      "titulo": "USER acessa /users digitando a URL",
+      "area": "Autorização",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Baixa",
+      "local": [
+        "src/App.tsx (a rota /users está fora do AdminRoute)",
+        "src/pages/Users.tsx (não verifica o perfil)"
+      ],
+      "porque": "As rotas /users/new e /users/:id estão protegidas pelo AdminRoute, mas a listagem /users ficou apenas dentro do ProtectedRoute. O item de menu é escondido corretamente para USER, o que dá a falsa impressão de que a tela está protegida.",
+      "passos": [
+        "Fazer login com um usuário de perfil USER (ex.: maria.silva@taskflow.com).",
+        "Digitar /users diretamente na barra de endereços."
+      ],
+      "esperado": "Acesso negado ou redirecionamento para uma tela permitida.",
+      "atual": "A listagem administrativa é exibida, com e-mails de todos os usuários e botões de editar e excluir.",
+      "descoberta": "Alteração manual da URL com perfil não administrativo."
+    },
+    {
+      "id": "BUG-009",
+      "titulo": "IDOR em /tasks/:id",
+      "area": "Autorização",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Média",
+      "local": ["src/pages/TaskForm.tsx (carrega a tarefa por ID sem checar o dono)"],
+      "porque": "A listagem filtra corretamente por userId, o que dá a impressão de isolamento. Mas a tela de detalhe/edição só faz getTask(id) e renderiza — nunca compara task.userId com o usuário autenticado. Como as regras do Firestore também liberam a leitura (BUG-010), o dado vem do servidor sem restrição.",
+      "passos": [
+        "Logar como ADMIN e copiar o ID de uma tarefa da Maria (visível na URL).",
+        "Sair e logar como joao.pereira@taskflow.com.",
+        "Acessar /tasks/<id-da-tarefa-da-maria>."
+      ],
+      "esperado": "Acesso negado — o USER só pode abrir as próprias tarefas.",
+      "atual": "Os dados são exibidos e a tarefa pode ser editada e excluída por quem não é dono.",
+      "descoberta": "Troca manual do ID na URL entre usuários diferentes."
+    },
+    {
+      "id": "BUG-010",
+      "titulo": "Regras do Firestore permitem ler e alterar tarefas de terceiros",
+      "area": "Segurança",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Alta",
+      "local": ["firestore.rules → match /tasks/{taskId}"],
+      "porque": "As regras liberam read, create e update para qualquer usuário autenticado (allow ... if isSignedIn()), sem comparar resource.data.userId com request.auth.uid. Só o delete verifica o dono. A separação por usuário existe apenas no filtro do front-end, então qualquer chamada direta ao SDK contorna a proteção.",
+      "passos": [
+        "Autenticar como USER na aplicação.",
+        "No console do navegador, usar o SDK do Firestore para ler a coleção tasks inteira, ou atualizar uma tarefa de outro usuário.",
+        "Observar que a operação é aceita."
+      ],
+      "esperado": "O USER só deve ler e escrever documentos em que userId == request.auth.uid.",
+      "atual": "Leitura e escrita liberadas para toda a coleção; o front-end é a única barreira.",
+      "descoberta": "Chamada direta ao Firestore / teste de API, comparando com o que a interface permite."
+    },
+    {
+      "id": "BUG-011",
+      "titulo": "USER se promove a ADMIN pelo próprio perfil",
+      "area": "Segurança",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Alta",
+      "local": [
+        "src/pages/Profile.tsx (select recebe a classe CSS is-locked, sem o atributo disabled)",
+        "firestore.rules → match /users/{userId}: allow update: if isAdmin() || isOwner(userId)"
+      ],
+      "porque": "O campo 'Perfil de acesso' parece bloqueado porque a classe .is-locked aplica pointer-events: none e cor de campo desabilitado — mas o elemento continua habilitado e focável pelo teclado. O valor do select entra no payload de updateUser(), e a regra do Firestore permite que o próprio usuário atualize seu documento sem proteger o campo role.",
+      "passos": [
+        "Fazer login com um usuário USER.",
+        "Abrir /profile.",
+        "Pressionar Tab até o campo 'Perfil de acesso' (o mouse não funciona nele) e mudar para 'Administrador' com as setas.",
+        "Clicar em Salvar alterações.",
+        "Observar o menu 'Usuários' surgindo na barra lateral."
+      ],
+      "esperado": "Campo realmente somente leitura e regra recusando qualquer alteração de role feita pelo próprio usuário.",
+      "atual": "Escalonamento de privilégio completo: o USER vira ADMIN, com acesso a todas as tarefas e à gestão de usuários.",
+      "descoberta": "Navegação por teclado / inspeção do DOM em um campo aparentemente desabilitado."
+    },
+    {
+      "id": "BUG-012",
+      "titulo": "Qualquer usuário autenticado lê a coleção users",
+      "area": "Segurança",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": [
+        "firestore.rules → match /users/{userId}: allow read: if isSignedIn()",
+        "src/pages/Tasks.tsx e src/pages/Dashboard.tsx (chamam listUsers())"
+      ],
+      "porque": "A regra foi afrouxada para que a listagem de tarefas conseguisse exibir o nome do responsável. Com isso, qualquer conta autenticada baixa a base inteira de usuários — nome, e-mail, perfil e status — mesmo sem abrir a tela administrativa.",
+      "passos": [
+        "Logar como USER.",
+        "Abrir /tasks com o DevTools na aba Network (ou Console).",
+        "Observar a resposta da consulta à coleção users."
+      ],
+      "esperado": "O USER recebe apenas os dados estritamente necessários, sem exposição da base de usuários.",
+      "atual": "Nome e e-mail de todos os usuários trafegam para qualquer conta autenticada.",
+      "descoberta": "Inspeção do tráfego / comparação entre o que a tela mostra e o que a API devolve."
+    },
+    {
+      "id": "BUG-013",
+      "titulo": "USER visualiza a métrica 'Total de usuários'",
+      "area": "Autorização",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Dashboard.tsx (o card é montado sem verificar isAdmin)"],
+      "porque": "O array de cards do dashboard é fixo e inclui sempre o total de usuários; a verificação de perfil só é usada para escolher o texto do subtítulo e o escopo da consulta de tarefas.",
+      "passos": ["Fazer login com um usuário USER e abrir o dashboard."],
+      "esperado": "Métricas de usuários visíveis apenas para ADMIN; o USER vê somente dados das próprias tarefas.",
+      "atual": "O card 'Total de usuários' aparece para todos os perfis."
+    },
+    {
+      "id": "BUG-014",
+      "titulo": "Usuário excluído continua conseguindo logar",
+      "area": "Segurança",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Média",
+      "local": [
+        "src/services/firebase/users.ts → deleteUser() (apaga só o documento)",
+        "src/contexts/AuthContext.tsx → loadProfile() (cria perfil implícito)"
+      ],
+      "porque": "A exclusão remove o documento do Firestore, mas não a conta no Firebase Authentication. E quando o documento não existe, o AuthContext monta um perfil 'fantasma' em memória (role USER, status ATIVO) a partir dos dados do Auth — então o sistema trata a conta excluída como um usuário comum válido.",
+      "passos": [
+        "Como ADMIN, excluir o usuário ana.souza@taskflow.com em /users.",
+        "Sair da aplicação.",
+        "Fazer login com ana.souza@taskflow.com e a senha original."
+      ],
+      "esperado": "Acesso negado — a conta não existe mais.",
+      "atual": "Login concluído; o sistema cria um perfil implícito e a pessoa navega normalmente.",
+      "descoberta": "Testar o login de um usuário logo após excluí-lo."
+    },
+    {
+      "id": "BUG-015",
+      "titulo": "Tarefa é criada sem título",
+      "area": "Validação",
+      "severidade": "ALTA",
+      "dificuldade": "Baixa",
+      "local": ["src/utils/validators.ts → validateTitle()"],
+      "porque": "A função só valida o mínimo de 3 caracteres quando o campo não está vazio (if (value.length > 0 && ...)) e o input não tem o atributo required. Resultado: 1 ou 2 caracteres são barrados, mas o campo totalmente vazio passa.",
+      "passos": [
+        "Abrir /tasks/new.",
+        "Preencher apenas o prazo, deixando o título vazio.",
+        "Clicar em Salvar."
+      ],
+      "esperado": "Mensagem 'O título é obrigatório.' e bloqueio do envio.",
+      "atual": "Tarefa criada; a listagem passa a exibir '(sem título)'.",
+      "observacoes": "Vale testar também 1 e 2 caracteres — nesses casos a validação funciona, o que torna o defeito menos óbvio."
+    },
+    {
+      "id": "BUG-016",
+      "titulo": "Descrição aceita mais de 500 caracteres",
+      "area": "Validação",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": [
+        "src/utils/validators.ts → validateDescription() (limite de 5000)",
+        "src/pages/TaskForm.tsx (textarea sem maxLength, contador exibindo /500)"
+      ],
+      "porque": "A tela informa o limite de 500 caracteres em um contador, mas o textarea não restringe a digitação e a validação usa 5000 como teto — a mensagem de erro, inclusive, continua dizendo 500.",
+      "passos": [
+        "Abrir /tasks/new.",
+        "Colar um texto com cerca de 1.500 caracteres na descrição (o contador vai mostrar 1500/500).",
+        "Salvar e conferir o documento gravado no Firestore."
+      ],
+      "esperado": "Bloqueio acima de 500 caracteres, coerente com o contador.",
+      "atual": "O texto é gravado por inteiro, contradizendo o próprio contador da tela.",
+      "descoberta": "Teste de limite acima do máximo + comparação entre interface e banco."
+    },
+    {
+      "id": "BUG-017",
+      "titulo": "Prazo no passado é aceito",
+      "area": "Validação / Datas",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": [
+        "src/utils/validators.ts → validateDueDate() (só obrigatoriedade)",
+        "src/pages/TaskForm.tsx (input date sem atributo min)"
+      ],
+      "porque": "A única regra aplicada ao prazo é a obrigatoriedade. Não há comparação com a data atual nem restrição no componente de data.",
+      "passos": [
+        "Abrir /tasks/new.",
+        "Informar um prazo do ano anterior.",
+        "Salvar."
+      ],
+      "esperado": "Recusa de datas anteriores a hoje (ou, no mínimo, um aviso explícito).",
+      "atual": "A tarefa é criada com prazo vencido e já aparece marcada como atrasada.",
+      "descoberta": "Teste de datas: ontem, mês anterior, ano anterior."
+    },
+    {
+      "id": "BUG-018",
+      "titulo": "Duplo clique em Salvar cria duas tarefas",
+      "area": "Concorrência",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": ["src/pages/TaskForm.tsx (botão de submit sem disabled={saving})"],
+      "porque": "O estado 'saving' é usado apenas para trocar o rótulo do botão para 'Salvando...', mas o botão continua clicável. Cada clique dispara um createTask() independente, e não há trava de idempotência no serviço.",
+      "passos": [
+        "Preencher uma nova tarefa em /tasks/new.",
+        "Clicar duas vezes rapidamente em Salvar.",
+        "Abrir /tasks e procurar o título cadastrado."
+      ],
+      "esperado": "Apenas um registro criado; o botão deve ficar desabilitado durante o envio.",
+      "atual": "Dois documentos idênticos são gravados no Firestore.",
+      "observacoes": "O formulário de usuários usa disabled={saving} corretamente — a comparação entre os dois ajuda a evidenciar o defeito."
+    },
+    {
+      "id": "BUG-019",
+      "titulo": "Edição não persiste a prioridade",
+      "area": "CRUD",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": ["src/services/firebase/tasks.ts → updateTask()"],
+      "porque": "O payload do updateDoc monta title, description, userId, status, dueDate e updatedAt — o campo priority ficou de fora. A criação (createTask) grava a prioridade normalmente, então o problema só aparece na edição.",
+      "passos": [
+        "Abrir uma tarefa existente em /tasks/:id.",
+        "Alterar a prioridade para URGENTE (e, opcionalmente, mudar também o título).",
+        "Salvar — a mensagem de sucesso aparece.",
+        "Reabrir a mesma tarefa."
+      ],
+      "esperado": "Prioridade atualizada junto com os demais campos.",
+      "atual": "Título e status são salvos, mas a prioridade volta ao valor anterior.",
+      "descoberta": "Reabrir o registro após salvar / comparar com o documento no banco."
+    },
+    {
+      "id": "BUG-020",
+      "titulo": "Exclusão de tarefa concluída não remove do banco",
+      "area": "CRUD",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": ["src/services/firebase/tasks.ts → deleteTask()"],
+      "porque": "A função tem um return antecipado quando o status é CONCLUIDA (comentado como 'histórico do período'). Ela não lança erro nem devolve indicação de falha, então a tela segue o fluxo de sucesso: mostra o toast e remove a linha do estado local.",
+      "passos": [
+        "Em /tasks, localizar uma tarefa com status Concluída.",
+        "Clicar em Excluir e confirmar.",
+        "Ver a mensagem 'Tarefa excluída com sucesso.' e a linha desaparecer.",
+        "Atualizar a página (F5)."
+      ],
+      "esperado": "Registro efetivamente removido do banco.",
+      "atual": "A tarefa reaparece após o refresh — o documento nunca foi apagado.",
+      "descoberta": "Refresh após a exclusão / conferência no Firestore.",
+      "observacoes": "Com tarefas em outros status a exclusão funciona, o que faz o defeito passar despercebido em um teste rápido."
+    },
+    {
+      "id": "BUG-021",
+      "titulo": "Status alterado na listagem volta ao original",
+      "area": "CRUD / Firestore",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": ["src/services/firebase/tasks.ts → changeTaskStatus()"],
+      "porque": "A alteração rápida feita pelo select da listagem grava no campo 'state' em vez de 'status'. A escrita é aceita pelo Firestore (o documento ganha um campo órfão), a tela atualiza o estado local e mostra sucesso — mas o campo lido pela aplicação continua com o valor antigo.",
+      "passos": [
+        "Abrir /tasks.",
+        "Mudar o status de uma tarefa para 'Concluída' pelo select da própria listagem.",
+        "Ver a mensagem 'Status atualizado com sucesso.'.",
+        "Atualizar a página (F5)."
+      ],
+      "esperado": "Status persistido no campo correto.",
+      "atual": "O status volta ao valor anterior; no Firestore surge um campo 'state' que a aplicação nunca lê.",
+      "observacoes": "Alterar o status pelo formulário de edição funciona. A divergência entre os dois caminhos é parte do achado.",
+      "descoberta": "Refresh após a ação / comparação entre interface e banco."
+    },
+    {
+      "id": "BUG-022",
+      "titulo": "Salvar tarefa redireciona para o dashboard",
+      "area": "Navegação",
+      "severidade": "BAIXA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/TaskForm.tsx → navigate('/dashboard') após salvar"],
+      "porque": "O destino pós-salvamento é fixo, independentemente da origem. Quem veio da listagem perde filtros, pesquisa e página em que estava.",
+      "passos": [
+        "Em /tasks, aplicar um filtro e ir para a página 2.",
+        "Abrir uma tarefa, alterar algo e salvar."
+      ],
+      "esperado": "Retorno à listagem, preservando o contexto de navegação.",
+      "atual": "O usuário é levado ao dashboard e precisa refazer filtro e paginação."
+    },
+    {
+      "id": "BUG-023",
+      "titulo": "Refresh no formulário perde os dados sem aviso",
+      "area": "UX",
+      "severidade": "BAIXA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/TaskForm.tsx (sem rascunho e sem handler de beforeunload)"],
+      "porque": "O formulário mantém tudo em estado de componente, sem persistência temporária e sem interceptar a saída da página. Qualquer recarga ou navegação descarta o preenchimento silenciosamente.",
+      "passos": [
+        "Abrir /tasks/new e preencher os campos pela metade.",
+        "Pressionar F5 (ou o botão Voltar do navegador)."
+      ],
+      "esperado": "Aviso de alterações não salvas antes de descartar o conteúdo.",
+      "atual": "O formulário volta vazio, sem nenhuma mensagem."
+    },
+    {
+      "id": "BUG-024",
+      "titulo": "Edição simultânea sobrescreve sem aviso",
+      "area": "Concorrência",
+      "severidade": "ALTA",
+      "dificuldade": "Alta",
+      "local": ["src/services/firebase/tasks.ts → updateTask()"],
+      "porque": "A gravação é um updateDoc direto, sem controle de versão: não há comparação do updatedAt carregado com o que está no banco, nem transação. Vale sempre a última escrita, mesmo que ela tenha partido de um formulário aberto com dados antigos.",
+      "passos": [
+        "Abrir a mesma tarefa em duas abas do navegador.",
+        "Na aba 1, mudar o status para 'Em andamento' e salvar.",
+        "Na aba 2 (que ainda mostra os dados antigos), mudar o título e salvar.",
+        "Recarregar as duas abas."
+      ],
+      "esperado": "Aviso de conflito ou mesclagem controlada das alterações.",
+      "atual": "A segunda gravação desfaz silenciosamente a alteração feita na primeira.",
+      "descoberta": "Abertura do mesmo registro em múltiplas abas."
+    },
+    {
+      "id": "BUG-025",
+      "titulo": "Troca rápida de status gera estado inconsistente",
+      "area": "Concorrência",
+      "severidade": "MÉDIA",
+      "dificuldade": "Alta",
+      "local": ["src/pages/Tasks.tsx → handleQuickStatus()"],
+      "porque": "A atualização da lista usa setTasks(tasks.map(...)) — lendo 'tasks' do closure do render — em vez da forma funcional setTasks(current => ...). Quando duas alterações acontecem antes de um novo render, a segunda parte de um retrato desatualizado e desfaz a primeira na tela.",
+      "passos": [
+        "Abrir /tasks.",
+        "Alterar rapidamente o status de duas tarefas diferentes, uma logo após a outra.",
+        "Observar as duas linhas."
+      ],
+      "esperado": "As duas linhas refletem os novos status.",
+      "atual": "Uma das alterações desaparece da tela, embora a requisição tenha sido enviada.",
+      "descoberta": "Execução de duas ações em sequência rápida."
+    },
+    {
+      "id": "BUG-026",
+      "titulo": "Criar usuário derruba a sessão do ADMIN",
+      "area": "Autenticação",
+      "severidade": "CRÍTICA",
+      "dificuldade": "Média",
+      "local": [
+        "src/pages/UserForm.tsx",
+        "src/services/firebase/auth.ts → createAuthAccount()"
+      ],
+      "porque": "A criação usa createUserWithEmailAndPassword no SDK do cliente, que autentica automaticamente a conta recém-criada na mesma instância do Firebase Auth. O administrador é substituído pelo novo usuário sem qualquer aviso. O caminho correto seria criar a conta pelo Admin SDK (backend/Cloud Function).",
+      "passos": [
+        "Logar como ADMIN.",
+        "Abrir /users/new e cadastrar um usuário qualquer.",
+        "Salvar e observar a topbar e o menu lateral."
+      ],
+      "esperado": "O administrador permanece autenticado após cadastrar o usuário.",
+      "atual": "A sessão passa a ser a do novo usuário (perfil USER) e o menu administrativo desaparece.",
+      "descoberta": "Observar o usuário logado depois de uma ação administrativa."
+    },
+    {
+      "id": "BUG-027",
+      "titulo": "Perfil não é obrigatório ao criar usuário",
+      "area": "Validação",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": [
+        "src/utils/validators.ts → validateUser() (não valida role)",
+        "src/pages/UserForm.tsx (opção 'Selecione' com valor vazio)"
+      ],
+      "porque": "O select começa em 'Selecione', cujo value é string vazia, e a validação cobre apenas nome, e-mail e senha. O documento é gravado com role vazio, que não corresponde a nenhum perfil válido.",
+      "passos": [
+        "Abrir /users/new.",
+        "Preencher nome, e-mail e senha, deixando 'Perfil' em 'Selecione'.",
+        "Salvar e observar a coluna Perfil na listagem."
+      ],
+      "esperado": "Mensagem 'O perfil é obrigatório.' e bloqueio do envio.",
+      "atual": "Usuário gravado com role vazio; a listagem exibe '—' e a conta se comporta como perfil não identificado."
+    },
+    {
+      "id": "BUG-028",
+      "titulo": "Alterar o e-mail do usuário não altera o login",
+      "area": "CRUD / Sincronismo",
+      "severidade": "ALTA",
+      "dificuldade": "Alta",
+      "local": ["src/services/firebase/users.ts → updateUser()"],
+      "porque": "O e-mail é um dado duplicado: existe no documento do Firestore (usado pela interface) e na conta do Firebase Authentication (usada para autenticar). A edição atualiza apenas o Firestore, então as duas fontes passam a divergir.",
+      "passos": [
+        "Como ADMIN, editar um usuário em /users/:id e trocar o e-mail.",
+        "Salvar — a interface passa a exibir o e-mail novo.",
+        "Sair e tentar logar com o e-mail novo.",
+        "Tentar logar com o e-mail antigo."
+      ],
+      "esperado": "O login passa a funcionar com o novo e-mail.",
+      "atual": "O e-mail novo não existe no Authentication; só o antigo autentica, enquanto a tela mostra o novo.",
+      "descoberta": "Comparação entre o dado exibido e o comportamento real de autenticação."
+    },
+    {
+      "id": "BUG-029",
+      "titulo": "Exclusão de usuário sem confirmação",
+      "area": "UX",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Users.tsx → handleDelete() chamado direto pelo onClick"],
+      "porque": "O componente ConfirmDialog existe e é usado no módulo de tarefas, mas a tela de usuários chama a exclusão diretamente no clique do botão, sem etapa intermediária.",
+      "passos": [
+        "Abrir /users como ADMIN.",
+        "Clicar em Excluir em qualquer linha."
+      ],
+      "esperado": "Modal de confirmação antes de uma ação irreversível, como exige o escopo de UX.",
+      "atual": "O usuário é excluído imediatamente, no primeiro clique.",
+      "observacoes": "A exclusão de tarefas pede confirmação — a inconsistência entre os módulos reforça o achado."
+    },
+    {
+      "id": "BUG-030",
+      "titulo": "Exclusão de usuário deixa tarefas órfãs",
+      "area": "CRUD",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": [
+        "src/services/firebase/users.ts → deleteUser()",
+        "src/pages/Tasks.tsx (exibe o UID quando o usuário não é encontrado)"
+      ],
+      "porque": "A exclusão remove só o documento do usuário; não existe cascata, reatribuição, nem bloqueio quando há tarefas vinculadas. A tela de edição do usuário até mostra a contagem de 'Tarefas vinculadas', mas essa informação não é usada em nenhuma regra.",
+      "passos": [
+        "Como ADMIN, abrir /users/:id de um usuário e anotar quantas tarefas vinculadas ele tem.",
+        "Excluir esse usuário.",
+        "Abrir /tasks e observar a coluna Responsável."
+      ],
+      "esperado": "Tratamento explícito: impedir a exclusão, reatribuir ou remover as tarefas em conjunto.",
+      "atual": "As tarefas continuam existindo e a coluna Responsável passa a exibir o UID cru do usuário excluído."
+    },
+    {
+      "id": "BUG-031",
+      "titulo": "Nome composto apenas por espaços é aceito",
+      "area": "Validação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": ["src/utils/validators.ts → validateName()"],
+      "porque": "A regra de mínimo mede value.length sem aplicar trim(). Três espaços em branco têm comprimento 3 e passam pela validação de 'mínimo 3 caracteres'.",
+      "passos": [
+        "Abrir /users/new (ou editar um usuário).",
+        "Preencher o nome com três espaços.",
+        "Salvar e observar a listagem."
+      ],
+      "esperado": "Rejeição por nome inválido — espaços não são conteúdo.",
+      "atual": "Usuário gravado com nome em branco na listagem.",
+      "descoberta": "Teste de limite com espaços."
+    },
+    {
+      "id": "BUG-032",
+      "titulo": "Validação de e-mail aceita formato inválido",
+      "area": "Validação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": ["src/utils/validators.ts → EMAIL_REGEX = /^\\S+@\\S+$/"],
+      "porque": "A expressão exige apenas 'algo, arroba, algo' sem espaços. Endereços sem domínio completo, como 'a@b', passam pela validação do front-end.",
+      "passos": [
+        "Abrir /users/new.",
+        "Informar o e-mail 'a@b' com os demais campos válidos.",
+        "Salvar."
+      ],
+      "esperado": "Mensagem 'Informe um e-mail válido.'",
+      "atual": "A validação do formulário aceita o valor.",
+      "descoberta": "Teste com caracteres especiais e formatos inválidos de e-mail."
+    },
+    {
+      "id": "BUG-033",
+      "titulo": "Perfil próprio não valida tamanho do nome",
+      "area": "Validação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Profile.tsx"],
+      "porque": "A tela de perfil não usa a função validateName() compartilhada: verifica apenas se o campo está preenchido, e o input não tem maxLength. A mesma entidade acaba com regras diferentes em telas diferentes.",
+      "passos": [
+        "Abrir /profile.",
+        "Salvar o nome com 1 caractere.",
+        "Salvar o nome com 300 caracteres e observar a topbar e a listagem de usuários."
+      ],
+      "esperado": "Mesmas regras de /users: mínimo 3 e máximo 100 caracteres.",
+      "atual": "Ambos os valores são aceitos e gravados.",
+      "descoberta": "Testar a mesma regra em telas diferentes."
+    },
+    {
+      "id": "BUG-034",
+      "titulo": "Último registro da página se repete na página seguinte",
+      "area": "Paginação",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Tasks.tsx → const start = (page - 1) * (PAGE_SIZE - 1)"],
+      "porque": "O deslocamento é calculado com PAGE_SIZE - 1 (9) enquanto a fatia pega PAGE_SIZE (10) itens. Cada página começa um item antes do que deveria, sobrepondo sempre o último registro da página anterior.",
+      "passos": [
+        "Logar como ADMIN e abrir /tasks (35 tarefas, 4 páginas).",
+        "Anotar o título do último item da página 1.",
+        "Ir para a página 2 e observar o primeiro item."
+      ],
+      "esperado": "Páginas sem sobreposição, com todos os registros distribuídos uma única vez.",
+      "atual": "O último item da página anterior reaparece como primeiro da página seguinte.",
+      "descoberta": "Conferir o encadeamento entre páginas, e não apenas a contagem total."
+    },
+    {
+      "id": "BUG-035",
+      "titulo": "Aplicar filtro não retorna para a primeira página",
+      "area": "Paginação",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Tasks.tsx (nenhum setPage(1) nos handlers de filtro e pesquisa)"],
+      "porque": "O número da página é um estado independente dos filtros. Quando o conjunto filtrado fica menor que o deslocamento atual, a fatia devolve um array vazio e a tela exibe o estado vazio.",
+      "passos": [
+        "Abrir /tasks e navegar até a página 3.",
+        "Aplicar um filtro que retorne poucos resultados (ex.: prioridade Urgente)."
+      ],
+      "esperado": "Voltar automaticamente para a página 1 ao mudar o filtro.",
+      "atual": "Permanece na página 3 e mostra 'Nenhuma tarefa encontrada', sugerindo que o filtro não tem resultados."
+    },
+    {
+      "id": "BUG-036",
+      "titulo": "Contador de resultados ignora os filtros",
+      "area": "Filtros",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Tasks.tsx → texto '{tasks.length} tarefa(s) encontrada(s)'"],
+      "porque": "O rótulo usa a lista completa carregada do servidor, e não a lista após pesquisa e filtros (que fica em outra variável, usada apenas para montar a tabela).",
+      "passos": [
+        "Abrir /tasks.",
+        "Aplicar qualquer filtro de status ou prioridade.",
+        "Comparar o número exibido com a quantidade real de linhas."
+      ],
+      "esperado": "O total acompanha os filtros aplicados.",
+      "atual": "O contador mostra sempre o total geral de tarefas.",
+      "observacoes": "Na tela de usuários o mesmo contador está correto — comparar as duas telas evidencia o defeito."
+    },
+    {
+      "id": "BUG-037",
+      "titulo": "Filtro 'Cancelada' nunca retorna resultados",
+      "area": "Filtros",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Tasks.tsx → STATUS_OPTIONS, opção com value 'CANCELADO'"],
+      "porque": "O valor da opção foi escrito no masculino ('CANCELADO'), enquanto o domínio gravado no banco é 'CANCELADA'. A comparação exata nunca casa, então o filtro devolve lista vazia.",
+      "passos": [
+        "Abrir /tasks (existem tarefas canceladas na base).",
+        "Selecionar o status 'Cancelada' no filtro."
+      ],
+      "esperado": "Listagem das tarefas com status CANCELADA.",
+      "atual": "Estado vazio, como se não houvesse nenhuma tarefa cancelada.",
+      "observacoes": "Os outros três status funcionam, o que faz o problema passar despercebido em um teste superficial."
+    },
+    {
+      "id": "BUG-038",
+      "titulo": "Pesquisa de tarefas é sensível a maiúsculas",
+      "area": "Pesquisa",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Tasks.tsx → filtro de busca"],
+      "porque": "O título é comparado com task.title.includes(search), sem normalização, enquanto a descrição usa toLowerCase() nos dois lados. O mesmo campo de busca tem, portanto, dois comportamentos diferentes — e nenhum dos dois trata espaços nas pontas ou acentuação.",
+      "passos": [
+        "Abrir /tasks.",
+        "Pesquisar 'revisar', depois 'Revisar' e depois 'REVISAR'.",
+        "Repetir com um termo que só exista na descrição."
+      ],
+      "esperado": "Mesmo resultado nas três formas, independentemente de caixa e acentos.",
+      "atual": "Resultados diferentes conforme a caixa e conforme o termo estar no título ou na descrição.",
+      "descoberta": "Variações de caixa, acentuação e espaços no termo pesquisado."
+    },
+    {
+      "id": "BUG-039",
+      "titulo": "Pesquisa de usuários trata nome e e-mail de formas diferentes",
+      "area": "Pesquisa",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Users.tsx → user.name.includes(search) || user.email.includes(search.toLowerCase())"],
+      "porque": "O nome é comparado sem normalização nenhuma (casa apenas com a grafia exata gravada), e o e-mail força o termo para minúsculas apenas de um lado da comparação. O mesmo campo entrega dois comportamentos.",
+      "passos": [
+        "Abrir /users como ADMIN.",
+        "Pesquisar 'João', depois 'joão' e depois 'JOÃO'.",
+        "Pesquisar parte de um e-mail em maiúsculas."
+      ],
+      "esperado": "Resultado idêntico, independentemente de caixa e acentuação.",
+      "atual": "Só a grafia exata encontra o registro pelo nome; o e-mail responde de forma diferente à mesma entrada."
+    },
+    {
+      "id": "BUG-040",
+      "titulo": "Ordenação por prioridade é alfabética",
+      "area": "Ordenação",
+      "severidade": "BAIXA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Tasks.tsx → a.priority.localeCompare(b.priority)"],
+      "porque": "A ordenação compara os textos dos enums em vez de um peso de negócio. Alfabeticamente, ALTA vem antes de BAIXA, que vem antes de MEDIA e URGENTE.",
+      "passos": [
+        "Abrir /tasks.",
+        "Selecionar a ordenação por 'Prioridade'.",
+        "Observar a sequência das prioridades exibidas."
+      ],
+      "esperado": "BAIXA → MEDIA → ALTA → URGENTE (ou o inverso), seguindo a criticidade.",
+      "atual": "ALTA → BAIXA → MEDIA → URGENTE (ordem alfabética dos códigos)."
+    },
+    {
+      "id": "BUG-041",
+      "titulo": "Dashboard considera no máximo 20 tarefas",
+      "area": "Dashboard",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": ["src/services/firebase/tasks.ts → listTasksForMetrics() com limit(20)"],
+      "porque": "Os indicadores são calculados no cliente a partir de uma consulta limitada a 20 documentos — uma amostra, não o total. A listagem usa outra consulta, sem limite, então as duas telas discordam.",
+      "passos": [
+        "Logar como ADMIN e abrir o dashboard.",
+        "Anotar o valor de 'Total de tarefas'.",
+        "Abrir /tasks e comparar com o total real (35 tarefas na base do seed)."
+      ],
+      "esperado": "Os números do dashboard refletem toda a base visível ao usuário.",
+      "atual": "Todos os indicadores são calculados sobre 20 registros; o total exibido é 20 contra 35 da listagem.",
+      "descoberta": "Comparação cruzada entre dashboard e listagem."
+    },
+    {
+      "id": "BUG-042",
+      "titulo": "'Concluídas' soma as tarefas canceladas",
+      "area": "Dashboard",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": ["src/pages/Dashboard.tsx (filtro do card done inclui CANCELADA)"],
+      "porque": "O contador de concluídas foi escrito como status === 'CONCLUIDA' || status === 'CANCELADA', misturando dois desfechos distintos no mesmo indicador.",
+      "passos": [
+        "Abrir o dashboard e anotar o valor de 'Concluídas'.",
+        "Em /tasks, filtrar por Concluída e contar os registros.",
+        "Somar com as tarefas canceladas e comparar."
+      ],
+      "esperado": "O card conta apenas tarefas com status CONCLUIDA.",
+      "atual": "Total inflado; a soma dos cards não corresponde à listagem por status."
+    },
+    {
+      "id": "BUG-043",
+      "titulo": "Dashboard exibe números em cache (inclusive de outro usuário)",
+      "area": "Cache / Estado",
+      "severidade": "ALTA",
+      "dificuldade": "Alta",
+      "local": ["src/pages/Dashboard.tsx → cache em sessionStorage, chave taskflow:dashboard-metrics"],
+      "porque": "Os indicadores são gravados em sessionStorage com validade de 10 minutos e, enquanto o cache está válido, não são recalculados — mas a tabela 'Tarefas recentes', logo abaixo, continua vindo do servidor. Pior: a chave não é segmentada por usuário e o logout não a limpa, então a sessão seguinte na mesma aba herda os números da anterior.",
+      "passos": [
+        "Cenário A — dado desatualizado: abrir o dashboard, criar uma tarefa e voltar ao dashboard (inclusive com F5).",
+        "Cenário B — vazamento entre sessões: logar como USER e abrir o dashboard; sair; logar como ADMIN na mesma aba e abrir o dashboard."
+      ],
+      "esperado": "Indicadores sempre atualizados e sempre referentes ao usuário autenticado.",
+      "atual": "A: os cards mantêm os valores antigos enquanto a nova tarefa já aparece na lista logo abaixo — a mesma tela se contradiz. B: o ADMIN vê por até 10 minutos os indicadores calculados para o USER anterior.",
+      "descoberta": "Comparação entre partes da mesma tela e troca de usuário na mesma aba."
+    },
+    {
+      "id": "BUG-044",
+      "titulo": "Data salva aparece um dia antes",
+      "area": "Datas / Timezone",
+      "severidade": "ALTA",
+      "dificuldade": "Média",
+      "local": [
+        "src/utils/date.ts → parseDateInput() (new Date('AAAA-MM-DD'))",
+        "src/utils/date.ts → formatDate() / toDateInputValue()"
+      ],
+      "porque": "new Date('2026-09-20') é interpretado pelo JavaScript como meia-noite em UTC. Gravado assim, o horário equivale às 21h do dia anterior em UTC-3, e formatDate() converte para o fuso local ao exibir. Já o formulário usa toISOString(), que devolve a data em UTC — por isso ele mostra o dia 'certo' enquanto listagem e detalhe mostram o dia anterior.",
+      "passos": [
+        "Criar uma tarefa com prazo 20/09/2026.",
+        "Observar o prazo na listagem /tasks e no card de detalhes.",
+        "Reabrir o formulário de edição da mesma tarefa.",
+        "Conferir o valor gravado no Firestore."
+      ],
+      "esperado": "20/09/2026 em todas as telas e no banco.",
+      "atual": "Listagem e detalhes exibem 19/09/2026 (em fusos negativos, como o do Brasil), enquanto o formulário exibe 20/09/2026.",
+      "descoberta": "Comparação entre telas e entre interface e banco; testes de timezone."
+    },
+    {
+      "id": "BUG-045",
+      "titulo": "Tarefa com prazo para hoje aparece como atrasada",
+      "area": "Datas",
+      "severidade": "MÉDIA",
+      "dificuldade": "Média",
+      "local": ["src/utils/date.ts → isOverdue()"],
+      "porque": "A função compara dueDate.getTime() com Date.now(), incluindo o horário. Como o prazo é gravado à meia-noite UTC (ver BUG-044), qualquer momento do dia corrente no Brasil já é 'maior' que o prazo.",
+      "passos": [
+        "Criar uma tarefa com prazo para hoje.",
+        "Abrir /tasks e observar a coluna Prazo."
+      ],
+      "esperado": "Nenhuma marcação de atraso no próprio dia do vencimento.",
+      "atual": "A tarefa recebe a tag vermelha 'Atrasada' já no dia do prazo.",
+      "descoberta": "Testes de data de fronteira: hoje, ontem, amanhã."
+    },
+    {
+      "id": "BUG-046",
+      "titulo": "Estado vazio aparece durante o carregamento",
+      "area": "UX / Loading",
+      "severidade": "BAIXA",
+      "dificuldade": "Baixa",
+      "local": ["src/pages/Tasks.tsx (EmptyState renderizado sem checar loading)"],
+      "porque": "A tela mostra o spinner e, em paralelo, decide entre tabela e estado vazio apenas pelo tamanho da lista — que começa vazia. Os dois elementos convivem enquanto os dados não chegam.",
+      "passos": [
+        "Abrir o DevTools e ativar a limitação de rede (Slow 3G).",
+        "Acessar /tasks e observar a área da tabela durante o carregamento."
+      ],
+      "esperado": "Apenas o indicador de carregamento até os dados chegarem.",
+      "atual": "'Nenhuma tarefa encontrada' pisca junto com o spinner, sugerindo base vazia.",
+      "observacoes": "Em /users o comportamento está correto — a comparação evidencia o defeito."
+    },
+    {
+      "id": "BUG-047",
+      "titulo": "URL inexistente exibe tela em branco",
+      "area": "Rotas",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": ["src/App.tsx (não há rota curinga path=\"*\")"],
+      "porque": "O layout autenticado é uma rota sem path, que só renderiza quando alguma rota filha casa. Sem rota curinga, um endereço desconhecido não casa com nada e a aplicação não renderiza absolutamente nada.",
+      "passos": [
+        "Autenticado, acessar /tarefas, /qualquercoisa ou /users/abc/def."
+      ],
+      "esperado": "Página 404 com caminho de volta, ou redirecionamento.",
+      "atual": "Tela totalmente branca, sem menu, sem mensagem e sem forma de navegar.",
+      "descoberta": "Alteração manual da URL / erros de digitação."
+    },
+    {
+      "id": "BUG-048",
+      "titulo": "Layout não é responsivo",
+      "area": "Responsividade",
+      "severidade": "MÉDIA",
+      "dificuldade": "Baixa",
+      "local": [
+        "src/styles/global.css → .app-shell { min-width: 1180px }",
+        "src/styles/global.css → .filters { grid-template-columns: 2fr 1fr 1fr 1fr }",
+        "tabelas sem contêiner com overflow-x"
+      ],
+      "porque": "Existe um breakpoint em 768px que esconde a barra lateral, mas o contêiner principal tem largura mínima fixa de 1180px, que prevalece. Os filtros também mantêm quatro colunas fixas e as tabelas não têm rolagem própria.",
+      "passos": [
+        "Abrir a aplicação em 375×812 (mobile) e em 768×1024 (tablet).",
+        "Percorrer dashboard, tarefas e usuários."
+      ],
+      "esperado": "Layout adaptado, sem rolagem horizontal da página.",
+      "atual": "A página inteira rola na horizontal, os filtros ficam espremidos e as tabelas estouram a área visível.",
+      "descoberta": "Testes de responsividade em desktop, tablet e mobile."
+    }
+  ]
+}
