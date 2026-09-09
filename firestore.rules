@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && userDoc().role == 'ADMIN';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // ------------------------------------------------------------------
+    // users
+    // ------------------------------------------------------------------
+    match /users/{userId} {
+      // Perfis sao carregados pela aplicacao para exibir o responsavel
+      // das tarefas em telas compartilhadas.
+      allow read: if isSignedIn();
+
+      allow create: if isAdmin() || isOwner(userId);
+
+      // O proprio usuario atualiza o seu perfil; ADMIN atualiza qualquer um.
+      allow update: if isAdmin() || isOwner(userId);
+
+      allow delete: if isAdmin();
+    }
+
+    // ------------------------------------------------------------------
+    // tasks
+    // ------------------------------------------------------------------
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn();
+
+      allow update: if isSignedIn();
+
+      allow delete: if isAdmin() || isOwner(resource.data.userId);
+    }
+
+    // ------------------------------------------------------------------
+    // internal — conteudo administrativo do desafio (rota /gabarito)
+    //
+    // Leitura liberada exclusivamente para a conta responsavel pelo desafio.
+    // O UID abaixo e preenchido por `npm run gabarito:publish`.
+    // A escrita so acontece pelo Admin SDK (que ignora estas regras).
+    // ------------------------------------------------------------------
+    match /internal/{docId} {
+      allow read: if isSignedIn() && request.auth.uid == '__OWNER_UID__';
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

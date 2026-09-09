@@ -1,0 +1,37 @@
+{
+  "name": "taskflow",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "TaskFlow - sistema de gestao de tarefas (ambiente de avaliacao de QA)",
+  "scripts": {
+    "dev": "node node_modules/vite/bin/vite.js",
+    "build": "node node_modules/typescript/bin/tsc -b && node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "lint": "node node_modules/typescript/bin/tsc --noEmit",
+    "emulators": "node node_modules/firebase-tools/lib/bin/firebase.js emulators:start",
+    "emulators:persist": "node node_modules/firebase-tools/lib/bin/firebase.js emulators:start --export-on-exit ./.emulator-data",
+    "emulators:restore": "node node_modules/firebase-tools/lib/bin/firebase.js emulators:start --import ./.emulator-data --export-on-exit ./.emulator-data",
+    "seed": "node scripts/seed.mjs",
+    "dev:full": "node node_modules/concurrently/dist/bin/concurrently.js -n emu,web -c magenta,cyan \"npm:emulators\" \"npm:dev\"",
+    "deploy:rules": "node node_modules/firebase-tools/lib/bin/firebase.js deploy --only firestore:rules,firestore:indexes",
+    "deploy:hosting": "node node_modules/firebase-tools/lib/bin/firebase.js deploy --only hosting",
+    "gabarito:publish": "node scripts/publish-gabarito.mjs"
+  },
+  "dependencies": {
+    "firebase": "^10.13.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "concurrently": "^9.0.1",
+    "firebase-admin": "^12.5.0",
+    "firebase-tools": "^13.35.1",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}
