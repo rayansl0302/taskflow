@@ -2,13 +2,34 @@ import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 
+/**
+ * Projeto usado no ambiente do desafio.
+ *
+ * Estes valores ficam no código de propósito: a configuração web do Firebase é
+ * embutida no bundle de qualquer aplicação cliente e é pública por definição —
+ * a proteção real vem das regras do Firestore e do Authentication.
+ *
+ * Servem de fallback para plataformas que não leem arquivos `.env` do
+ * repositório (a Vercel, por exemplo, só injeta variáveis definidas no painel).
+ * Qualquer variável VITE_FIREBASE_* presente no build tem precedência.
+ */
+const DEFAULT_CONFIG = {
+  apiKey: 'AIzaSyBbaR1yG_1ZZM64EseNXisA1MtgVpD7-5c',
+  authDomain: 'taskflow-9dff8.firebaseapp.com',
+  projectId: 'taskflow-9dff8',
+  storageBucket: 'taskflow-9dff8.firebasestorage.app',
+  messagingSenderId: '301802726897',
+  appId: '1:301802726897:web:98c441841d4203de4b9050',
+};
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_CONFIG.apiKey,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_CONFIG.authDomain,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_CONFIG.projectId,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_CONFIG.storageBucket,
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || DEFAULT_CONFIG.messagingSenderId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_CONFIG.appId,
 };
 
 export const app = initializeApp(firebaseConfig);

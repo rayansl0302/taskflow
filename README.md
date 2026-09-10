@@ -155,11 +155,16 @@ O projeto já vem pronto para a Vercel:
 
 - [`vercel.json`](vercel.json) define o build (`npm run build` → `dist`) e a reescrita de
   SPA, necessária para que rotas como `/tasks/123` funcionem em acesso direto e após F5.
-- [`.env.production`](.env.production) carrega a configuração do Firebase no build. Esses
-  valores são versionados de propósito: a configuração web do Firebase é embutida no bundle
-  de qualquer app cliente e é pública por definição — a proteção real vem das regras do
-  Firestore e do Authentication. Variáveis definidas no painel da Vercel têm precedência,
-  caso prefira gerenciá-las por lá.
+- A configuração do Firebase tem um fallback em
+  [`src/services/firebase/config.ts`](src/services/firebase/config.ts), porque **a Vercel não
+  lê arquivos `.env` do repositório** — ela só injeta variáveis definidas no painel do
+  projeto. Sem esse fallback o build sai sem credenciais e a aplicação falha com
+  `auth/invalid-api-key`. Os valores estão no código de propósito: a configuração web do
+  Firebase é embutida no bundle de qualquer app cliente e é pública por definição — a
+  proteção real vem das regras do Firestore e do Authentication.
+- Qualquer variável `VITE_FIREBASE_*` definida no painel da Vercel (ou em
+  [`.env.production`](.env.production), usado por builds locais e pelo Firebase Hosting) tem
+  precedência sobre o fallback.
 
 **Passo obrigatório no Firebase:** adicione o domínio da Vercel em
 *Authentication → Settings → Authorized domains*. Sem isso o login falha com
