@@ -216,15 +216,16 @@ está no código**, **como replicar** e **resultado esperado × resultado atual*
 O [`QA_GABARITO.md`](QA_GABARITO.md) é **gerado** a partir desse JSON — edite sempre o JSON,
 nunca o markdown.
 
-A leitura desse documento é liberada em `firestore.rules` **apenas para o UID da conta
-responsável pelo desafio**. Nem a conta ADMIN entregue ao QA consegue abrir: ela recebe uma
-tela de "página não encontrada", porque a recusa vem do servidor, não do front-end.
+A leitura desse documento é liberada em `firestore.rules` **apenas para o e-mail da conta
+responsável pelo desafio** (`request.auth.token.email`). Nem a conta ADMIN entregue ao QA
+consegue abrir: ela recebe uma tela de "página não encontrada", porque a recusa vem do
+servidor, não do front-end.
 
 Configuração:
 
 1. No `.env`, defina `GABARITO_OWNER_EMAIL` (uma conta diferente das entregues ao QA) e
    `GABARITO_OWNER_PASSWORD` (usada apenas na primeira execução, para criar a conta).
-2. Publique o conteúdo, grave o UID nas regras e regenere o `QA_GABARITO.md`:
+2. Publique o conteúdo, sincronize o e-mail nas regras e regenere o `QA_GABARITO.md`:
 
 ```bash
 npm run gabarito:publish
@@ -237,7 +238,10 @@ npm run deploy:rules
 ```
 
 A cada alteração do gabarito, basta repetir o passo 2 — o passo 3 só é necessário quando o
-UID muda.
+e-mail autorizado muda.
+
+> Se preferir não rodar o script, o e-mail pode ser editado direto no bloco `/internal` de
+> [`firestore.rules`](firestore.rules); o script apenas mantém os dois lados em sincronia.
 
 ---
 

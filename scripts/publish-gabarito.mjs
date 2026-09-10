@@ -6,7 +6,7 @@
  * A partir dele o script:
  *   1. garante a existência da conta interna;
  *   2. grava os bugs em `internal/qa-gabarito` (via Admin SDK, que ignora as regras);
- *   3. escreve o UID autorizado em firestore.rules;
+ *   3. mantem o e-mail autorizado em firestore.rules;
  *   4. regenera o QA_GABARITO.md na raiz do projeto.
  *
  * Uso:
@@ -153,15 +153,17 @@ async function run() {
   // 3. regras
   const rulesPath = 'firestore.rules';
   const rules = readFileSync(rulesPath, 'utf8');
-  const updated = rules.replace(
-    /(match \/internal\/\{docId\} \{[\s\S]*?request\.auth\.uid == ')[^']*(')/,
-    `$1${owner.uid}$2`,
-  );
-  if (updated === rules) {
+  const padrao = /(match \/internal\/\{docId\} \{[\s\S]*?request\.auth\.token\.email == ')[^']*(')/;
+  if (!padrao.test(rules)) {
     console.warn('! Não foi possível localizar o bloco /internal em firestore.rules.');
-  } else if (updated !== rules) {
-    writeFileSync(rulesPath, updated);
-    console.log(`> firestore.rules atualizado com o UID ${owner.uid}`);
+  } else {
+    const updated = rules.replace(padrao, `$1${ownerEmail}$2`);
+    if (updated !== rules) {
+      writeFileSync(rulesPath, updated);
+      console.log(`> firestore.rules atualizado para liberar ${ownerEmail}`);
+    } else {
+      console.log(`> firestore.rules já libera ${ownerEmail}`);
+    }
   }
 
   // 4. markdown
