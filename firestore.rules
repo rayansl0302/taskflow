@@ -51,14 +51,21 @@ service cloud.firestore {
     // ------------------------------------------------------------------
     // internal — conteudo administrativo do desafio (rota /gabarito)
     //
-    // Leitura liberada exclusivamente para a conta responsavel pelo desafio.
-    // O e-mail abaixo e mantido por `npm run gabarito:publish` a partir de
-    // GABARITO_OWNER_EMAIL, mas pode ser editado a mao sem problema.
-    // A escrita so acontece pelo Admin SDK (que ignora estas regras).
+    // Leitura e escrita liberadas exclusivamente para a conta responsavel
+    // pelo desafio. O e-mail abaixo e mantido por `npm run gabarito:publish`
+    // a partir de GABARITO_OWNER_EMAIL, mas pode ser editado a mao.
+    //
+    // A escrita e permitida para que o gabarito possa ser publicado pelo
+    // `npm run setup:remote`, que usa o SDK cliente e dispensa uma service
+    // account. Nenhuma outra conta le nem escreve nesta colecao.
     // ------------------------------------------------------------------
+    function isOwnerAccount() {
+      return isSignedIn() && request.auth.token.email == 'rayansl0302@gmail.com';
+    }
+
     match /internal/{docId} {
-      allow read: if isSignedIn() && request.auth.token.email == 'rayansl0302@gmail.com';
-      allow write: if false;
+      allow read: if isOwnerAccount();
+      allow write: if isOwnerAccount();
     }
 
     match /{document=**} {

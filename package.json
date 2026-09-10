@@ -16,7 +16,8 @@
     "dev:full": "node node_modules/concurrently/dist/bin/concurrently.js -n emu,web -c magenta,cyan \"npm:emulators\" \"npm:dev\"",
     "deploy:rules": "node node_modules/firebase-tools/lib/bin/firebase.js deploy --only firestore:rules,firestore:indexes",
     "deploy:hosting": "node node_modules/firebase-tools/lib/bin/firebase.js deploy --only hosting",
-    "gabarito:publish": "node scripts/publish-gabarito.mjs"
+    "gabarito:publish": "node scripts/publish-gabarito.mjs",
+    "setup:remote": "node scripts/setup-remote.mjs"
   },
   "dependencies": {
     "firebase": "^10.13.2",

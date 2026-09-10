@@ -167,15 +167,32 @@ O projeto já vem pronto para a Vercel:
   precedência sobre o fallback.
 
 **Antes de entregar o ambiente ao QA**, o projeto Firebase precisa estar preparado — sem
-isso a aplicação carrega, mas o login falha e as telas ficam sem dados:
+isso a aplicação carrega, mas o login falha e as telas ficam sem dados.
 
-1. `npm run deploy:rules` — sem as regras publicadas, toda leitura volta com
-   `permission-denied` (o Firestore nasce com as regras padrão, que bloqueiam tudo).
-2. `npm run seed` — sem isso não existem usuários e o login responde
-   "E-mail ou senha inválidos" para qualquer credencial.
-3. Em *Authentication → Settings → Authorized domains*, inclua o domínio da Vercel. O login
-   por e-mail/senha funciona sem isso, mas os links de recuperação de senha só são aceitos
-   em domínios autorizados.
+**Passo 1 — publicar as regras.** O Firestore nasce com regras que bloqueiam tudo; enquanto
+elas não forem substituídas, toda leitura volta `permission-denied`. Abra o Console do
+Firebase → *Firestore Database* → *Regras*, cole o conteúdo de
+[`firestore.rules`](firestore.rules) e publique. (Com o CLI autenticado, `npm run deploy:rules`
+faz o mesmo.)
+
+**Passo 2 — popular a base.**
+
+```bash
+npm run setup:remote
+```
+
+Esse script usa o **SDK cliente**: precisa apenas de `GABARITO_OWNER_EMAIL` e
+`GABARITO_OWNER_PASSWORD` no `.env` — nenhuma service account. Ele cria as contas de
+demonstração, grava os perfis, carrega as 35 tarefas e publica o gabarito em
+`internal/qa-gabarito`. Se as regras ainda não estiverem publicadas, ele para com uma
+mensagem explicando exatamente isso.
+
+> `npm run seed` continua existindo para o caminho com service account (Admin SDK) e é o
+> usado com o emulador.
+
+**Passo 3 — opcional.** Em *Authentication → Settings → Authorized domains*, inclua o domínio
+da Vercel. O login por e-mail/senha funciona sem isso, mas os links de recuperação de senha
+só são aceitos em domínios autorizados.
 
 Se a aplicação subir sem a configuração do Firebase, a tela mostra uma mensagem explicando
 o que falta, em vez de ficar em branco.
@@ -200,7 +217,8 @@ Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
 | `npm run emulators:restore` | Emulator Suite importando o último export |
 | `npm run seed` | Popula a base (emulador ou projeto real) com usuários e tarefas |
 | `npm run dev:full` | Emulador + front-end em paralelo |
-| `npm run gabarito:publish` | Publica o gabarito interno e libera a rota `/gabarito` |
+| `npm run setup:remote` | Prepara um projeto real (contas, tarefas e gabarito) sem service account |
+| `npm run gabarito:publish` | Publica o gabarito interno via Admin SDK (service account) |
 | `npm run deploy:rules` | Publica `firestore.rules` e os índices |
 | `npm run deploy:hosting` | Publica o build no Firebase Hosting |
 
