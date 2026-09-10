@@ -1,5 +1,6 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
+import { GabaritoEmpty } from './gabarito/GabaritoEmpty';
 import { GabaritoNotFound } from './gabarito/GabaritoNotFound';
 import { severityClass, useGabarito } from './gabarito/useGabarito';
 
@@ -7,7 +8,7 @@ import { severityClass, useGabarito } from './gabarito/useGabarito';
 export function GabaritoBugPage() {
   const { bugId } = useParams();
   const { search } = useLocation();
-  const { state, bugs } = useGabarito();
+  const { state, bugs, email } = useGabarito();
 
   if (state === 'loading') {
     return (
@@ -18,6 +19,8 @@ export function GabaritoBugPage() {
   }
 
   if (state === 'denied') return <GabaritoNotFound />;
+
+  if (state === 'empty') return <GabaritoEmpty email={email} />;
 
   const indice = bugs.findIndex((item) => item.id.toLowerCase() === (bugId ?? '').toLowerCase());
   const bug = indice >= 0 ? bugs[indice] : null;

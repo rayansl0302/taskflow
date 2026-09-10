@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { auth } from '../services/firebase/config';
 import { Spinner } from '../components/Spinner';
+import { GabaritoEmpty } from './gabarito/GabaritoEmpty';
 import { GabaritoNotFound } from './gabarito/GabaritoNotFound';
 import { SEVERIDADES, severityClass, useGabarito } from './gabarito/useGabarito';
 
@@ -14,7 +15,7 @@ import { SEVERIDADES, severityClass, useGabarito } from './gabarito/useGabarito'
  * sobreviverem à ida e volta.
  */
 export function GabaritoPage() {
-  const { state, bugs, updatedAt } = useGabarito();
+  const { state, bugs, updatedAt, email } = useGabarito();
   const [params, setParams] = useSearchParams();
 
   const busca = params.get('q') ?? '';
@@ -54,6 +55,8 @@ export function GabaritoPage() {
   }
 
   if (state === 'denied') return <GabaritoNotFound />;
+
+  if (state === 'empty') return <GabaritoEmpty email={email} />;
 
   return (
     <div className="gab">

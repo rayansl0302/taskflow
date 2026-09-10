@@ -18,7 +18,12 @@ export interface Bug {
   observacoes?: string;
 }
 
-export type GabaritoState = 'loading' | 'denied' | 'ready';
+/**
+ * `denied`  — sem permissão de leitura (ou sem sessão): tratado como 404.
+ * `empty`   — leitura permitida, mas o gabarito ainda não foi publicado.
+ * `ready`   — conteúdo carregado.
+ */
+export type GabaritoState = 'loading' | 'denied' | 'empty' | 'ready';
 
 export const SEVERIDADES = ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA'] as const;
 
@@ -51,6 +56,7 @@ export function useGabarito() {
   const [state, setState] = useState<GabaritoState>(cache ? 'ready' : 'loading');
   const [bugs, setBugs] = useState<Bug[]>(cache?.bugs ?? []);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(cache?.updatedAt ?? null);
+  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -61,12 +67,19 @@ export function useGabarito() {
         if (active) setState('denied');
         return;
       }
+      if (active) setEmail(user.email);
+
       try {
         const snapshot = await getDoc(doc(db, 'internal', 'qa-gabarito'));
+
+        // Chegar aqui significa que a regra autorizou a leitura: só a conta
+        // responsável consegue. Um documento ausente é falta de publicação,
+        // não falta de permissão — e merece uma mensagem diferente.
         if (!snapshot.exists()) {
-          if (active) setState('denied');
+          if (active) setState('empty');
           return;
         }
+
         const data = snapshot.data();
         const list: Bug[] = data.bugs ?? [];
         const quando = data.updatedAt?.toDate?.() ?? null;
@@ -74,7 +87,7 @@ export function useGabarito() {
         if (!active) return;
         setBugs(list);
         setUpdatedAt(quando);
-        setState('ready');
+        setState(list.length > 0 ? 'ready' : 'empty');
       } catch {
         if (active) setState('denied');
       }
@@ -86,5 +99,5 @@ export function useGabarito() {
     };
   }, []);
 
-  return { state, bugs, updatedAt };
+  return { state, bugs, updatedAt, email };
 }

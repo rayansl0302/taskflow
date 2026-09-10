@@ -1208,3 +1208,18 @@ a {
     padding: 0;
   }
 }
+
+.gab__empty-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.gab__command {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
