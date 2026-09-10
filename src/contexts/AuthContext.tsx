@@ -47,7 +47,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const loadProfile = useCallback(async (user: User) => {
-    const stored = await getUser(user.uid);
+    // A autenticação não depende da leitura do perfil: se o Firestore recusar
+    // ou o documento não existir, seguimos com um perfil mínimo montado a
+    // partir da conta. Cada tela reporta o próprio erro, em vez de a falha
+    // derrubar o login inteiro.
+    let stored: AppUser | null = null;
+    try {
+      stored = await getUser(user.uid);
+    } catch {
+      stored = null;
+    }
+
     const resolved: AppUser =
       stored ?? {
         id: user.uid,
