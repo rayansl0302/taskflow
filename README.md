@@ -166,9 +166,16 @@ O projeto já vem pronto para a Vercel:
   [`.env.production`](.env.production), usado por builds locais e pelo Firebase Hosting) tem
   precedência sobre o fallback.
 
-**Passo obrigatório no Firebase:** adicione o domínio da Vercel em
-*Authentication → Settings → Authorized domains*. Sem isso o login falha com
-`auth/unauthorized-domain`, mesmo com tudo o mais correto.
+**Antes de entregar o ambiente ao QA**, o projeto Firebase precisa estar preparado — sem
+isso a aplicação carrega, mas o login falha e as telas ficam sem dados:
+
+1. `npm run deploy:rules` — sem as regras publicadas, toda leitura volta com
+   `permission-denied` (o Firestore nasce com as regras padrão, que bloqueiam tudo).
+2. `npm run seed` — sem isso não existem usuários e o login responde
+   "E-mail ou senha inválidos" para qualquer credencial.
+3. Em *Authentication → Settings → Authorized domains*, inclua o domínio da Vercel. O login
+   por e-mail/senha funciona sem isso, mas os links de recuperação de senha só são aceitos
+   em domínios autorizados.
 
 Se a aplicação subir sem a configuração do Firebase, a tela mostra uma mensagem explicando
 o que falta, em vez de ficar em branco.
