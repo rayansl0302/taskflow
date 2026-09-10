@@ -854,12 +854,16 @@ a {
 /* Gabarito interno (/gabarito)                                        */
 /* ------------------------------------------------------------------ */
 .gab {
-  max-width: 1240px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 20px 20px 48px;
+  padding: 20px 20px 56px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.gab--single {
+  max-width: 900px;
 }
 
 .gab__bar {
@@ -888,6 +892,17 @@ a {
 .gab__bar-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gab__back {
+  color: #e5e7eb;
+  font-weight: 550;
+}
+
+.gab__back:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 .gab__summary {
@@ -955,70 +970,74 @@ a {
   color: var(--info);
 }
 
-.gab__body {
+.gab__filters-bar {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-}
-
-.gab__list {
+  grid-template-columns: minmax(0, 1fr) 220px auto;
+  align-items: center;
+  gap: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 14px;
-  position: sticky;
-  top: 16px;
-  max-height: calc(100vh - 32px);
-  display: flex;
-  flex-direction: column;
-}
-
-.gab__filters {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding: 14px 16px;
 }
 
 .gab__count {
-  margin: 12px 0 6px;
   font-size: 12px;
   color: var(--muted);
+  white-space: nowrap;
 }
 
-.gab__items {
+.gab__cards {
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.gab__card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.gab__item {
-  width: 100%;
-  text-align: left;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
   gap: 8px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: none;
-  padding: 8px 10px;
-  font: inherit;
-  cursor: pointer;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.gab__item:hover {
-  background: #f8fafc;
+.gab__card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
 }
 
-.gab__item.is-active {
-  background: var(--primary-soft);
-  border-color: #c7d2fe;
+.gab__card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gab__card-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.gab__card-porque {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .gab__item-id {
@@ -1028,18 +1047,13 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-.gab__item-title {
-  font-size: 12.5px;
-  line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .gab__empty {
   color: var(--muted);
-  font-size: 13px;
-  padding: 12px 4px;
+  text-align: center;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .gab__detail {
@@ -1047,13 +1061,14 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 28px;
+  padding: 32px;
   line-height: 1.65;
 }
 
 .gab__detail-head h1 {
-  font-size: 22px;
-  margin: 4px 0 10px;
+  font-size: 24px;
+  margin: 4px 0 12px;
+  line-height: 1.25;
 }
 
 .gab__tags {
@@ -1160,34 +1175,31 @@ a {
   color: var(--text);
 }
 
-@media (max-width: 900px) {
-  .gab__body {
+@media (max-width: 720px) {
+  .gab__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gab__filters-bar {
     grid-template-columns: 1fr;
   }
 
-  .gab__list {
-    position: static;
-    max-height: none;
-  }
-
-  .gab__summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .gab__cards {
+    grid-template-columns: 1fr;
   }
 
   .gab__compare {
     grid-template-columns: 1fr;
   }
+
+  .gab__detail {
+    padding: 20px;
+  }
 }
 
 @media print {
-  .gab__bar,
-  .gab__summary,
-  .gab__list {
+  .gab__bar {
     display: none;
-  }
-
-  .gab__body {
-    grid-template-columns: 1fr;
   }
 
   .gab__detail {

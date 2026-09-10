@@ -1,88 +1,40 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../services/firebase/config';
-import { observeAuth } from '../services/firebase/auth';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { auth } from '../services/firebase/config';
 import { Spinner } from '../components/Spinner';
-
-interface Bug {
-  id: string;
-  titulo: string;
-  area: string;
-  severidade: 'CRÍTICA' | 'ALTA' | 'MÉDIA' | 'BAIXA';
-  dificuldade: 'Alta' | 'Média' | 'Baixa';
-  local: string[];
-  porque: string;
-  passos: string[];
-  esperado: string;
-  atual: string;
-  descoberta?: string;
-  observacoes?: string;
-}
-
-type State = 'loading' | 'denied' | 'ready';
-
-const SEVERIDADES = ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA'] as const;
-
-function severityClass(severidade: string) {
-  const map: Record<string, string> = {
-    'CRÍTICA': 'sev sev--critica',
-    ALTA: 'sev sev--alta',
-    'MÉDIA': 'sev sev--media',
-    BAIXA: 'sev sev--baixa',
-  };
-  return map[severidade] ?? 'sev';
-}
+import { GabaritoNotFound } from './gabarito/GabaritoNotFound';
+import { SEVERIDADES, severityClass, useGabarito } from './gabarito/useGabarito';
 
 /**
- * Rota interna do desafio (/gabarito).
+ * Índice do gabarito interno (/gabarito).
  *
- * A proteção real não está aqui: o documento `internal/qa-gabarito` só pode ser
- * lido pelo UID autorizado nas regras do Firestore. Qualquer outra pessoa que
- * abra esta URL — inclusive autenticada como ADMIN — recebe a tela de
- * "página não encontrada", porque a leitura é recusada pelo servidor.
+ * Cada defeito abre em uma página própria (`/gabarito/BUG-001`), o que dá
+ * espaço para a leitura, gera um link direto para cada item e faz o botão
+ * voltar do navegador funcionar. Os filtros ficam na query string para
+ * sobreviverem à ida e volta.
  */
 export function GabaritoPage() {
-  const [state, setState] = useState<State>('loading');
-  const [bugs, setBugs] = useState<Bug[]>([]);
-  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [severidade, setSeveridade] = useState('');
-  const [area, setArea] = useState('');
+  const { state, bugs, updatedAt } = useGabarito();
+  const [params, setParams] = useSearchParams();
 
-  useEffect(() => {
-    const unsubscribe = observeAuth(async (user) => {
-      if (!user) {
-        setState('denied');
-        return;
-      }
-      try {
-        const snapshot = await getDoc(doc(db, 'internal', 'qa-gabarito'));
-        if (!snapshot.exists()) {
-          setState('denied');
-          return;
-        }
-        const data = snapshot.data();
-        const list: Bug[] = data.bugs ?? [];
-        setBugs(list);
-        setUpdatedAt(data.updatedAt?.toDate?.() ?? null);
-        setSelectedId(list[0]?.id ?? null);
-        setState('ready');
-      } catch {
-        setState('denied');
-      }
-    });
-    return unsubscribe;
-  }, []);
+  const busca = params.get('q') ?? '';
+  const area = params.get('area') ?? '';
+  const severidade = params.get('sev') ?? '';
+
+  function atualizar(chave: string, valor: string) {
+    const proximos = new URLSearchParams(params);
+    if (valor) proximos.set(chave, valor);
+    else proximos.delete(chave);
+    setParams(proximos, { replace: true });
+  }
 
   const areas = useMemo(
     () => Array.from(new Set(bugs.map((bug) => bug.area))).sort((a, b) => a.localeCompare(b)),
     [bugs],
   );
 
-  const filtered = useMemo(() => {
-    const termo = search.trim().toLowerCase();
+  const filtrados = useMemo(() => {
+    const termo = busca.trim().toLowerCase();
     return bugs.filter((bug) => {
       const alvo = `${bug.id} ${bug.titulo} ${bug.area} ${bug.porque}`.toLowerCase();
       return (
@@ -91,12 +43,7 @@ export function GabaritoPage() {
         (!area || bug.area === area)
       );
     });
-  }, [bugs, search, severidade, area]);
-
-  const selected = useMemo(
-    () => filtered.find((bug) => bug.id === selectedId) ?? filtered[0] ?? null,
-    [filtered, selectedId],
-  );
+  }, [bugs, busca, severidade, area]);
 
   if (state === 'loading') {
     return (
@@ -106,19 +53,7 @@ export function GabaritoPage() {
     );
   }
 
-  if (state === 'denied') {
-    return (
-      <div className="page-loader">
-        <div className="empty-state">
-          <h3>Página não encontrada</h3>
-          <p>O endereço acessado não existe ou não está disponível.</p>
-          <Link className="btn btn--primary" to="/dashboard">
-            Ir para o início
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (state === 'denied') return <GabaritoNotFound />;
 
   return (
     <div className="gab">
@@ -131,9 +66,6 @@ export function GabaritoPage() {
           </small>
         </div>
         <div className="gab__bar-actions">
-          <button type="button" className="btn btn--ghost btn--sm" onClick={() => window.print()}>
-            Imprimir / PDF
-          </button>
           <button
             type="button"
             className="btn btn--ghost btn--sm"
@@ -153,7 +85,7 @@ export function GabaritoPage() {
               key={nivel}
               type="button"
               className={`gab__stat${ativo ? ' is-active' : ''}`}
-              onClick={() => setSeveridade(ativo ? '' : nivel)}
+              onClick={() => atualizar('sev', ativo ? '' : nivel)}
             >
               <span className={severityClass(nivel)}>{nivel}</span>
               <strong>{total}</strong>
@@ -162,111 +94,49 @@ export function GabaritoPage() {
         })}
       </section>
 
-      <div className="gab__body">
-        <aside className="gab__list">
-          <div className="gab__filters">
-            <input
-              className="input"
-              type="search"
-              placeholder="Buscar por id, título, área ou causa"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-            <select className="input" value={area} onChange={(event) => setArea(event.target.value)}>
-              <option value="">Todas as áreas</option>
-              {areas.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
+      <section className="gab__filters-bar">
+        <input
+          className="input"
+          type="search"
+          placeholder="Buscar por id, título, área ou causa"
+          value={busca}
+          onChange={(event) => atualizar('q', event.target.value)}
+        />
+        <select className="input" value={area} onChange={(event) => atualizar('area', event.target.value)}>
+          <option value="">Todas as áreas</option>
+          {areas.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+        <span className="gab__count">
+          {filtrados.length} de {bugs.length}
+        </span>
+      </section>
 
-          <p className="gab__count">{filtered.length} de {bugs.length}</p>
-
-          <ul className="gab__items">
-            {filtered.map((bug) => (
-              <li key={bug.id}>
-                <button
-                  type="button"
-                  className={`gab__item${selected?.id === bug.id ? ' is-active' : ''}`}
-                  onClick={() => setSelectedId(bug.id)}
-                >
+      {filtrados.length === 0 ? (
+        <p className="gab__empty">Nenhum defeito corresponde ao filtro.</p>
+      ) : (
+        <ul className="gab__cards">
+          {filtrados.map((bug) => (
+            <li key={bug.id}>
+              <Link className="gab__card" to={`/gabarito/${bug.id}${params.toString() ? `?${params}` : ''}`}>
+                <div className="gab__card-head">
                   <span className="gab__item-id">{bug.id}</span>
-                  <span className="gab__item-title">{bug.titulo}</span>
                   <span className={severityClass(bug.severidade)}>{bug.severidade}</span>
-                </button>
-              </li>
-            ))}
-            {filtered.length === 0 && <li className="gab__empty">Nenhum defeito corresponde ao filtro.</li>}
-          </ul>
-        </aside>
-
-        <article className="gab__detail">
-          {selected ? (
-            <>
-              <header className="gab__detail-head">
-                <span className="gab__item-id">{selected.id}</span>
-                <h1>{selected.titulo}</h1>
+                </div>
+                <h2 className="gab__card-title">{bug.titulo}</h2>
+                <p className="gab__card-porque">{bug.porque}</p>
                 <div className="gab__tags">
-                  <span className={severityClass(selected.severidade)}>{selected.severidade}</span>
-                  <span className="tag">{selected.area}</span>
-                  <span className="tag">Dificuldade: {selected.dificuldade}</span>
+                  <span className="tag">{bug.area}</span>
+                  <span className="tag">Dificuldade: {bug.dificuldade}</span>
                 </div>
-              </header>
-
-              <section className="gab__block">
-                <h2>Por que acontece</h2>
-                <p>{selected.porque}</p>
-                <ul className="gab__files">
-                  {selected.local.map((item) => (
-                    <li key={item}>
-                      <code>{item}</code>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section className="gab__block">
-                <h2>Como replicar</h2>
-                <ol className="gab__steps">
-                  {selected.passos.map((passo, index) => (
-                    <li key={index}>{passo}</li>
-                  ))}
-                </ol>
-              </section>
-
-              <section className="gab__block gab__compare">
-                <div className="gab__expected">
-                  <h3>Resultado esperado</h3>
-                  <p>{selected.esperado}</p>
-                </div>
-                <div className="gab__actual">
-                  <h3>Resultado atual</h3>
-                  <p>{selected.atual}</p>
-                </div>
-              </section>
-
-              {(selected.descoberta || selected.observacoes) && (
-                <section className="gab__block gab__notes">
-                  {selected.descoberta && (
-                    <p>
-                      <strong>Como o QA chega nele:</strong> {selected.descoberta}
-                    </p>
-                  )}
-                  {selected.observacoes && (
-                    <p>
-                      <strong>Observações:</strong> {selected.observacoes}
-                    </p>
-                  )}
-                </section>
-              )}
-            </>
-          ) : (
-            <p className="muted">Selecione um defeito na lista.</p>
-          )}
-        </article>
-      </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

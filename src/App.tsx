@@ -11,6 +11,7 @@ import { UsersPage } from './pages/Users';
 import { UserFormPage } from './pages/UserForm';
 import { ProfilePage } from './pages/Profile';
 import { GabaritoPage } from './pages/Gabarito';
+import { GabaritoBugPage } from './pages/GabaritoBug';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
 
       {/* Rota interna do desafio — o acesso é controlado pelas regras do Firestore */}
       <Route path="/gabarito" element={<GabaritoPage />} />
+      <Route path="/gabarito/:bugId" element={<GabaritoBugPage />} />
 
       <Route
         element={
