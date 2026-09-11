@@ -181,11 +181,15 @@ faz o mesmo.)
 npm run setup:remote
 ```
 
-Esse script usa o **SDK cliente**: precisa apenas de `GABARITO_OWNER_EMAIL` e
-`GABARITO_OWNER_PASSWORD` no `.env` — nenhuma service account. Ele cria as contas de
-demonstração, grava os perfis, carrega as 35 tarefas e publica o gabarito em
-`internal/qa-gabarito`. Se as regras ainda não estiverem publicadas, ele para com uma
-mensagem explicando exatamente isso.
+Esse script usa o **SDK cliente**, sem service account: cria as contas de demonstração,
+grava os perfis e carrega as 35 tarefas. Se as regras ainda não estiverem publicadas, ele
+para com uma mensagem explicando exatamente isso.
+
+O gabarito não precisa de passo separado: na primeira vez que a conta responsável abrir
+`/gabarito`, a própria rota busca [`docs/gabarito.json`](docs/gabarito.json) e grava o
+documento em `internal/qa-gabarito`. Só aquela sessão consegue fazer isso, porque a escrita
+é restrita pelas regras. Se `GABARITO_OWNER_PASSWORD` estiver preenchida no `.env`, o script
+já publica o gabarito junto e a rota abre pronta.
 
 > `npm run seed` continua existindo para o caminho com service account (Admin SDK) e é o
 > usado com o emulador.

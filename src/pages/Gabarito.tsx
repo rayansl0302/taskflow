@@ -46,10 +46,10 @@ export function GabaritoPage() {
     });
   }, [bugs, busca, severidade, area]);
 
-  if (state === 'loading') {
+  if (state === 'loading' || state === 'publishing') {
     return (
       <div className="page-loader">
-        <Spinner label="Carregando..." />
+        <Spinner label={state === 'publishing' ? 'Publicando o gabarito...' : 'Carregando...'} />
       </div>
     );
   }

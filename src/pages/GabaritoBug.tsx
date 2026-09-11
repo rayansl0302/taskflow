@@ -10,10 +10,10 @@ export function GabaritoBugPage() {
   const { search } = useLocation();
   const { state, bugs, email } = useGabarito();
 
-  if (state === 'loading') {
+  if (state === 'loading' || state === 'publishing') {
     return (
       <div className="page-loader">
-        <Spinner label="Carregando..." />
+        <Spinner label={state === 'publishing' ? 'Publicando o gabarito...' : 'Carregando...'} />
       </div>
     );
   }

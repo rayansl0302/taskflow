@@ -80,16 +80,10 @@ function fail(message) {
   process.exit(1);
 }
 
-if (!ownerEmail || !ownerPassword) {
-  fail(
-    'Defina GABARITO_OWNER_EMAIL e GABARITO_OWNER_PASSWORD no .env.\n' +
-      'É a conta que publica o gabarito e abre a rota /gabarito.',
-  );
-}
-
-if (!existsSync(dataFile)) {
-  fail(`Gabarito não encontrado em "${dataFile}".`);
-}
+// A conta responsável é opcional: sem a senha dela o script prepara o ambiente
+// do QA e deixa o gabarito para ser publicado pela própria rota /gabarito, no
+// primeiro acesso da conta autorizada.
+const publicaGabarito = Boolean(ownerEmail && ownerPassword && existsSync(dataFile));
 
 const useEmulators = env.VITE_USE_EMULATORS === 'true';
 
@@ -165,27 +159,31 @@ function explicarErro(error, contexto) {
 async function run() {
   console.log(`> projeto: ${firebaseConfig.projectId}${useEmulators ? ' (emulador)' : ''}`);
 
-  // 1. gabarito, com a conta responsável
-  try {
-    await signInWithEmailAndPassword(auth, ownerEmail, ownerPassword);
-  } catch (error) {
-    explicarErro(error, `entrar como ${ownerEmail}`);
-  }
-  console.log(`> autenticado como ${ownerEmail}`);
+  // 1. gabarito, com a conta responsável (quando a senha está disponível)
+  if (publicaGabarito) {
+    try {
+      await signInWithEmailAndPassword(auth, ownerEmail, ownerPassword);
+    } catch (error) {
+      explicarErro(error, `entrar como ${ownerEmail}`);
+    }
+    console.log(`> autenticado como ${ownerEmail}`);
 
-  const gabarito = JSON.parse(readFileSync(dataFile, 'utf8'));
-  try {
-    await setDoc(doc(db, 'internal', 'qa-gabarito'), {
-      titulo: gabarito.titulo,
-      descricao: gabarito.descricao,
-      bugs: gabarito.bugs,
-      total: gabarito.bugs.length,
-      updatedAt: Timestamp.now(),
-    });
-  } catch (error) {
-    explicarErro(error, 'publicar o gabarito');
+    const gabarito = JSON.parse(readFileSync(dataFile, 'utf8'));
+    try {
+      await setDoc(doc(db, 'internal', 'qa-gabarito'), {
+        titulo: gabarito.titulo,
+        descricao: gabarito.descricao,
+        bugs: gabarito.bugs,
+        total: gabarito.bugs.length,
+        updatedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      explicarErro(error, 'publicar o gabarito');
+    }
+    console.log(`> gabarito publicado: ${gabarito.bugs.length} defeitos`);
+  } else {
+    console.log('> gabarito: será publicado no primeiro acesso à rota /gabarito');
   }
-  console.log(`> gabarito publicado: ${gabarito.bugs.length} defeitos`);
 
   // 2 e 3. contas de demonstração e perfis
   const ids = {};

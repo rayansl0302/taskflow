@@ -18,11 +18,22 @@ export function GabaritoEmpty({ email }: { email: string | null }) {
         <h1 className="gab__empty-title">O gabarito ainda não foi publicado neste projeto</h1>
         <p>
           Sua conta tem permissão de leitura — as regras do Firestore estão corretas —, mas o
-          documento <code>internal/qa-gabarito</code> ainda não existe.
+          documento <code>internal/qa-gabarito</code> ainda não existe e a publicação
+          automática não funcionou. Normalmente é a regra de escrita da coleção
+          <code>internal</code> que ainda não foi publicada.
         </p>
 
         <section className="gab__block">
-          <h2>Como publicar</h2>
+          <h2>Como resolver</h2>
+          <p>
+            Recarregue a página para tentar de novo. Se continuar assim, publique as regras
+            de <code>firestore.rules</code> no Console do Firebase — o bloco{' '}
+            <code>internal</code> precisa permitir escrita para a sua conta.
+          </p>
+        </section>
+
+        <section className="gab__block">
+          <h2>Alternativa pela linha de comando</h2>
           <p>
             Preencha <code>GABARITO_OWNER_PASSWORD</code> no <code>.env</code> e rode, na raiz
             do projeto:
