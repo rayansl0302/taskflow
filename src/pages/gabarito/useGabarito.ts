@@ -51,6 +51,8 @@ export function severityClass(severidade: string): string {
 interface Cache {
   bugs: Bug[];
   updatedAt: Date | null;
+  /** false quando o conteúdo veio da origem versionada e não pôde ser gravado. */
+  persistido: boolean;
 }
 
 /** Evita reler o documento a cada navegação entre a lista e o detalhe. */
@@ -74,15 +76,24 @@ async function publicarGabarito(): Promise<Cache | null> {
     if (bugs.length === 0) return null;
 
     const updatedAt = new Date();
-    await setDoc(doc(db, 'internal', 'qa-gabarito'), {
-      titulo: dados.titulo ?? 'Gabarito interno — TaskFlow',
-      descricao: dados.descricao ?? '',
-      bugs,
-      total: bugs.length,
-      updatedAt: Timestamp.fromDate(updatedAt),
-    });
 
-    return { bugs, updatedAt };
+    // Gravar é desejável — deixa a rota independente da origem externa —, mas
+    // não é condição para exibir: se a regra de escrita ainda não estiver
+    // publicada, o conteúdo é mostrado direto da origem versionada.
+    let persistido = true;
+    try {
+      await setDoc(doc(db, 'internal', 'qa-gabarito'), {
+        titulo: dados.titulo ?? 'Gabarito interno — TaskFlow',
+        descricao: dados.descricao ?? '',
+        bugs,
+        total: bugs.length,
+        updatedAt: Timestamp.fromDate(updatedAt),
+      });
+    } catch {
+      persistido = false;
+    }
+
+    return { bugs, updatedAt, persistido };
   } catch {
     return null;
   }
@@ -99,6 +110,7 @@ export function useGabarito() {
   const [state, setState] = useState<GabaritoState>(cache ? 'ready' : 'loading');
   const [bugs, setBugs] = useState<Bug[]>(cache?.bugs ?? []);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(cache?.updatedAt ?? null);
+  const [persistido, setPersistido] = useState(cache?.persistido ?? true);
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -126,9 +138,10 @@ export function useGabarito() {
             setState('empty');
             return;
           }
-          cache = { bugs: publicado.bugs, updatedAt: publicado.updatedAt };
+          cache = publicado;
           setBugs(publicado.bugs);
           setUpdatedAt(publicado.updatedAt);
+          setPersistido(publicado.persistido);
           setState(publicado.bugs.length > 0 ? 'ready' : 'empty');
           return;
         }
@@ -136,10 +149,11 @@ export function useGabarito() {
         const data = snapshot.data();
         const list: Bug[] = data.bugs ?? [];
         const quando = data.updatedAt?.toDate?.() ?? null;
-        cache = { bugs: list, updatedAt: quando };
+        cache = { bugs: list, updatedAt: quando, persistido: true };
         if (!active) return;
         setBugs(list);
         setUpdatedAt(quando);
+        setPersistido(true);
         setState(list.length > 0 ? 'ready' : 'empty');
       } catch {
         if (active) setState('denied');
@@ -152,5 +166,5 @@ export function useGabarito() {
     };
   }, []);
 
-  return { state, bugs, updatedAt, email };
+  return { state, bugs, updatedAt, email, persistido };
 }

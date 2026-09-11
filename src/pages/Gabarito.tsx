@@ -15,7 +15,7 @@ import { SEVERIDADES, severityClass, useGabarito } from './gabarito/useGabarito'
  * sobreviverem à ida e volta.
  */
 export function GabaritoPage() {
-  const { state, bugs, updatedAt, email } = useGabarito();
+  const { state, bugs, updatedAt, email, persistido } = useGabarito();
   const [params, setParams] = useSearchParams();
 
   const busca = params.get('q') ?? '';
@@ -66,6 +66,7 @@ export function GabaritoPage() {
           <small>
             {bugs.length} defeitos catalogados
             {updatedAt ? ` · publicado em ${updatedAt.toLocaleString('pt-BR')}` : ''}
+            {persistido ? '' : ' · exibido a partir do repositório (não gravado no projeto)'}
           </small>
         </div>
         <div className="gab__bar-actions">
