@@ -1,0 +1,7 @@
+# Evita conversao de fim de linha em arquivos binarios
+*.pdf binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

@@ -222,9 +222,25 @@ Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
 | `npm run seed` | Popula a base (emulador ou projeto real) com usuários e tarefas |
 | `npm run dev:full` | Emulador + front-end em paralelo |
 | `npm run setup:remote` | Prepara um projeto real (contas, tarefas e gabarito) sem service account |
+| `python scripts/gerar-briefing-pdf.py` | Gera o PDF de briefing entregue ao QA |
 | `npm run gabarito:publish` | Publica o gabarito interno via Admin SDK (service account) |
 | `npm run deploy:rules` | Publica `firestore.rules` e os índices |
 | `npm run deploy:hosting` | Publica o build no Firebase Hosting |
+
+---
+
+## Material entregue ao QA
+
+O profissional avaliado recebe apenas [`docs/TaskFlow_Briefing_QA.pdf`](docs/TaskFlow_Briefing_QA.pdf)
+— escopo funcional, acessos, formato do relatório e critérios de avaliação, sem nenhuma pista
+dos defeitos. O texto acompanha [`docs/BRIEFING_QA.md`](docs/BRIEFING_QA.md) e o PDF é gerado por:
+
+```bash
+python scripts/gerar-briefing-pdf.py
+```
+
+O documento tem campos em branco para o prazo de execução e o endereço de entrega — preencha
+antes de enviar.
 
 ---
 
