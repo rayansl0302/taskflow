@@ -285,7 +285,8 @@
       "esperado": "Acesso negado — a conta não existe mais.",
       "atual": "Login concluído; o sistema cria um perfil implícito e a pessoa navega normalmente.",
       "descoberta": "Testar o login de um usuário logo após excluí-lo.",
-      "status": "pendente"
+      "status": "parcial",
+      "reporte": "ADMIN BUG-009 — notou o sistema exibindo \"Usuário\" para uma conta de administrador, que é o perfil implícito criado quando a leitura de users/{uid} falha. Viu o sintoma, sem chegar à causa nem à consequência de segurança (usuário excluído continua entrando)."
     },
     {
       "id": "BUG-015",

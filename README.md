@@ -242,6 +242,22 @@ python scripts/gerar-briefing-pdf.py
 O documento tem campos em branco para o prazo de execução e o endereço de entrega — preencha
 antes de enviar.
 
+### Acompanhamento dos ciclos
+
+O campo `status` de cada defeito em [`docs/gabarito.json`](docs/gabarito.json) registra o
+que já foi encontrado (`encontrado`, `parcial` ou `pendente`), e a rota `/gabarito` mostra
+quantos faltam. O cruzamento ocorrência a ocorrência de cada ciclo fica em `docs/CICLO-*.md`.
+
+Depois de editar o JSON, regenere o markdown e atualize o documento publicado:
+
+```bash
+node scripts/gerar-gabarito-md.mjs
+```
+
+No `/gabarito`, o botão **Atualizar** repuxa a versão nova do repositório e regrava o
+documento no Firestore — o conteúdo publicado é um retrato do momento da publicação e não
+se atualiza sozinho.
+
 ---
 
 ## Rota interna do gabarito (`/gabarito`)

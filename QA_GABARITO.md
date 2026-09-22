@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 7 encontrados · 1 parcial · 40 pendentes · faltam 41 de 48
+**Acompanhamento:** 7 encontrados · 2 parciais · 39 pendentes · faltam 41 de 48
 
 ## Ciclos de teste executados
 
@@ -34,7 +34,7 @@
 | BUG-011 | Parcial | USER se promove a ADMIN pelo próprio perfil | Segurança | CRÍTICA | Alta |
 | BUG-012 | Pendente | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
 | BUG-013 | Pendente | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
-| BUG-014 | Pendente | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
+| BUG-014 | Parcial | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
 | BUG-015 | Encontrado | Tarefa é criada sem título | Validação | ALTA | Baixa |
 | BUG-016 | Pendente | Descrição aceita mais de 500 caracteres | Validação | MÉDIA | Média |
 | BUG-017 | Encontrado | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
@@ -427,7 +427,9 @@ O array de cards do dashboard é fixo e inclui sempre o total de usuários; a ve
 
 ## BUG-014 — Usuário excluído continua conseguindo logar
 
-**Situação:** Pendente · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Parcial · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Média
+
+**Reportado pelo QA:** ADMIN BUG-009 — notou o sistema exibindo "Usuário" para uma conta de administrador, que é o perfil implícito criado quando a leitura de users/{uid} falha. Viu o sintoma, sem chegar à causa nem à consequência de segurança (usuário excluído continua entrando).
 
 **Por que acontece**
 
