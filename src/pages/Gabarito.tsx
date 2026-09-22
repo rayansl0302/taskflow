@@ -16,7 +16,7 @@ import {
 const FILTROS_STATUS: { valor: string; rotulo: string }[] = [
   { valor: '', rotulo: 'Todos' },
   { valor: 'pendente', rotulo: 'Pendentes' },
-  { valor: 'encontrado', rotulo: 'Encontrados' },
+  { valor: 'corrigido', rotulo: 'Corrigidos' },
   { valor: 'parcial', rotulo: 'Parciais' },
 ];
 
@@ -50,7 +50,7 @@ export function GabaritoPage() {
   );
 
   const placar = useMemo(() => {
-    const contagem: Record<BugStatus, number> = { encontrado: 0, parcial: 0, pendente: 0 };
+    const contagem: Record<BugStatus, number> = { corrigido: 0, parcial: 0, pendente: 0 };
     bugs.forEach((bug) => {
       contagem[bugStatus(bug)] += 1;
     });
@@ -117,7 +117,7 @@ export function GabaritoPage() {
 
       <section className="gab__placar">
         <div className="gab__placar-total">
-          <span className="gab__placar-rotulo">Faltam encontrar</span>
+          <span className="gab__placar-rotulo">Ainda plantados</span>
           <strong>
             {restantes}
             <em>de {bugs.length}</em>
@@ -125,8 +125,8 @@ export function GabaritoPage() {
         </div>
         <div className="gab__placar-barra" aria-hidden="true">
           <span
-            className="gab__placar-fatia gab__placar-fatia--encontrado"
-            style={{ width: `${(placar.encontrado / bugs.length) * 100}%` }}
+            className="gab__placar-fatia gab__placar-fatia--corrigido"
+            style={{ width: `${(placar.corrigido / bugs.length) * 100}%` }}
           />
           <span
             className="gab__placar-fatia gab__placar-fatia--parcial"
@@ -135,7 +135,7 @@ export function GabaritoPage() {
         </div>
         <div className="gab__placar-legenda">
           <span>
-            <i className="ponto ponto--encontrado" /> {placar.encontrado} encontrados
+            <i className="ponto ponto--corrigido" /> {placar.corrigido} corrigidos
           </span>
           <span>
             <i className="ponto ponto--parcial" /> {placar.parcial}{' '}
@@ -151,7 +151,7 @@ export function GabaritoPage() {
         {SEVERIDADES.map((nivel) => {
           const total = bugs.filter((bug) => bug.severidade === nivel).length;
           const abertos = bugs.filter(
-            (bug) => bug.severidade === nivel && bugStatus(bug) !== 'encontrado',
+            (bug) => bug.severidade === nivel && bugStatus(bug) !== 'corrigido',
           ).length;
           const ativo = severidade === nivel;
           return (

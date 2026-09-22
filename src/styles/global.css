@@ -1277,7 +1277,7 @@ a {
   overflow: hidden;
 }
 
-.gab__placar-fatia--encontrado {
+.gab__placar-fatia--corrigido {
   background: var(--success);
 }
 
@@ -1301,7 +1301,7 @@ a {
   margin-right: 5px;
 }
 
-.ponto--encontrado {
+.ponto--corrigido {
   background: var(--success);
 }
 
@@ -1357,7 +1357,7 @@ a {
   font-weight: 650;
 }
 
-.situacao--encontrado {
+.situacao--corrigido {
   background: var(--success-soft);
   color: #166534;
 }
@@ -1372,7 +1372,7 @@ a {
   color: var(--muted);
 }
 
-.gab__card--encontrado {
+.gab__card--corrigido {
   border-left: 3px solid var(--success);
 }
 

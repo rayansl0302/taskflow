@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { createTask, deleteTask, getTask, updateTask } from '../services/firebase/tasks';
 import { listUsers } from '../services/firebase/users';
-import { toDateInputValue, formatDateTime } from '../utils/date';
+import { toDateInputValue, formatDateTime, todayInputValue } from '../utils/date';
 import { friendlyError } from '../utils/format';
 import { hasErrors, validateTask, validateTitle } from '../utils/validators';
 import {
@@ -243,6 +243,7 @@ export function TaskFormPage() {
               id="dueDate"
               className="input"
               type="date"
+              min={todayInputValue()}
               value={values.dueDate}
               onChange={(event) => update('dueDate', event.target.value)}
             />

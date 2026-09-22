@@ -30,6 +30,16 @@ export function isOverdue(dueDate: Date | null | undefined): boolean {
   return dueDate.getTime() < Date.now();
 }
 
+/**
+ * Hoje no formato de <input type="date">, no fuso do usuário.
+ *
+ * `toISOString()` devolveria a data em UTC — o que, à noite em fusos
+ * negativos, já aponta para o dia seguinte e faria o prazo de hoje ser
+ * recusado como se fosse passado.
+ */
 export function todayInputValue(): string {
-  return new Date().toISOString().slice(0, 10);
+  const agora = new Date();
+  const mes = String(agora.getMonth() + 1).padStart(2, '0');
+  const dia = String(agora.getDate()).padStart(2, '0');
+  return `${agora.getFullYear()}-${mes}-${dia}`;
 }

@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 const raiz = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const STATUS_LABEL = {
-  encontrado: 'Encontrado',
+  corrigido: 'Corrigido',
   parcial: 'Parcial',
   pendente: 'Pendente',
 };
@@ -23,10 +23,10 @@ const SEVERIDADES = ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA'];
 
 export function toMarkdown(data) {
   const bugs = data.bugs ?? [];
-  const situacao = (bug) => bug.status ?? 'pendente';
+  const situacao = (bug) => (bug.status === 'encontrado' ? 'corrigido' : bug.status ?? 'pendente');
   const contar = (valor) => bugs.filter((bug) => situacao(bug) === valor).length;
 
-  const encontrados = contar('encontrado');
+  const corrigidos = contar('corrigido');
   const parciais = contar('parcial');
   const pendentes = contar('pendente');
 
@@ -36,11 +36,11 @@ export function toMarkdown(data) {
   lines.push(`> ${data.descricao}`, '');
   lines.push(`**Total de defeitos inseridos: ${bugs.length}**`, '');
 
-  if (encontrados + parciais > 0) {
+  if (corrigidos + parciais > 0) {
     lines.push(
-      `**Acompanhamento:** ${encontrados} encontrados · ${parciais} ` +
+      `**Acompanhamento:** ${corrigidos} corrigidos · ${parciais} ` +
         `${parciais === 1 ? 'parcial' : 'parciais'} · ${pendentes} pendentes · ` +
-        `faltam ${parciais + pendentes} de ${bugs.length}`,
+        `**${parciais + pendentes} ainda plantados** de ${bugs.length}`,
       '',
     );
   }
@@ -69,10 +69,10 @@ export function toMarkdown(data) {
   }
 
   lines.push('', '### Distribuição por severidade', '');
-  lines.push('| Severidade | Total | Pendentes |', '|---|---:|---:|');
+  lines.push('| Severidade | Total | Ainda plantados |', '|---|---:|---:|');
   for (const nivel of SEVERIDADES) {
     const doNivel = bugs.filter((bug) => bug.severidade === nivel);
-    const abertos = doNivel.filter((bug) => situacao(bug) !== 'encontrado').length;
+    const abertos = doNivel.filter((bug) => situacao(bug) !== 'corrigido').length;
     lines.push(`| ${nivel} | ${doNivel.length} | ${abertos} |`);
   }
 
@@ -86,6 +86,9 @@ export function toMarkdown(data) {
       '',
     );
     if (bug.reporte) lines.push(`**Reportado pelo QA:** ${bug.reporte}`, '');
+    if (bug.corrigidoEm) {
+      lines.push(`**Corrigido em:** ${bug.corrigidoEm} — não está mais no sistema.`, '');
+    }
     lines.push('**Por que acontece**', '', bug.porque, '');
     lines.push('**Onde está**', '');
     for (const local of bug.local) lines.push(`- \`${local}\``);

@@ -14,14 +14,17 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     const emailProblem = validateEmail(email);
+    const passwordProblem = password ? null : 'A senha é obrigatória.';
     setEmailError(emailProblem);
-    if (emailProblem) return;
+    setPasswordError(passwordProblem);
+    if (emailProblem || passwordProblem) return;
 
     setSubmitting(true);
     try {
@@ -62,7 +65,7 @@ export function LoginPage() {
             />
           </Field>
 
-          <Field label="Senha" htmlFor="password">
+          <Field label="Senha" htmlFor="password" error={passwordError ?? undefined}>
             <input
               id="password"
               className="input"

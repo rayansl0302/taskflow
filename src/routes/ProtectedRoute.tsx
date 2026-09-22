@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { readCachedSession, useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Spinner } from '../components/Spinner';
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -15,10 +15,9 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  // A sessao em cache evita o "flash" de redirecionamento durante a
-  // reidratacao do Firebase Auth.
-  const cached = readCachedSession();
-  if (!firebaseUser && !cached) {
+  // Só a sessão do Firebase autoriza: o perfil guardado localmente serve
+  // para montar a tela mais rápido, nunca como prova de autenticação.
+  if (!firebaseUser) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 

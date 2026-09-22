@@ -94,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     await signOutUser();
     setProfile(null);
+    window.localStorage.removeItem(SESSION_CACHE_KEY);
   }, []);
 
   const refreshProfile = useCallback(async () => {

@@ -25,7 +25,7 @@ testaram os mesmos fluxos e repetiram achados (login com senha errada, acesso ap
 data no passado, validação de e-mail e perfil aparecem nos dois relatórios), e oito
 ocorrências descrevem um problema de infraestrutura do ambiente, não um defeito plantado.
 
-**Placar do gabarito: 7 encontrados, 2 parciais, 39 pendentes — faltam 41 de 48.**
+**Placar do gabarito: 7 corrigidos, 2 parciais, 39 pendentes — 41 ainda plantados de 48.**
 
 ---
 
@@ -72,7 +72,7 @@ ocorrências descrevem um problema de infraestrutura do ambiente, não um defeit
 
 ---
 
-## Defeitos do gabarito identificados
+## Defeitos do gabarito identificados — corrigidos em 21/09/2026
 
 | Gabarito | Severidade | Reportado como |
 |---|---|---|
@@ -121,3 +121,36 @@ no carregamento. Um novo ciclo agora roda sobre um ambiente íntegro.
 Vale considerar isso na avaliação: esses oito relatos consumiram parte do esforço dela e
 mascararam fluxos inteiros — tarefas, dashboard e a área administrativa — onde está a maior
 concentração de defeitos plantados ainda pendentes.
+
+---
+
+## Preparação do segundo ciclo
+
+Os sete defeitos da tabela acima foram **removidos do sistema** em 21/09/2026, para que o
+próximo ciclo não gaste esforço reencontrando o que já foi reportado:
+
+| Gabarito | O que mudou |
+|---|---|
+| BUG-001 | O `signIn()` perdeu o fallback que reautenticava com a senha padrão do seed |
+| BUG-002 | O guard de rota passa a exigir a sessão do Firebase, e o logout limpa o perfil guardado |
+| BUG-004 | A tela de login valida a senha antes de chamar o Firebase |
+| BUG-015 | O título voltou a ser obrigatório |
+| BUG-017 | O prazo recusa datas anteriores a hoje, e o campo tem piso de data |
+| BUG-032 | A expressão de validação de e-mail passou a exigir domínio completo |
+| BUG-033 | A tela de perfil usa as mesmas validações de nome e e-mail das demais |
+
+**Os 41 restantes continuam no sistema, intactos** — incluindo os dois parciais, que ela
+chegou a tocar sem identificar. Conferido após as correções: BUG-011 (escalonamento pelo
+perfil), BUG-036 (contador ignora os filtros) e BUG-044 (data exibida um dia antes)
+seguem reproduzindo normalmente.
+
+### Onde concentrar o segundo ciclo
+
+O ambiente quebrado bloqueou justamente as áreas com mais defeitos pendentes. Vale orientar
+o ciclo para os fluxos que não puderam ser exercitados:
+
+- **Listagem de tarefas** — paginação, contadores, filtros, pesquisa e ordenação
+- **Área administrativa** — cadastro, edição e exclusão de usuários
+- **Autorização entre perfis** — o que um USER alcança digitando a URL
+- **Datas** — o que a tela mostra depois de salvar e recarregar
+- **Concorrência** — a mesma tarefa aberta em duas abas

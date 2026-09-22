@@ -20,8 +20,9 @@
       "esperado": "Mensagem 'E-mail ou senha inválidos' e permanência na tela de login.",
       "atual": "Login concluído com sucesso e redirecionamento para o dashboard.",
       "descoberta": "Teste negativo de autenticação (senha inválida).",
-      "status": "encontrado",
-      "reporte": "ADMIN BUG-001 · USER BUG-001"
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-001 · USER BUG-001",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-002",
@@ -42,8 +43,9 @@
       "esperado": "Redirecionamento imediato para /login.",
       "atual": "A tela protegida é renderizada por completo — menu lateral, topbar e os indicadores do dashboard vindos do cache —, apenas sem o nome do usuário.",
       "descoberta": "Botão voltar / digitação manual de URL após logout.",
-      "status": "encontrado",
-      "reporte": "ADMIN BUG-015 · USER BUG-009"
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-015 · USER BUG-009",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-003",
@@ -82,8 +84,9 @@
       "esperado": "Mensagem 'A senha é obrigatória.' abaixo do campo, sem chamada ao servidor.",
       "atual": "Toast com o texto 'Firebase: Error (auth/missing-password).'",
       "descoberta": "Teste de campo obrigatório vazio.",
-      "status": "encontrado",
-      "reporte": "USER BUG-006"
+      "status": "corrigido",
+      "reporte": "USER BUG-006",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-005",
@@ -306,8 +309,9 @@
       "esperado": "Mensagem 'O título é obrigatório.' e bloqueio do envio.",
       "atual": "Tarefa criada; a listagem passa a exibir '(sem título)'.",
       "observacoes": "Vale testar também 1 e 2 caracteres — nesses casos a validação funciona, o que torna o defeito menos óbvio.",
-      "status": "encontrado",
-      "reporte": "USER BUG-013"
+      "status": "corrigido",
+      "reporte": "USER BUG-013",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-016",
@@ -349,8 +353,9 @@
       "esperado": "Recusa de datas anteriores a hoje (ou, no mínimo, um aviso explícito).",
       "atual": "A tarefa é criada com prazo vencido e já aparece marcada como atrasada.",
       "descoberta": "Teste de datas: ontem, mês anterior, ano anterior.",
-      "status": "encontrado",
-      "reporte": "ADMIN BUG-012 · USER BUG-012"
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-012 · USER BUG-012",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-018",
@@ -653,8 +658,9 @@
       "esperado": "Mensagem 'Informe um e-mail válido.'",
       "atual": "A validação do formulário aceita o valor.",
       "descoberta": "Teste com caracteres especiais e formatos inválidos de e-mail.",
-      "status": "encontrado",
-      "reporte": "ADMIN BUG-006, BUG-007 · USER BUG-005"
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-006, BUG-007 · USER BUG-005",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-033",
@@ -674,8 +680,9 @@
       "esperado": "Mesmas regras de /users: mínimo 3 e máximo 100 caracteres.",
       "atual": "Ambos os valores são aceitos e gravados.",
       "descoberta": "Testar a mesma regra em telas diferentes.",
-      "status": "encontrado",
-      "reporte": "ADMIN BUG-005 · USER BUG-008"
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-005 · USER BUG-008",
+      "corrigidoEm": "21/09/2026"
     },
     {
       "id": "BUG-034",
@@ -976,14 +983,16 @@
       "responsavel": "Karolayne Silva Ramos",
       "periodo": "19/09/2026 a 20/09/2026",
       "emitido": "21/09/2026",
-      "ocorrencias": 16
+      "ocorrencias": 16,
+      "encerrado": true
     },
     {
       "nome": "Teste na visão do usuário",
       "responsavel": "Karolayne Silva Ramos",
       "periodo": "17/08/2026 a 21/09/2026",
       "emitido": "21/09/2026",
-      "ocorrencias": 15
+      "ocorrencias": 15,
+      "encerrado": true
     }
   ]
 }

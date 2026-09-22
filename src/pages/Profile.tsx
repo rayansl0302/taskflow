@@ -6,6 +6,7 @@ import { useToast } from '../contexts/ToastContext';
 import { updateUser } from '../services/firebase/users';
 import { countTasksByUser } from '../services/firebase/tasks';
 import { formatDate } from '../utils/date';
+import { validateEmail, validateName } from '../utils/validators';
 import { friendlyError, initials } from '../utils/format';
 import { ROLE_LABEL, type Role } from '../types';
 
@@ -17,6 +18,7 @@ export function ProfilePage() {
   const [email, setEmail] = useState(profile?.email ?? '');
   const [role, setRole] = useState<Role>(profile?.role ?? 'USER');
   const [nameError, setNameError] = useState<string | undefined>();
+  const [emailError, setEmailError] = useState<string | undefined>();
   const [taskCount, setTaskCount] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -34,11 +36,11 @@ export function ProfilePage() {
     event.preventDefault();
     if (!profile) return;
 
-    if (!name) {
-      setNameError('O nome é obrigatório.');
-      return;
-    }
-    setNameError(undefined);
+    const nameProblem = validateName(name) ?? undefined;
+    const emailProblem = validateEmail(email) ?? undefined;
+    setNameError(nameProblem);
+    setEmailError(emailProblem);
+    if (nameProblem || emailProblem) return;
 
     setSaving(true);
     try {
@@ -78,12 +80,13 @@ export function ProfilePage() {
             <input
               id="profile-name"
               className="input"
+              maxLength={100}
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
           </Field>
 
-          <Field label="E-mail" htmlFor="profile-email">
+          <Field label="E-mail" htmlFor="profile-email" error={emailError}>
             <input
               id="profile-email"
               className="input"

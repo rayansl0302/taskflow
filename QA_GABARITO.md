@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 7 encontrados · 2 parciais · 39 pendentes · faltam 41 de 48
+**Acompanhamento:** 7 corrigidos · 2 parciais · 39 pendentes · **41 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -21,10 +21,10 @@
 
 | ID | Situação | Título | Área | Severidade | Dificuldade |
 |---|---|---|---|---|---|
-| BUG-001 | Encontrado | Login aceita senha incorreta | Autenticação | CRÍTICA | Média |
-| BUG-002 | Encontrado | Tela protegida continua acessível após logout | Autenticação | CRÍTICA | Média |
+| BUG-001 | Corrigido | Login aceita senha incorreta | Autenticação | CRÍTICA | Média |
+| BUG-002 | Corrigido | Tela protegida continua acessível após logout | Autenticação | CRÍTICA | Média |
 | BUG-003 | Pendente | Usuário INATIVO consegue usar o sistema | Autenticação | ALTA | Baixa |
-| BUG-004 | Encontrado | Senha vazia exibe erro técnico do Firebase | Autenticação / UX | BAIXA | Baixa |
+| BUG-004 | Corrigido | Senha vazia exibe erro técnico do Firebase | Autenticação / UX | BAIXA | Baixa |
 | BUG-005 | Pendente | E-mail de login não é normalizado | Autenticação | BAIXA | Média |
 | BUG-006 | Pendente | Recuperação de senha sempre informa sucesso | Autenticação | MÉDIA | Média |
 | BUG-007 | Pendente | Redirecionamento pós-login ignora a rota de origem | Navegação | BAIXA | Média |
@@ -35,9 +35,9 @@
 | BUG-012 | Pendente | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
 | BUG-013 | Pendente | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
 | BUG-014 | Parcial | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
-| BUG-015 | Encontrado | Tarefa é criada sem título | Validação | ALTA | Baixa |
+| BUG-015 | Corrigido | Tarefa é criada sem título | Validação | ALTA | Baixa |
 | BUG-016 | Pendente | Descrição aceita mais de 500 caracteres | Validação | MÉDIA | Média |
-| BUG-017 | Encontrado | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
+| BUG-017 | Corrigido | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
 | BUG-018 | Pendente | Duplo clique em Salvar cria duas tarefas | Concorrência | ALTA | Média |
 | BUG-019 | Pendente | Edição não persiste a prioridade | CRUD | ALTA | Média |
 | BUG-020 | Pendente | Exclusão de tarefa concluída não remove do banco | CRUD | ALTA | Média |
@@ -52,8 +52,8 @@
 | BUG-029 | Pendente | Exclusão de usuário sem confirmação | UX | MÉDIA | Baixa |
 | BUG-030 | Pendente | Exclusão de usuário deixa tarefas órfãs | CRUD | ALTA | Média |
 | BUG-031 | Pendente | Nome composto apenas por espaços é aceito | Validação | BAIXA | Média |
-| BUG-032 | Encontrado | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
-| BUG-033 | Encontrado | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
+| BUG-032 | Corrigido | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
+| BUG-033 | Corrigido | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
 | BUG-034 | Pendente | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
 | BUG-035 | Pendente | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
 | BUG-036 | Pendente | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
@@ -72,7 +72,7 @@
 
 ### Distribuição por severidade
 
-| Severidade | Total | Pendentes |
+| Severidade | Total | Ainda plantados |
 |---|---:|---:|
 | CRÍTICA | 8 | 6 |
 | ALTA | 13 | 12 |
@@ -83,9 +83,11 @@
 
 ## BUG-001 — Login aceita senha incorreta
 
-**Situação:** Encontrado · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
 
 **Reportado pelo QA:** ADMIN BUG-001 · USER BUG-001
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -111,9 +113,11 @@ O signIn() tem um fallback disfarçado de 'compatibilidade com contas migradas':
 
 ## BUG-002 — Tela protegida continua acessível após logout
 
-**Situação:** Encontrado · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
 
 **Reportado pelo QA:** ADMIN BUG-015 · USER BUG-009
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -164,9 +168,11 @@ O carregamento do perfil lê name, email, role e status do Firestore, mas nunca 
 
 ## BUG-004 — Senha vazia exibe erro técnico do Firebase
 
-**Situação:** Encontrado · **Área:** Autenticação / UX · **Severidade:** BAIXA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Autenticação / UX · **Severidade:** BAIXA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** USER BUG-006
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -456,9 +462,11 @@ A exclusão remove o documento do Firestore, mas não a conta no Firebase Authen
 
 ## BUG-015 — Tarefa é criada sem título
 
-**Situação:** Encontrado · **Área:** Validação · **Severidade:** ALTA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** ALTA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** USER BUG-013
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -511,9 +519,11 @@ A tela informa o limite de 500 caracteres em um contador, mas o textarea não re
 
 ## BUG-017 — Prazo no passado é aceito
 
-**Situação:** Encontrado · **Área:** Validação / Datas · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Validação / Datas · **Severidade:** MÉDIA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** ADMIN BUG-012 · USER BUG-012
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -905,9 +915,11 @@ A regra de mínimo mede value.length sem aplicar trim(). Três espaços em branc
 
 ## BUG-032 — Validação de e-mail aceita formato inválido
 
-**Situação:** Encontrado · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
 
 **Reportado pelo QA:** ADMIN BUG-006, BUG-007 · USER BUG-005
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -933,9 +945,11 @@ A expressão exige apenas 'algo, arroba, algo' sem espaços. Endereços sem dom�
 
 ## BUG-033 — Perfil próprio não valida tamanho do nome
 
-**Situação:** Encontrado · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
 
 **Reportado pelo QA:** ADMIN BUG-005 · USER BUG-008
+
+**Corrigido em:** 21/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 

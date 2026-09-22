@@ -1,8 +1,9 @@
+import { todayInputValue } from './date';
 import type { TaskInput, UserInput } from '../types';
 
 export type Errors<T> = Partial<Record<keyof T, string>>;
 
-const EMAIL_REGEX = /^\S+@\S+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function validateEmail(value: string): string | null {
   if (!value) return 'O e-mail é obrigatório.';
@@ -18,7 +19,8 @@ export function validateName(value: string): string | null {
 }
 
 export function validateTitle(value: string): string | null {
-  if (value.length > 0 && value.trim().length < 3) {
+  if (!value.trim()) return 'O título é obrigatório.';
+  if (value.trim().length < 3) {
     return 'O título deve ter no mínimo 3 caracteres.';
   }
   if (value.trim().length > 100) {
@@ -34,6 +36,8 @@ export function validateDescription(value: string): string | null {
 
 export function validateDueDate(value: string): string | null {
   if (!value) return 'O prazo é obrigatório.';
+  // Comparação textual (AAAA-MM-DD), que independe de fuso horário.
+  if (value < todayInputValue()) return 'O prazo não pode ser anterior a hoje.';
   return null;
 }
 
