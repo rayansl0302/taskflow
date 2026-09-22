@@ -13,6 +13,8 @@ import { observeAuth } from '../../services/firebase/auth';
 const FONTE_PADRAO =
   'https://raw.githubusercontent.com/rayansl0302/taskflow/main/docs/gabarito.json';
 
+export type BugStatus = 'encontrado' | 'parcial' | 'pendente';
+
 export interface Bug {
   id: string;
   titulo: string;
@@ -26,7 +28,21 @@ export interface Bug {
   atual: string;
   descoberta?: string;
   observacoes?: string;
+  /** Acompanhamento dos ciclos de teste já executados. */
+  status?: BugStatus;
+  /** Ocorrências do relatório do QA que correspondem a este defeito. */
+  reporte?: string;
 }
+
+export function bugStatus(bug: Bug): BugStatus {
+  return bug.status ?? 'pendente';
+}
+
+export const STATUS_LABEL: Record<BugStatus, string> = {
+  encontrado: 'Encontrado',
+  parcial: 'Parcial',
+  pendente: 'Pendente',
+};
 
 /**
  * `denied`     — sem permissão de leitura (ou sem sessão): tratado como 404.
@@ -112,6 +128,30 @@ export function useGabarito() {
   const [updatedAt, setUpdatedAt] = useState<Date | null>(cache?.updatedAt ?? null);
   const [persistido, setPersistido] = useState(cache?.persistido ?? true);
   const [email, setEmail] = useState<string | null>(null);
+  const [atualizando, setAtualizando] = useState(false);
+
+  /**
+   * Recarrega o gabarito a partir da origem versionada e regrava o documento.
+   *
+   * O conteúdo do Firestore é um retrato do momento da publicação; quando o
+   * JSON do repositório muda — novos defeitos, ou o acompanhamento dos ciclos
+   * de teste — é por aqui que a rota passa a refletir a versão atual.
+   */
+  async function atualizar() {
+    setAtualizando(true);
+    try {
+      const publicado = await publicarGabarito();
+      if (!publicado) return false;
+      cache = publicado;
+      setBugs(publicado.bugs);
+      setUpdatedAt(publicado.updatedAt);
+      setPersistido(publicado.persistido);
+      setState('ready');
+      return true;
+    } finally {
+      setAtualizando(false);
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -166,5 +206,5 @@ export function useGabarito() {
     };
   }, []);
 
-  return { state, bugs, updatedAt, email, persistido };
+  return { state, bugs, updatedAt, email, persistido, atualizar, atualizando };
 }

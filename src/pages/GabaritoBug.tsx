@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { GabaritoEmpty } from './gabarito/GabaritoEmpty';
 import { GabaritoNotFound } from './gabarito/GabaritoNotFound';
-import { severityClass, useGabarito } from './gabarito/useGabarito';
+import { STATUS_LABEL, bugStatus, severityClass, useGabarito } from './gabarito/useGabarito';
 
 /** Página dedicada a um defeito do gabarito (/gabarito/BUG-001). */
 export function GabaritoBugPage() {
@@ -71,11 +71,21 @@ export function GabaritoBugPage() {
           <span className="gab__item-id">{bug.id}</span>
           <h1>{bug.titulo}</h1>
           <div className="gab__tags">
+            <span className={`situacao situacao--${bugStatus(bug)}`}>
+              {STATUS_LABEL[bugStatus(bug)]}
+            </span>
             <span className={severityClass(bug.severidade)}>{bug.severidade}</span>
             <span className="tag">{bug.area}</span>
             <span className="tag">Dificuldade: {bug.dificuldade}</span>
           </div>
         </header>
+
+        {bug.reporte && (
+          <section className="gab__block gab__reporte">
+            <h2>Reportado pelo QA</h2>
+            <p>{bug.reporte}</p>
+          </section>
+        )}
 
         <section className="gab__block">
           <h2>Por que acontece</h2>

@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { listTasksForMetrics } from '../services/firebase/tasks';
 import { listUsers } from '../services/firebase/users';
 import { formatDate, isOverdue } from '../utils/date';
-import { statusClass } from '../utils/format';
+import { friendlyError, statusClass } from '../utils/format';
 import { TASK_STATUS_LABEL, type Task } from '../types';
 
 interface Metrics {
@@ -34,6 +34,7 @@ export function DashboardPage() {
   const [metrics, setMetrics] = useState<Metrics | null>(() => readCache()?.metrics ?? null);
   const [recent, setRecent] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [falha, setFalha] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -74,7 +75,14 @@ export function DashboardPage() {
       );
     }
 
-    load();
+    // Uma consulta que falha não pode deixar a tela presa no indicador de
+    // carregamento: encerra o loading e deixa o erro visível.
+    load().catch((error) => {
+      if (!active) return;
+      setLoading(false);
+      setFalha(friendlyError(error));
+    });
+
     return () => {
       active = false;
     };
@@ -82,6 +90,14 @@ export function DashboardPage() {
 
   if (loading && !metrics) {
     return <Spinner label="Carregando indicadores..." />;
+  }
+
+  if (falha && !metrics) {
+    return (
+      <div className="alert alert--error">
+        Não foi possível carregar os indicadores. {falha}
+      </div>
+    );
   }
 
   const cards = [

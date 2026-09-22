@@ -6,8 +6,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  limit,
-  orderBy,
   query,
   updateDoc,
   where,
@@ -32,23 +30,30 @@ function toTask(id: string, data: Record<string, any>): Task {
   };
 }
 
+/** Mais recentes primeiro. */
+function porCriacaoDesc(a: Task, b: Task): number {
+  return (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0);
+}
+
+/**
+ * Busca as tarefas e ordena em memória.
+ *
+ * Combinar `where('userId')` com `orderBy('createdAt')` exigiria um índice
+ * composto no Firestore — sem ele a consulta falha com "The query requires an
+ * index" e a listagem do USER fica vazia. Como o volume é pequeno e a tela já
+ * reordena conforme o filtro escolhido, a ordenação fica no cliente.
+ */
 export async function listTasks(userId?: string): Promise<Task[]> {
   const base = collection(db, COLLECTION);
-  const q = userId
-    ? query(base, where('userId', '==', userId), orderBy('createdAt', 'desc'))
-    : query(base, orderBy('createdAt', 'desc'));
+  const q = userId ? query(base, where('userId', '==', userId)) : query(base);
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((item) => toTask(item.id, item.data()));
+  return snapshot.docs.map((item) => toTask(item.id, item.data())).sort(porCriacaoDesc);
 }
 
 /** Amostra utilizada pelos indicadores do dashboard. */
 export async function listTasksForMetrics(userId?: string): Promise<Task[]> {
-  const base = collection(db, COLLECTION);
-  const q = userId
-    ? query(base, where('userId', '==', userId), orderBy('createdAt', 'desc'), limit(20))
-    : query(base, orderBy('createdAt', 'desc'), limit(20));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((item) => toTask(item.id, item.data()));
+  const tasks = await listTasks(userId);
+  return tasks.slice(0, 20);
 }
 
 export async function getTask(id: string): Promise<Task | null> {

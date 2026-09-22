@@ -163,10 +163,28 @@ async function run() {
   if (publicaGabarito) {
     try {
       await signInWithEmailAndPassword(auth, ownerEmail, ownerPassword);
+      console.log(`> autenticado como ${ownerEmail}`);
     } catch (error) {
-      explicarErro(error, `entrar como ${ownerEmail}`);
+      // Num projeto recém-criado a conta responsável ainda não existe:
+      // a senha do .env passa a ser a senha de criação.
+      const code = error?.code ?? '';
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
+        try {
+          await createUserWithEmailAndPassword(auth, ownerEmail, ownerPassword);
+          console.log(`> conta responsável criada: ${ownerEmail}`);
+        } catch (erroCriacao) {
+          if (erroCriacao?.code === 'auth/email-already-in-use') {
+            fail(
+              `A conta ${ownerEmail} já existe, mas a senha do .env não confere.\n` +
+                'Corrija GABARITO_OWNER_PASSWORD e rode novamente.',
+            );
+          }
+          explicarErro(erroCriacao, `criar a conta ${ownerEmail}`);
+        }
+      } else {
+        explicarErro(error, `entrar como ${ownerEmail}`);
+      }
     }
-    console.log(`> autenticado como ${ownerEmail}`);
 
     const gabarito = JSON.parse(readFileSync(dataFile, 'utf8'));
     try {

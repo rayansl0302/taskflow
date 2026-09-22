@@ -17,6 +17,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { toMarkdown } from './gerar-gabarito-md.mjs';
 
 // --- configuracao -----------------------------------------------------
 const env = { ...process.env };
@@ -67,45 +68,6 @@ if (useEmulators) {
 
 const auth = getAuth();
 const db = getFirestore();
-
-// --- markdown ---------------------------------------------------------
-function toMarkdown(data) {
-  const lines = [];
-  lines.push(`# ${data.titulo}`, '');
-  lines.push('> **DOCUMENTO INTERNO. NÃO ENTREGAR AO PROFISSIONAL AVALIADO.**', '>');
-  lines.push(`> ${data.descricao}`, '');
-  lines.push(`**Total de bugs inseridos: ${data.bugs.length}**`, '', '---', '');
-
-  lines.push('## Índice', '');
-  lines.push('| ID | Título | Área | Severidade | Dificuldade |');
-  lines.push('|---|---|---|---|---|');
-  for (const bug of data.bugs) {
-    lines.push(`| ${bug.id} | ${bug.titulo} | ${bug.area} | ${bug.severidade} | ${bug.dificuldade} |`);
-  }
-  lines.push('', '### Distribuição por severidade', '');
-  lines.push('| Severidade | Qtde |', '|---|---:|');
-  for (const nivel of ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA']) {
-    lines.push(`| ${nivel} | ${data.bugs.filter((b) => b.severidade === nivel).length} |`);
-  }
-  lines.push('', '---', '');
-
-  for (const bug of data.bugs) {
-    lines.push(`## ${bug.id} — ${bug.titulo}`, '');
-    lines.push(`**Área:** ${bug.area} · **Severidade:** ${bug.severidade} · **Dificuldade:** ${bug.dificuldade}`, '');
-    lines.push('**Por que acontece**', '', bug.porque, '');
-    lines.push('**Onde está**', '');
-    for (const local of bug.local) lines.push(`- \`${local}\``);
-    lines.push('', '**Como reproduzir**', '');
-    bug.passos.forEach((passo, index) => lines.push(`${index + 1}. ${passo}`));
-    lines.push('', `**Resultado esperado:** ${bug.esperado}`, '');
-    lines.push(`**Resultado atual:** ${bug.atual}`, '');
-    if (bug.descoberta) lines.push(`**Como se chega nele:** ${bug.descoberta}`, '');
-    if (bug.observacoes) lines.push(`**Observações:** ${bug.observacoes}`, '');
-    lines.push('---', '');
-  }
-
-  return lines.join('\n');
-}
 
 // --- execucao ---------------------------------------------------------
 async function run() {
