@@ -16,8 +16,9 @@ import {
 const FILTROS_STATUS: { valor: string; rotulo: string }[] = [
   { valor: '', rotulo: 'Todos' },
   { valor: 'pendente', rotulo: 'Pendentes' },
-  { valor: 'corrigido', rotulo: 'Corrigidos' },
+  { valor: 'encontrado', rotulo: 'Encontrados' },
   { valor: 'parcial', rotulo: 'Parciais' },
+  { valor: 'corrigido', rotulo: 'Corrigidos' },
 ];
 
 /**
@@ -50,7 +51,12 @@ export function GabaritoPage() {
   );
 
   const placar = useMemo(() => {
-    const contagem: Record<BugStatus, number> = { corrigido: 0, parcial: 0, pendente: 0 };
+    const contagem: Record<BugStatus, number> = {
+      corrigido: 0,
+      encontrado: 0,
+      parcial: 0,
+      pendente: 0,
+    };
     bugs.forEach((bug) => {
       contagem[bugStatus(bug)] += 1;
     });
@@ -82,7 +88,7 @@ export function GabaritoPage() {
 
   if (state === 'empty') return <GabaritoEmpty email={email} />;
 
-  const restantes = placar.pendente + placar.parcial;
+  const restantes = placar.pendente + placar.parcial + placar.encontrado;
 
   return (
     <div className="gab">
@@ -136,6 +142,9 @@ export function GabaritoPage() {
         <div className="gab__placar-legenda">
           <span>
             <i className="ponto ponto--corrigido" /> {placar.corrigido} corrigidos
+          </span>
+          <span>
+            <i className="ponto ponto--encontrado" /> {placar.encontrado} encontrados
           </span>
           <span>
             <i className="ponto ponto--parcial" /> {placar.parcial}{' '}

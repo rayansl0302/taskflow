@@ -15,6 +15,7 @@ const raiz = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const STATUS_LABEL = {
   corrigido: 'Corrigido',
+  encontrado: 'Encontrado',
   parcial: 'Parcial',
   pendente: 'Pendente',
 };
@@ -23,10 +24,11 @@ const SEVERIDADES = ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA'];
 
 export function toMarkdown(data) {
   const bugs = data.bugs ?? [];
-  const situacao = (bug) => (bug.status === 'encontrado' ? 'corrigido' : bug.status ?? 'pendente');
+  const situacao = (bug) => bug.status ?? 'pendente';
   const contar = (valor) => bugs.filter((bug) => situacao(bug) === valor).length;
 
   const corrigidos = contar('corrigido');
+  const encontrados = contar('encontrado');
   const parciais = contar('parcial');
   const pendentes = contar('pendente');
 
@@ -36,11 +38,11 @@ export function toMarkdown(data) {
   lines.push(`> ${data.descricao}`, '');
   lines.push(`**Total de defeitos inseridos: ${bugs.length}**`, '');
 
-  if (corrigidos + parciais > 0) {
+  if (corrigidos + encontrados + parciais > 0) {
     lines.push(
-      `**Acompanhamento:** ${corrigidos} corrigidos · ${parciais} ` +
-        `${parciais === 1 ? 'parcial' : 'parciais'} · ${pendentes} pendentes · ` +
-        `**${parciais + pendentes} ainda plantados** de ${bugs.length}`,
+      `**Acompanhamento:** ${corrigidos} corrigidos · ${encontrados} encontrados · ` +
+        `${parciais} ${parciais === 1 ? 'parcial' : 'parciais'} · ${pendentes} pendentes · ` +
+        `**${encontrados + parciais + pendentes} ainda plantados** de ${bugs.length}`,
       '',
     );
   }

@@ -579,7 +579,9 @@
       "esperado": "O login passa a funcionar com o novo e-mail.",
       "atual": "O e-mail novo não existe no Authentication; só o antigo autentica, enquanto a tela mostra o novo.",
       "descoberta": "Comparação entre o dado exibido e o comportamento real de autenticação.",
-      "status": "pendente"
+      "status": "parcial",
+      "reporte": "SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo.",
+      "ciclo": 2
     },
     {
       "id": "BUG-029",
@@ -779,7 +781,9 @@
       "esperado": "Mesmo resultado nas três formas, independentemente de caixa e acentos.",
       "atual": "Resultados diferentes conforme a caixa e conforme o termo estar no título ou na descrição.",
       "descoberta": "Variações de caixa, acentuação e espaços no termo pesquisado.",
-      "status": "pendente"
+      "status": "encontrado",
+      "reporte": "RETESTE ADMIN BUG-004 — pesquisa não encontra a tarefa quando a caixa difere.",
+      "ciclo": 2
     },
     {
       "id": "BUG-039",
@@ -897,7 +901,9 @@
       "esperado": "20/09/2026 em todas as telas e no banco.",
       "atual": "Listagem e detalhes exibem 19/09/2026 (em fusos negativos, como o do Brasil), enquanto o formulário exibe 20/09/2026.",
       "descoberta": "Comparação entre telas e entre interface e banco; testes de timezone.",
-      "status": "pendente"
+      "status": "encontrado",
+      "reporte": "RETESTE ADMIN BUG-003 · SPRINT-01 BUG-004 — \"digito 22/09/2026, salva 21/09/2026\".",
+      "ciclo": 2
     },
     {
       "id": "BUG-045",
@@ -974,7 +980,9 @@
       "esperado": "Layout adaptado, sem rolagem horizontal da página.",
       "atual": "A página inteira rola na horizontal, os filtros ficam espremidos e as tabelas estouram a área visível.",
       "descoberta": "Testes de responsividade em desktop, tablet e mobile.",
-      "status": "pendente"
+      "status": "encontrado",
+      "reporte": "SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular.",
+      "ciclo": 2
     }
   ],
   "ciclos": [
@@ -993,6 +1001,20 @@
       "emitido": "21/09/2026",
       "ocorrencias": 15,
       "encerrado": true
+    },
+    {
+      "nome": "Testes na visão do admin — Reteste",
+      "responsavel": "Karolayne Silva Ramos",
+      "periodo": "21/09/2026 a 26/09/2026",
+      "emitido": "22/09/2026",
+      "ocorrencias": 7
+    },
+    {
+      "nome": "Homologação — Sprint 01",
+      "responsavel": "Karolayne Silva Ramos",
+      "periodo": "22/09/2026",
+      "emitido": "22/09/2026",
+      "ocorrencias": 6
     }
   ]
 }

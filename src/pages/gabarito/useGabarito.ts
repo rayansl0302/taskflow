@@ -13,7 +13,7 @@ import { observeAuth } from '../../services/firebase/auth';
 const FONTE_PADRAO =
   'https://raw.githubusercontent.com/rayansl0302/taskflow/main/docs/gabarito.json';
 
-export type BugStatus = 'corrigido' | 'parcial' | 'pendente';
+export type BugStatus = 'corrigido' | 'encontrado' | 'parcial' | 'pendente';
 
 export interface Bug {
   id: string;
@@ -34,19 +34,25 @@ export interface Bug {
   reporte?: string;
   /** Data em que o defeito foi removido do sistema. */
   corrigidoEm?: string;
+  /** Ciclo de teste em que foi identificado. */
+  ciclo?: number;
 }
 
+const STATUS_VALIDOS: BugStatus[] = ['corrigido', 'encontrado', 'parcial', 'pendente'];
+
 export function bugStatus(bug: Bug): BugStatus {
-  const bruto = bug.status as string | undefined;
-  // 'encontrado' foi o rótulo usado antes de os defeitos do primeiro ciclo
-  // serem de fato removidos do sistema.
-  if (bruto === 'encontrado') return 'corrigido';
-  if (bruto === 'corrigido' || bruto === 'parcial' || bruto === 'pendente') return bruto;
-  return 'pendente';
+  const bruto = bug.status as BugStatus | undefined;
+  return bruto && STATUS_VALIDOS.includes(bruto) ? bruto : 'pendente';
+}
+
+/** Continua no sistema, disponível para o próximo ciclo encontrar. */
+export function aindaPlantado(bug: Bug): boolean {
+  return bugStatus(bug) !== 'corrigido';
 }
 
 export const STATUS_LABEL: Record<BugStatus, string> = {
   corrigido: 'Corrigido',
+  encontrado: 'Encontrado',
   parcial: 'Parcial',
   pendente: 'Pendente',
 };

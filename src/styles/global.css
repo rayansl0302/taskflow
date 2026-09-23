@@ -1386,3 +1386,16 @@ a {
   padding: 12px 14px;
   color: #166534;
 }
+
+.situacao--encontrado {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.gab__card--encontrado {
+  border-left: 3px solid var(--info);
+}
+
+.ponto--encontrado {
+  background: var(--info);
+}

@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 7 corrigidos · 2 parciais · 39 pendentes · **41 ainda plantados** de 48
+**Acompanhamento:** 7 corrigidos · 3 encontrados · 3 parciais · 35 pendentes · **41 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -14,6 +14,8 @@
 |---|---|---|---:|
 | Teste na visão do administrador | Karolayne Silva Ramos | 19/09/2026 a 20/09/2026 | 16 |
 | Teste na visão do usuário | Karolayne Silva Ramos | 17/08/2026 a 21/09/2026 | 15 |
+| Testes na visão do admin — Reteste | Karolayne Silva Ramos | 21/09/2026 a 26/09/2026 | 7 |
+| Homologação — Sprint 01 | Karolayne Silva Ramos | 22/09/2026 | 6 |
 
 ---
 
@@ -48,7 +50,7 @@
 | BUG-025 | Pendente | Troca rápida de status gera estado inconsistente | Concorrência | MÉDIA | Alta |
 | BUG-026 | Pendente | Criar usuário derruba a sessão do ADMIN | Autenticação | CRÍTICA | Média |
 | BUG-027 | Pendente | Perfil não é obrigatório ao criar usuário | Validação | MÉDIA | Baixa |
-| BUG-028 | Pendente | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
+| BUG-028 | Parcial | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
 | BUG-029 | Pendente | Exclusão de usuário sem confirmação | UX | MÉDIA | Baixa |
 | BUG-030 | Pendente | Exclusão de usuário deixa tarefas órfãs | CRUD | ALTA | Média |
 | BUG-031 | Pendente | Nome composto apenas por espaços é aceito | Validação | BAIXA | Média |
@@ -58,17 +60,17 @@
 | BUG-035 | Pendente | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
 | BUG-036 | Pendente | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
 | BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
-| BUG-038 | Pendente | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
+| BUG-038 | Encontrado | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
 | BUG-039 | Pendente | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
 | BUG-040 | Pendente | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
 | BUG-041 | Pendente | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
 | BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
 | BUG-043 | Pendente | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
-| BUG-044 | Pendente | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
+| BUG-044 | Encontrado | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
 | BUG-045 | Pendente | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
 | BUG-046 | Pendente | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
 | BUG-047 | Pendente | URL inexistente exibe tela em branco | Rotas | MÉDIA | Baixa |
-| BUG-048 | Pendente | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
+| BUG-048 | Encontrado | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
 
 ### Distribuição por severidade
 
@@ -812,7 +814,9 @@ O select começa em 'Selecione', cujo value é string vazia, e a validação cob
 
 ## BUG-028 — Alterar o e-mail do usuário não altera o login
 
-**Situação:** Pendente · **Área:** CRUD / Sincronismo · **Severidade:** ALTA · **Dificuldade:** Alta
+**Situação:** Parcial · **Área:** CRUD / Sincronismo · **Severidade:** ALTA · **Dificuldade:** Alta
+
+**Reportado pelo QA:** SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo.
 
 **Por que acontece**
 
@@ -1075,7 +1079,9 @@ O valor da opção foi escrito no masculino ('CANCELADO'), enquanto o domínio g
 
 ## BUG-038 — Pesquisa de tarefas é sensível a maiúsculas
 
-**Situação:** Pendente · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Encontrado · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE ADMIN BUG-004 — pesquisa não encontra a tarefa quando a caixa difere.
 
 **Por que acontece**
 
@@ -1224,7 +1230,9 @@ Os indicadores são gravados em sessionStorage com validade de 10 minutos e, enq
 
 ## BUG-044 — Data salva aparece um dia antes
 
-**Situação:** Pendente · **Área:** Datas / Timezone · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Encontrado · **Área:** Datas / Timezone · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE ADMIN BUG-003 · SPRINT-01 BUG-004 — "digito 22/09/2026, salva 21/09/2026".
 
 **Por que acontece**
 
@@ -1326,7 +1334,9 @@ O layout autenticado é uma rota sem path, que só renderiza quando alguma rota 
 
 ## BUG-048 — Layout não é responsivo
 
-**Situação:** Pendente · **Área:** Responsividade · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Encontrado · **Área:** Responsividade · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular.
 
 **Por que acontece**
 
