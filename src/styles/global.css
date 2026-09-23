@@ -65,7 +65,6 @@ a {
 .app-shell {
   display: flex;
   min-height: 100vh;
-  min-width: 1180px;
 }
 
 .sidebar {
@@ -852,6 +851,51 @@ a {
 
   .content {
     padding: 16px;
+  }
+
+  /* Filtros e formulários empilham em vez de espremer as colunas. */
+  .filters,
+  .form--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header,
+  .card--profile,
+  .card--meta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .page-header__actions .btn {
+    width: 100%;
+  }
+
+  /* A tabela rola dentro do cartão; a página não rola na horizontal. */
+  .card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 560px;
+  }
+
+  .table__actions {
+    justify-content: flex-start;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .topbar__identity {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .metrics {
+    grid-template-columns: 1fr;
   }
 }
 

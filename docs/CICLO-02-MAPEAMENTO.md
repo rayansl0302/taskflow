@@ -23,8 +23,7 @@
 Os sete defeitos corrigidos após o ciclo 1 **não reapareceram** em nenhum dos dois
 relatórios — o reteste confirma as correções.
 
-**Placar do gabarito: 7 corrigidos, 3 encontrados, 3 parciais, 35 pendentes — 41 ainda
-plantados de 48.**
+**Placar do gabarito: 10 corrigidos, 3 parciais, 35 pendentes — 38 ainda plantados de 48.**
 
 ---
 
@@ -53,7 +52,7 @@ plantados de 48.**
 
 ---
 
-## Defeitos novos identificados
+## Defeitos novos identificados — corrigidos em 22/09/2026
 
 | Gabarito | Severidade | Reportado como |
 |---|---|---|
@@ -113,3 +112,26 @@ Com a área administrativa novamente acessível, os fluxos com mais defeitos pen
 - **Autorização entre perfis** — o que um USER alcança digitando a URL (3 críticos)
 - **Listagem de tarefas** — paginação, contadores e filtros (5 pendentes)
 - **Concorrência** — a mesma tarefa em duas abas, ações em sequência rápida (3 pendentes)
+
+---
+
+## Preparação do terceiro ciclo
+
+Os três defeitos novos foram **removidos do sistema** em 22/09/2026:
+
+| Gabarito | O que mudou |
+|---|---|
+| BUG-038 | A pesquisa de tarefas normaliza a caixa e ignora espaços nas pontas, no título e na descrição |
+| BUG-044 | A data do formulário passa a ser lida e devolvida no fuso local, em vez de meia-noite em UTC |
+| BUG-048 | O `min-width` de 1180px saiu do contêiner; filtros e formulários empilham, e a tabela rola dentro do cartão |
+
+**Reparo de dados.** As 11 tarefas criadas pelo formulário antes da correção do BUG-044
+estavam gravadas com um dia a menos. Foram regravadas com a data pretendida — sem isso, o
+sintoma continuaria visível nos registros antigos e seria reportado de novo.
+
+**Os 38 restantes continuam no sistema.** Conferido após as correções: BUG-045 (tarefa com
+prazo para hoje aparece como atrasada) e BUG-036 (contador ignora os filtros) seguem
+reproduzindo normalmente — o primeiro é vizinho direto da correção de data.
+
+> Os três parciais (BUG-011, BUG-014 e BUG-028) continuam plantados de propósito: em todos
+> ela viu o sintoma sem identificar a causa, então ainda pode fechá-los.

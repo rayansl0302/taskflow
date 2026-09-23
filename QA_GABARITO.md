@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 7 corrigidos · 3 encontrados · 3 parciais · 35 pendentes · **41 ainda plantados** de 48
+**Acompanhamento:** 10 corrigidos · 0 encontrados · 3 parciais · 35 pendentes · **38 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -60,25 +60,25 @@
 | BUG-035 | Pendente | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
 | BUG-036 | Pendente | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
 | BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
-| BUG-038 | Encontrado | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
+| BUG-038 | Corrigido | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
 | BUG-039 | Pendente | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
 | BUG-040 | Pendente | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
 | BUG-041 | Pendente | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
 | BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
 | BUG-043 | Pendente | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
-| BUG-044 | Encontrado | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
+| BUG-044 | Corrigido | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
 | BUG-045 | Pendente | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
 | BUG-046 | Pendente | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
 | BUG-047 | Pendente | URL inexistente exibe tela em branco | Rotas | MÉDIA | Baixa |
-| BUG-048 | Encontrado | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
+| BUG-048 | Corrigido | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
 
 ### Distribuição por severidade
 
 | Severidade | Total | Ainda plantados |
 |---|---:|---:|
 | CRÍTICA | 8 | 6 |
-| ALTA | 13 | 12 |
-| MÉDIA | 17 | 16 |
+| ALTA | 13 | 11 |
+| MÉDIA | 17 | 14 |
 | BAIXA | 10 | 7 |
 
 ---
@@ -1079,9 +1079,11 @@ O valor da opção foi escrito no masculino ('CANCELADO'), enquanto o domínio g
 
 ## BUG-038 — Pesquisa de tarefas é sensível a maiúsculas
 
-**Situação:** Encontrado · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** RETESTE ADMIN BUG-004 — pesquisa não encontra a tarefa quando a caixa difere.
+
+**Corrigido em:** 22/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1230,9 +1232,11 @@ Os indicadores são gravados em sessionStorage com validade de 10 minutos e, enq
 
 ## BUG-044 — Data salva aparece um dia antes
 
-**Situação:** Encontrado · **Área:** Datas / Timezone · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Datas / Timezone · **Severidade:** ALTA · **Dificuldade:** Média
 
 **Reportado pelo QA:** RETESTE ADMIN BUG-003 · SPRINT-01 BUG-004 — "digito 22/09/2026, salva 21/09/2026".
+
+**Corrigido em:** 22/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1334,9 +1338,11 @@ O layout autenticado é uma rota sem path, que só renderiza quando alguma rota 
 
 ## BUG-048 — Layout não é responsivo
 
-**Situação:** Encontrado · **Área:** Responsividade · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Responsividade · **Severidade:** MÉDIA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular.
+
+**Corrigido em:** 22/09/2026 — não está mais no sistema.
 
 **Por que acontece**
 

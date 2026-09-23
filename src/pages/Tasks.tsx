@@ -82,11 +82,12 @@ export function TasksPage() {
   const filtered = useMemo(() => {
     let result = tasks;
 
-    if (search) {
+    const termo = search.trim().toLowerCase();
+    if (termo) {
       result = result.filter(
         (task) =>
-          task.title.includes(search) ||
-          task.description.toLowerCase().includes(search.toLowerCase()),
+          task.title.toLowerCase().includes(termo) ||
+          task.description.toLowerCase().includes(termo),
       );
     }
     if (status) {
