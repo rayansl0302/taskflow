@@ -45,6 +45,16 @@ export function isOverdue(dueDate: Date | null | undefined): boolean {
  * negativos, já aponta para o dia seguinte e faria o prazo de hoje ser
  * recusado como se fosse passado.
  */
+/**
+ * Teto aceito para o prazo de uma tarefa.
+ *
+ * O <input type="date"> aceita anos de até seis dígitos; sem um limite, um
+ * engano de digitação como 20263 passa sem reclamação.
+ */
+export function maxInputValue(): string {
+  return '2100-12-31';
+}
+
 export function todayInputValue(): string {
   const agora = new Date();
   const mes = String(agora.getMonth() + 1).padStart(2, '0');
