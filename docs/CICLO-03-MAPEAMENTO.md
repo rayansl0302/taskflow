@@ -23,7 +23,8 @@
 Primeiro ciclo sem nenhuma ocorrência de ambiente — todos os relatos descrevem o
 comportamento real do sistema. Nenhum dos dez defeitos corrigidos reapareceu.
 
-**Placar do gabarito: 13 corrigidos, 4 parciais, 31 pendentes — 35 ainda plantados de 48.**
+**Placar do gabarito: 10 corrigidos, 3 encontrados, 4 parciais, 31 pendentes — 38 ainda
+plantados de 48.**
 
 ---
 
@@ -41,7 +42,7 @@ comportamento real do sistema. Nenhum dos dez defeitos corrigidos reapareceu.
 
 ---
 
-## Defeitos novos identificados — corrigidos em 05/10/2026
+## Defeitos novos identificados
 
 | Gabarito | Severidade | Reportado como |
 |---|---|---|
@@ -114,41 +115,3 @@ As áreas com mais defeitos pendentes continuam pouco exploradas:
 Ela testou a listagem de tarefas com profundidade neste ciclo e tirou dela 3 defeitos. O
 mesmo rigor aplicado à área administrativa deve render mais, porque é onde está a maior
 concentração de pendências críticas.
-
----
-
-## Preparação do quarto ciclo
-
-Os três defeitos novos foram **removidos do sistema** em 05/10/2026, junto com o defeito
-fora do gabarito:
-
-| Defeito | O que mudou |
-|---|---|
-| BUG-035 | Mudar busca, filtro ou ordenação recomeça na primeira página |
-| BUG-036 | O contador passa a refletir a lista filtrada |
-| BUG-041 | Os indicadores do painel passam a considerar a base inteira |
-| Ano com 5 dígitos | O campo de prazo ganhou teto (`max`) e a validação recusa anos fora de quatro dígitos |
-
-> O teto exigiu cuidado extra: a comparação textual de datas falha quando o ano tem um
-> número diferente de dígitos — `'20263-10-05'` é textualmente *menor* que `'2100-12-31'` e
-> passava direto. A validação confere o tamanho do ano antes de comparar.
-
-**Verificado após as correções:** filtrar por prioridade a partir da página 4 agora volta
-para a página 1 com 10 resultados e contador em 14; a busca por "revisar" devolve 6 com
-contador em 6; o painel mostra 48, igual à listagem; e o ano de 5 dígitos é recusado no
-formulário.
-
-**Os 35 restantes continuam no sistema**, incluindo os quatro parciais.
-
----
-
-## Material de apoio entregue
-
-Como ela está em início de carreira e vinha tendo dificuldade em alcançar algumas áreas,
-passou a acompanhar o desafio um **guia de testes exploratórios**
-([`GUIA_EXPLORATORIO_QA.md`](GUIA_EXPLORATORIO_QA.md) e o PDF correspondente).
-
-O guia não cita nenhum defeito: traz oito técnicas de investigação e roteiros de perguntas
-por área. As perguntas foram escolhidas para empurrar na direção dos fluxos onde estão as
-pendências — gestão de usuários, autorização entre perfis, concorrência e ciclo de vida da
-tarefa —, mantendo o mérito da descoberta com ela.

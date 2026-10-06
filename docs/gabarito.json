@@ -727,7 +727,7 @@
       "status": "encontrado",
       "reporte": "CICLO-03 BUG-002 e BUG-003 — a busca e o filtro de prioridade \"não mostram nenhum item\" quando aplicados a partir da página 3 ou 4.",
       "ciclo": 3,
-      "observacoesInternas": "Reintroduzido em 05/10/2026 a pedido, para demonstrar ao QA a causa comum dos relatos BUG-002 e BUG-003 do ciclo 3. Para corrigir de novo: git revert do commit de regressão."
+      "observacoesInternas": "Regressão deliberada em 05/10/2026: o código foi devolvido ao estado de 2efd3f1 para demonstração ao QA. Volta a ser corrigido ao retornar para c6df188."
     },
     {
       "id": "BUG-036",
@@ -747,10 +747,10 @@
       "esperado": "O total acompanha os filtros aplicados.",
       "atual": "O contador mostra sempre o total geral de tarefas.",
       "observacoes": "Na tela de usuários o mesmo contador está correto — comparar as duas telas evidencia o defeito.",
-      "status": "corrigido",
+      "status": "encontrado",
       "reporte": "CICLO-03 BUG-001 — \"sempre aparece 46 tarefas encontradas\", independentemente da filtragem.",
       "ciclo": 3,
-      "corrigidoEm": "05/10/2026"
+      "observacoesInternas": "Regressão deliberada em 05/10/2026: o código foi devolvido ao estado de 2efd3f1 para demonstração ao QA. Volta a ser corrigido ao retornar para c6df188."
     },
     {
       "id": "BUG-037",
@@ -850,10 +850,10 @@
       "esperado": "Os números do dashboard refletem toda a base visível ao usuário.",
       "atual": "Todos os indicadores são calculados sobre 20 registros; o total exibido é 20 contra 35 da listagem.",
       "descoberta": "Comparação cruzada entre dashboard e listagem.",
-      "status": "corrigido",
+      "status": "encontrado",
       "reporte": "CICLO-03 BUG-005 — o dashboard mostra 20 enquanto a listagem tem 48.",
       "ciclo": 3,
-      "corrigidoEm": "05/10/2026"
+      "observacoesInternas": "Regressão deliberada em 05/10/2026: o código foi devolvido ao estado de 2efd3f1 para demonstração ao QA. Volta a ser corrigido ao retornar para c6df188."
     },
     {
       "id": "BUG-042",

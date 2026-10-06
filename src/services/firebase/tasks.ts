@@ -50,9 +50,10 @@ export async function listTasks(userId?: string): Promise<Task[]> {
   return snapshot.docs.map((item) => toTask(item.id, item.data())).sort(porCriacaoDesc);
 }
 
-/** Base dos indicadores do dashboard. */
+/** Amostra utilizada pelos indicadores do dashboard. */
 export async function listTasksForMetrics(userId?: string): Promise<Task[]> {
-  return listTasks(userId);
+  const tasks = await listTasks(userId);
+  return tasks.slice(0, 20);
 }
 
 export async function getTask(id: string): Promise<Task | null> {

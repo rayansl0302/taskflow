@@ -52,7 +52,6 @@ export function TasksPage() {
   const [page, setPage] = useState(1);
   const [pendingDelete, setPendingDelete] = useState<Task | null>(null);
 
-
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -154,11 +153,7 @@ export function TasksPage() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-          <select
-            className="input"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
+          <select className="input" value={status} onChange={(event) => setStatus(event.target.value)}>
             {STATUS_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>
                 {option.label}
@@ -188,7 +183,7 @@ export function TasksPage() {
           </select>
         </div>
 
-        <p className="muted results-count">{filtered.length} tarefa(s) encontrada(s)</p>
+        <p className="muted results-count">{tasks.length} tarefa(s) encontrada(s)</p>
 
         {loading && <Spinner label="Carregando tarefas..." />}
 
