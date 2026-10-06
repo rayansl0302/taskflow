@@ -223,7 +223,6 @@ Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
 | `npm run dev:full` | Emulador + front-end em paralelo |
 | `npm run setup:remote` | Prepara um projeto real (contas, tarefas e gabarito) sem service account |
 | `python scripts/gerar-briefing-pdf.py` | Gera o PDF de briefing entregue ao QA |
-| `python scripts/gerar-guia-pdf.py` | Gera o PDF do guia de testes exploratórios |
 | `npm run gabarito:publish` | Publica o gabarito interno via Admin SDK (service account) |
 | `npm run deploy:rules` | Publica `firestore.rules` e os índices |
 | `npm run deploy:hosting` | Publica o build no Firebase Hosting |
@@ -232,20 +231,13 @@ Basta definir `VITE_USE_EMULATORS=true` no `.env` e rodar `npm run emulators` +
 
 ## Material entregue ao QA
 
-O profissional avaliado recebe dois documentos, nenhum deles com pistas dos defeitos:
-
-| Documento | Conteúdo | Fonte |
-|---|---|---|
-| [`docs/TaskFlow_Briefing_QA.pdf`](docs/TaskFlow_Briefing_QA.pdf) | Escopo funcional, acessos, formato do relatório e critérios de avaliação | [`docs/BRIEFING_QA.md`](docs/BRIEFING_QA.md) |
-| [`docs/TaskFlow_Guia_Exploratorio.pdf`](docs/TaskFlow_Guia_Exploratorio.pdf) | Técnicas de investigação e roteiros de perguntas por área — material de apoio | [`docs/GUIA_EXPLORATORIO_QA.md`](docs/GUIA_EXPLORATORIO_QA.md) |
-
-Os PDFs são gerados por:
+O profissional avaliado recebe apenas [`docs/TaskFlow_Briefing_QA.pdf`](docs/TaskFlow_Briefing_QA.pdf)
+— escopo funcional, acessos, formato do relatório e critérios de avaliação, sem nenhuma pista
+dos defeitos. O texto acompanha [`docs/BRIEFING_QA.md`](docs/BRIEFING_QA.md) e o PDF é gerado por:
 
 ```bash
-python scripts/gerar-briefing-pdf.py && python scripts/gerar-guia-pdf.py
+python scripts/gerar-briefing-pdf.py
 ```
-
-Os dois compartilham a identidade visual definida em `scripts/_pdf_estilo.py`.
 
 O documento tem campos em branco para o prazo de execução e o endereço de entrega — preencha
 antes de enviar.
