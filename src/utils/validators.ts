@@ -1,4 +1,4 @@
-import { todayInputValue } from './date';
+import { maxInputValue, todayInputValue } from './date';
 import type { TaskInput, UserInput } from '../types';
 
 export type Errors<T> = Partial<Record<keyof T, string>>;
@@ -36,8 +36,14 @@ export function validateDescription(value: string): string | null {
 
 export function validateDueDate(value: string): string | null {
   if (!value) return 'O prazo é obrigatório.';
+  // O ano precisa ter quatro dígitos antes de qualquer comparação textual:
+  // '20263-10-05' é textualmente menor que '2100-12-31' e passaria pelo teto.
+  const [ano] = value.split('-');
+  if (ano.length !== 4) return 'Informe um prazo com uma data válida.';
+
   // Comparação textual (AAAA-MM-DD), que independe de fuso horário.
   if (value < todayInputValue()) return 'O prazo não pode ser anterior a hoje.';
+  if (value > maxInputValue()) return 'O prazo está muito distante.';
   return null;
 }
 

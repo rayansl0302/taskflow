@@ -12,123 +12,34 @@ relatorio esperado.
 """
 import os
 
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate,
-    Frame,
-    KeepTogether,
-    ListFlowable,
-    ListItem,
-    PageTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
+from reportlab.platypus import KeepTogether, Paragraph, Spacer, TableStyle
+
+from _pdf_estilo import (
+    BORDA,
+    CELULA,
+    CELULA_CAB,
+    CELULA_FORTE,
+    CORPO,
+    CORPO_CINZA,
+    FUNDO_DESTAQUE,
+    FUNDO_SUAVE,
+    H1,
+    H2,
+    ITEM,
+    MONO,
+    NOTA,
+    RAIZ,
+    ROXO,
+    SUBTITULO,
+    TITULO,
+    caixa,
+    construir,
+    lista,
+    tabela,
 )
 
-SAIDA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                     "docs", "TaskFlow_Briefing_QA.pdf")
-
-ROXO = colors.HexColor("#4f46e5")
-ROXO_ESCURO = colors.HexColor("#4338ca")
-TINTA = colors.HexColor("#0f172a")
-CINZA = colors.HexColor("#64748b")
-BORDA = colors.HexColor("#e2e8f0")
-FUNDO_SUAVE = colors.HexColor("#f8fafc")
-FUNDO_DESTAQUE = colors.HexColor("#eef2ff")
-
-estilos = getSampleStyleSheet()
-
-
-def estilo(nome, **kwargs):
-    kwargs.setdefault("parent", estilos["Normal"])
-    return ParagraphStyle(nome, **kwargs)
-
-
-TITULO = estilo("TituloCapa", fontName="Helvetica-Bold", fontSize=26, leading=30,
-                textColor=TINTA, spaceAfter=6)
-SUBTITULO = estilo("SubtituloCapa", fontName="Helvetica", fontSize=12.5, leading=17,
-                   textColor=CINZA, spaceAfter=18)
-H1 = estilo("H1", fontName="Helvetica-Bold", fontSize=15, leading=19, textColor=ROXO_ESCURO,
-            spaceBefore=15, spaceAfter=7, keepWithNext=1)
-H2 = estilo("H2", fontName="Helvetica-Bold", fontSize=11.5, leading=15, textColor=TINTA,
-            spaceBefore=11, spaceAfter=5, keepWithNext=1)
-CORPO = estilo("Corpo", fontName="Helvetica", fontSize=10, leading=15, textColor=TINTA,
-               alignment=TA_JUSTIFY, spaceAfter=6)
-CORPO_CINZA = estilo("CorpoCinza", parent=CORPO, textColor=CINZA)
-ITEM = estilo("Item", fontName="Helvetica", fontSize=10, leading=14.5, textColor=TINTA)
-CELULA = estilo("Celula", fontName="Helvetica", fontSize=9.5, leading=13, textColor=TINTA)
-CELULA_FORTE = estilo("CelulaForte", parent=CELULA, fontName="Helvetica-Bold")
-CELULA_CAB = estilo("CelulaCab", fontName="Helvetica-Bold", fontSize=8.5, leading=11,
-                    textColor=CINZA)
-MONO = estilo("Mono", fontName="Courier-Bold", fontSize=10.5, leading=14, textColor=ROXO_ESCURO)
-NOTA = estilo("Nota", fontName="Helvetica", fontSize=9.5, leading=13.5, textColor=CINZA)
-
-
-def lista(itens, estilo_item=ITEM):
-    return ListFlowable(
-        [ListItem(Paragraph(t, estilo_item), leftIndent=12) for t in itens],
-        bulletType="bullet",
-        bulletColor=ROXO,
-        bulletFontSize=9,
-        bulletOffsetY=-1.5,
-        leftIndent=14,
-        spaceAfter=8,
-    )
-
-
-def tabela(dados, larguras, destaque_primeira=False):
-    corpo = [[Paragraph(c, CELULA_CAB) for c in dados[0]]]
-    for linha in dados[1:]:
-        corpo.append([
-            Paragraph(c, CELULA_FORTE if (destaque_primeira and i == 0) else CELULA)
-            for i, c in enumerate(linha)
-        ])
-
-    t = Table(corpo, colWidths=larguras, hAlign="LEFT")
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), FUNDO_SUAVE),
-        ("LINEBELOW", (0, 0), (-1, 0), 0.8, BORDA),
-        ("LINEBELOW", (0, 1), (-1, -2), 0.4, BORDA),
-        ("BOX", (0, 0), (-1, -1), 0.8, BORDA),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("TOPPADDING", (0, 0), (-1, -1), 6),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-        ("LEFTPADDING", (0, 0), (-1, -1), 8),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-    ]))
-    return t
-
-
-def caixa(flowables, fundo=FUNDO_DESTAQUE, borda=ROXO):
-    t = Table([[flowables]], colWidths=[165 * mm], hAlign="LEFT")
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), fundo),
-        ("LINEBEFORE", (0, 0), (0, -1), 3, borda),
-        ("BOX", (0, 0), (-1, -1), 0.5, BORDA),
-        ("TOPPADDING", (0, 0), (-1, -1), 10),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
-        ("LEFTPADDING", (0, 0), (-1, -1), 14),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 14),
-    ]))
-    return t
-
-
-def rodape(canvas, doc):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 8)
-    canvas.setFillColor(CINZA)
-    canvas.drawString(20 * mm, 12 * mm, "TaskFlow — Desafio Prático de QA")
-    canvas.drawRightString(190 * mm, 12 * mm, "Página %d" % doc.page)
-    canvas.setStrokeColor(BORDA)
-    canvas.setLineWidth(0.5)
-    canvas.line(20 * mm, 16 * mm, 190 * mm, 16 * mm)
-    canvas.restoreState()
-
+SAIDA = os.path.join(RAIZ, "docs", "TaskFlow_Briefing_QA.pdf")
 
 historia = []
 
@@ -389,19 +300,10 @@ historia.append(caixa([
     Paragraph("Bom teste.", CELULA_FORTE),
 ]))
 
-
-doc = BaseDocTemplate(
+construir(
     SAIDA,
-    pagesize=A4,
-    leftMargin=20 * mm,
-    rightMargin=20 * mm,
-    topMargin=20 * mm,
-    bottomMargin=22 * mm,
-    title="TaskFlow — Desafio Prático de QA",
-    author="TaskFlow",
-    subject="Guia do profissional avaliado",
+    historia,
+    titulo="TaskFlow — Desafio Prático de QA",
+    assunto="Guia do profissional avaliado",
+    rodape_texto="TaskFlow — Desafio Prático de QA",
 )
-quadro = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="corpo")
-doc.addPageTemplates([PageTemplate(id="padrao", frames=[quadro], onPage=rodape)])
-doc.build(historia)
-print("PDF gerado em", SAIDA)
