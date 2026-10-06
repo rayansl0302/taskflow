@@ -724,10 +724,10 @@
       ],
       "esperado": "Voltar automaticamente para a página 1 ao mudar o filtro.",
       "atual": "Permanece na página 3 e mostra 'Nenhuma tarefa encontrada', sugerindo que o filtro não tem resultados.",
-      "status": "corrigido",
+      "status": "encontrado",
       "reporte": "CICLO-03 BUG-002 e BUG-003 — a busca e o filtro de prioridade \"não mostram nenhum item\" quando aplicados a partir da página 3 ou 4.",
       "ciclo": 3,
-      "corrigidoEm": "05/10/2026"
+      "observacoesInternas": "Reintroduzido em 05/10/2026 a pedido, para demonstrar ao QA a causa comum dos relatos BUG-002 e BUG-003 do ciclo 3. Para corrigir de novo: git revert do commit de regressão."
     },
     {
       "id": "BUG-036",

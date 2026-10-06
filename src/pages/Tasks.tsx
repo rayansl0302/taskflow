@@ -52,19 +52,6 @@ export function TasksPage() {
   const [page, setPage] = useState(1);
   const [pendingDelete, setPendingDelete] = useState<Task | null>(null);
 
-  /**
-   * Qualquer mudança de filtro recomeça na primeira página.
-   *
-   * Sem isso, filtrar a partir de uma página adiante deixa o deslocamento
-   * além do fim da lista filtrada e a tela mostra o estado vazio, como se o
-   * filtro não tivesse resultados.
-   */
-  function filtrar<T>(aplicar: (valor: T) => void) {
-    return (valor: T) => {
-      aplicar(valor);
-      setPage(1);
-    };
-  }
 
   useEffect(() => {
     async function load() {
@@ -165,12 +152,12 @@ export function TasksPage() {
             type="search"
             placeholder="Pesquisar por título ou descrição"
             value={search}
-            onChange={(event) => filtrar(setSearch)(event.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
           />
           <select
             className="input"
             value={status}
-            onChange={(event) => filtrar(setStatus)(event.target.value)}
+            onChange={(event) => setStatus(event.target.value)}
           >
             {STATUS_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>
@@ -181,7 +168,7 @@ export function TasksPage() {
           <select
             className="input"
             value={priority}
-            onChange={(event) => filtrar(setPriority)(event.target.value)}
+            onChange={(event) => setPriority(event.target.value)}
           >
             {PRIORITY_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>
@@ -192,7 +179,7 @@ export function TasksPage() {
           <select
             className="input"
             value={sort}
-            onChange={(event) => filtrar(setSort)(event.target.value as typeof sort)}
+            onChange={(event) => setSort(event.target.value as typeof sort)}
           >
             <option value="createdAt">Mais recentes</option>
             <option value="dueDate">Prazo</option>

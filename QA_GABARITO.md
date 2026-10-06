@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 13 corrigidos · 0 encontrados · 4 parciais · 31 pendentes · **35 ainda plantados** de 48
+**Acompanhamento:** 12 corrigidos · 1 encontrados · 4 parciais · 31 pendentes · **36 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -58,7 +58,7 @@
 | BUG-032 | Corrigido | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
 | BUG-033 | Corrigido | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
 | BUG-034 | Pendente | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
-| BUG-035 | Corrigido | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
+| BUG-035 | Encontrado | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
 | BUG-036 | Corrigido | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
 | BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
 | BUG-038 | Corrigido | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
@@ -79,7 +79,7 @@
 |---|---:|---:|
 | CRÍTICA | 8 | 6 |
 | ALTA | 13 | 10 |
-| MÉDIA | 17 | 12 |
+| MÉDIA | 17 | 13 |
 | BAIXA | 10 | 7 |
 
 ---
@@ -1008,11 +1008,9 @@ O deslocamento é calculado com PAGE_SIZE - 1 (9) enquanto a fatia pega PAGE_SIZ
 
 ## BUG-035 — Aplicar filtro não retorna para a primeira página
 
-**Situação:** Corrigido · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Encontrado · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
 
 **Reportado pelo QA:** CICLO-03 BUG-002 e BUG-003 — a busca e o filtro de prioridade "não mostram nenhum item" quando aplicados a partir da página 3 ou 4.
-
-**Corrigido em:** 05/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
