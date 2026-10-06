@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 10 corrigidos · 0 encontrados · 3 parciais · 35 pendentes · **38 ainda plantados** de 48
+**Acompanhamento:** 10 corrigidos · 3 encontrados · 4 parciais · 31 pendentes · **38 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -16,6 +16,7 @@
 | Teste na visão do usuário | Karolayne Silva Ramos | 17/08/2026 a 21/09/2026 | 15 |
 | Testes na visão do admin — Reteste | Karolayne Silva Ramos | 21/09/2026 a 26/09/2026 | 7 |
 | Homologação — Sprint 01 | Karolayne Silva Ramos | 22/09/2026 | 6 |
+| Testes na visão do admin — 05/10 | Karolayne Silva Ramos | 04/10/2026 a 11/10/2026 | 7 |
 
 ---
 
@@ -25,7 +26,7 @@
 |---|---|---|---|---|---|
 | BUG-001 | Corrigido | Login aceita senha incorreta | Autenticação | CRÍTICA | Média |
 | BUG-002 | Corrigido | Tela protegida continua acessível após logout | Autenticação | CRÍTICA | Média |
-| BUG-003 | Pendente | Usuário INATIVO consegue usar o sistema | Autenticação | ALTA | Baixa |
+| BUG-003 | Parcial | Usuário INATIVO consegue usar o sistema | Autenticação | ALTA | Baixa |
 | BUG-004 | Corrigido | Senha vazia exibe erro técnico do Firebase | Autenticação / UX | BAIXA | Baixa |
 | BUG-005 | Pendente | E-mail de login não é normalizado | Autenticação | BAIXA | Média |
 | BUG-006 | Pendente | Recuperação de senha sempre informa sucesso | Autenticação | MÉDIA | Média |
@@ -57,13 +58,13 @@
 | BUG-032 | Corrigido | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
 | BUG-033 | Corrigido | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
 | BUG-034 | Pendente | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
-| BUG-035 | Pendente | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
-| BUG-036 | Pendente | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
+| BUG-035 | Encontrado | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
+| BUG-036 | Encontrado | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
 | BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
 | BUG-038 | Corrigido | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
 | BUG-039 | Pendente | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
 | BUG-040 | Pendente | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
-| BUG-041 | Pendente | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
+| BUG-041 | Encontrado | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
 | BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
 | BUG-043 | Pendente | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
 | BUG-044 | Corrigido | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
@@ -146,7 +147,9 @@ O guard de rota aceita como prova de autenticação um retrato do perfil guardad
 
 ## BUG-003 — Usuário INATIVO consegue usar o sistema
 
-**Situação:** Pendente · **Área:** Autenticação · **Severidade:** ALTA · **Dificuldade:** Baixa
+**Situação:** Parcial · **Área:** Autenticação · **Severidade:** ALTA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** CICLO-03 BUG-006 — notou que o sistema permite delegar tarefa a um usuário INATIVO, ou seja, que o status não surte efeito. Não chegou a testar o acesso: a conta inativa continua conseguindo entrar.
 
 **Por que acontece**
 
@@ -1005,7 +1008,9 @@ O deslocamento é calculado com PAGE_SIZE - 1 (9) enquanto a fatia pega PAGE_SIZ
 
 ## BUG-035 — Aplicar filtro não retorna para a primeira página
 
-**Situação:** Pendente · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Encontrado · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** CICLO-03 BUG-002 e BUG-003 — a busca e o filtro de prioridade "não mostram nenhum item" quando aplicados a partir da página 3 ou 4.
 
 **Por que acontece**
 
@@ -1028,7 +1033,9 @@ O número da página é um estado independente dos filtros. Quando o conjunto fi
 
 ## BUG-036 — Contador de resultados ignora os filtros
 
-**Situação:** Pendente · **Área:** Filtros · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Encontrado · **Área:** Filtros · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** CICLO-03 BUG-001 — "sempre aparece 46 tarefas encontradas", independentemente da filtragem.
 
 **Por que acontece**
 
@@ -1157,7 +1164,9 @@ A ordenação compara os textos dos enums em vez de um peso de negócio. Alfabet
 
 ## BUG-041 — Dashboard considera no máximo 20 tarefas
 
-**Situação:** Pendente · **Área:** Dashboard · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Encontrado · **Área:** Dashboard · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** CICLO-03 BUG-005 — o dashboard mostra 20 enquanto a listagem tem 48.
 
 **Por que acontece**
 
