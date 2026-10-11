@@ -63,9 +63,10 @@
       "esperado": "Acesso bloqueado, com mensagem informando que a conta está inativa.",
       "atual": "Login normal, com acesso a dashboard, tarefas e perfil.",
       "descoberta": "Comparar o campo Status da tela de usuários com o comportamento real.",
-      "status": "parcial",
-      "reporte": "CICLO-03 BUG-006 — notou que o sistema permite delegar tarefa a um usuário INATIVO, ou seja, que o status não surte efeito. Não chegou a testar o acesso: a conta inativa continua conseguindo entrar.",
-      "ciclo": 3
+      "status": "corrigido",
+      "reporte": "CICLO-03 BUG-006 — delegação a usuário inativo. RETESTE BUG-003 e BUG-016 — a conta inativa continua conseguindo entrar.",
+      "ciclo": 3,
+      "corrigidoEm": "10/10/2026"
     },
     {
       "id": "BUG-004",
@@ -107,7 +108,10 @@
       "esperado": "Login efetuado — espaços nas pontas devem ser ignorados.",
       "atual": "Erro técnico auth/invalid-email.",
       "descoberta": "Teste de limite com espaços em branco.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-001 — e-mail de login com espaços nas pontas."
     },
     {
       "id": "BUG-006",
@@ -127,7 +131,10 @@
       "esperado": "Validação de formato antes do envio; falhas reais precisam ser tratadas e comunicadas.",
       "atual": "Mensagem de sucesso e tela de confirmação, mesmo sem nenhuma requisição válida ter sido feita.",
       "observacoes": "Não revelar se o e-mail existe é correto por segurança — o defeito é declarar sucesso para entradas inválidas e engolir falhas reais.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-002 — recuperação de senha segue com campo vazio ou e-mail inválido."
     },
     {
       "id": "BUG-007",
@@ -230,8 +237,10 @@
       "esperado": "Campo realmente somente leitura e regra recusando qualquer alteração de role feita pelo próprio usuário.",
       "atual": "Escalonamento de privilégio completo: o USER vira ADMIN, com acesso a todas as tarefas e à gestão de usuários.",
       "descoberta": "Navegação por teclado / inspeção do DOM em um campo aparentemente desabilitado.",
-      "status": "parcial",
-      "reporte": "ADMIN BUG-008 — reportou que o campo \"Perfil de acesso\" não pode ser alterado, mas não descobriu que o bloqueio é só visual e que o campo cede à navegação por teclado, permitindo o escalonamento de privilégio."
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-008 — o campo parecia bloqueado. RETESTE BUG-022 — o administrador altera o próprio perfil para USER e perde o acesso administrativo.",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4
     },
     {
       "id": "BUG-012",
@@ -290,8 +299,10 @@
       "esperado": "Acesso negado — a conta não existe mais.",
       "atual": "Login concluído; o sistema cria um perfil implícito e a pessoa navega normalmente.",
       "descoberta": "Testar o login de um usuário logo após excluí-lo.",
-      "status": "parcial",
-      "reporte": "ADMIN BUG-009 — notou o sistema exibindo \"Usuário\" para uma conta de administrador, que é o perfil implícito criado quando a leitura de users/{uid} falha. Viu o sintoma, sem chegar à causa nem à consequência de segurança (usuário excluído continua entrando)."
+      "status": "corrigido",
+      "reporte": "ADMIN BUG-009 — perfil implícito. RETESTE BUG-015 — usuário excluído continua conseguindo logar.",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4
     },
     {
       "id": "BUG-015",
@@ -334,7 +345,10 @@
       "esperado": "Bloqueio acima de 500 caracteres, coerente com o contador.",
       "atual": "O texto é gravado por inteiro, contradizendo o próprio contador da tela.",
       "descoberta": "Teste de limite acima do máximo + comparação entre interface e banco.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-006 — descrição aceita mais de 500 caracteres."
     },
     {
       "id": "BUG-017",
@@ -377,7 +391,10 @@
       "esperado": "Apenas um registro criado; o botão deve ficar desabilitado durante o envio.",
       "atual": "Dois documentos idênticos são gravados no Firestore.",
       "observacoes": "O formulário de usuários usa disabled={saving} corretamente — a comparação entre os dois ajuda a evidenciar o defeito.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-008 — duplo clique em Salvar cria tarefas duplicadas."
     },
     {
       "id": "BUG-019",
@@ -540,7 +557,10 @@
       "esperado": "O administrador permanece autenticado após cadastrar o usuário.",
       "atual": "A sessão passa a ser a do novo usuário (perfil USER) e o menu administrativo desaparece.",
       "descoberta": "Observar o usuário logado depois de uma ação administrativa.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-012 — ao cadastrar usuário, o admin sai do próprio perfil."
     },
     {
       "id": "BUG-027",
@@ -560,7 +580,10 @@
       ],
       "esperado": "Mensagem 'O perfil é obrigatório.' e bloqueio do envio.",
       "atual": "Usuário gravado com role vazio; a listagem exibe '—' e a conta se comporta como perfil não identificado.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-013 — cadastro de usuário sem selecionar perfil."
     },
     {
       "id": "BUG-028",
@@ -602,7 +625,10 @@
       "esperado": "Modal de confirmação antes de uma ação irreversível, como exige o escopo de UX.",
       "atual": "O usuário é excluído imediatamente, no primeiro clique.",
       "observacoes": "A exclusão de tarefas pede confirmação — a inconsistência entre os módulos reforça o achado.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-014 — não é possível cancelar a exclusão de usuário."
     },
     {
       "id": "BUG-030",
@@ -642,7 +668,10 @@
       "esperado": "Rejeição por nome inválido — espaços não são conteúdo.",
       "atual": "Usuário gravado com nome em branco na listagem.",
       "descoberta": "Teste de limite com espaços.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-011 — nome composto apenas por espaços é aceito."
     },
     {
       "id": "BUG-032",
@@ -811,7 +840,10 @@
       ],
       "esperado": "Resultado idêntico, independentemente de caixa e acentuação.",
       "atual": "Só a grafia exata encontra o registro pelo nome; o e-mail responde de forma diferente à mesma entrada.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-009 — a busca de usuários para no primeiro nome quando entra um espaço."
     },
     {
       "id": "BUG-040",
@@ -891,7 +923,10 @@
       "esperado": "Indicadores sempre atualizados e sempre referentes ao usuário autenticado.",
       "atual": "A: os cards mantêm os valores antigos enquanto a nova tarefa já aparece na lista logo abaixo — a mesma tela se contradiz. B: o ADMIN vê por até 10 minutos os indicadores calculados para o USER anterior.",
       "descoberta": "Comparação entre partes da mesma tela e troca de usuário na mesma aba.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "10/10/2026",
+      "ciclo": 4,
+      "reporte": "RETESTE BUG-004 — o dashboard não atualiza a quantidade depois de criar uma tarefa."
     },
     {
       "id": "BUG-044",
@@ -983,6 +1018,8 @@
       "local": [
         "src/styles/global.css → .app-shell { min-width: 1180px }",
         "src/styles/global.css → .filters { grid-template-columns: 2fr 1fr 1fr 1fr }",
+        "src/styles/global.css → .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)) }",
+        "src/styles/global.css → faixa de tablet sem breakpoint (769px a 1024px)",
         "tabelas sem contêiner com overflow-x"
       ],
       "porque": "Existe um breakpoint em 768px que esconde a barra lateral, mas o contêiner principal tem largura mínima fixa de 1180px, que prevalece. Os filtros também mantêm quatro colunas fixas e as tabelas não têm rolagem própria.",
@@ -994,9 +1031,10 @@
       "atual": "A página inteira rola na horizontal, os filtros ficam espremidos e as tabelas estouram a área visível.",
       "descoberta": "Testes de responsividade em desktop, tablet e mobile.",
       "status": "corrigido",
-      "reporte": "SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular.",
+      "reporte": "SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular. RETESTE BUG-020 (ciclo 4) — reportado novamente citando celular e tablet.",
       "ciclo": 2,
-      "corrigidoEm": "22/09/2026"
+      "corrigidoEm": "22/09/2026 (celular) e 10/10/2026 (tablet)",
+      "observacoes": "A correção de 22/09/2026 cobriu apenas larguras até 768px. No ciclo 4 o relatório citou tablet: entre 769px e 1024px a barra lateral de 248px continuava fixa, a página voltava a rolar na horizontal (977px em uma viewport de 820px), os filtros ficavam com 84px por coluna e as métricas do dashboard mantinham cinco colunas. Fechado em 10/10/2026 com um breakpoint para a faixa de tablet."
     }
   ],
   "ciclos": [
@@ -1036,6 +1074,13 @@
       "periodo": "04/10/2026 a 11/10/2026",
       "emitido": "05/10/2026",
       "ocorrencias": 7
+    },
+    {
+      "nome": "Reteste — ciclo 4",
+      "responsavel": "Karolayne Silva Ramos",
+      "periodo": "07/10/2026 a 12/10/2026",
+      "emitido": "10/10/2026",
+      "ocorrencias": 24
     }
   ]
 }

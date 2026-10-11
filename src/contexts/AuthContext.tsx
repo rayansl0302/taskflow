@@ -9,6 +9,7 @@ import {
 } from 'react';
 import type { User } from 'firebase/auth';
 import { observeAuth, signIn, signOutUser } from '../services/firebase/auth';
+import { auth } from '../services/firebase/config';
 import { getUser } from '../services/firebase/users';
 import type { AppUser } from '../types';
 
@@ -46,16 +47,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<AppUser | null>(() => readCachedSession());
   const [loading, setLoading] = useState(true);
 
+  const encerrarSessaoInvalida = useCallback(async () => {
+    setProfile(null);
+    window.localStorage.removeItem(SESSION_CACHE_KEY);
+    await signOutUser();
+  }, []);
+
   const loadProfile = useCallback(async (user: User) => {
     // A autenticação não depende da leitura do perfil: se o Firestore recusar
-    // ou o documento não existir, seguimos com um perfil mínimo montado a
-    // partir da conta. Cada tela reporta o próprio erro, em vez de a falha
-    // derrubar o login inteiro.
+    // a consulta, seguimos com um perfil mínimo montado a partir da conta.
+    // Documento ausente e conta inativa são outro caso: a sessão não pode continuar.
     let stored: AppUser | null = null;
+    let leituraFalhou = false;
     try {
       stored = await getUser(user.uid);
     } catch {
+      leituraFalhou = true;
       stored = null;
+    }
+
+    if (leituraFalhou && auth.currentUser?.uid !== user.uid) {
+      setProfile(null);
+      window.localStorage.removeItem(SESSION_CACHE_KEY);
+      throw new Error('Esta conta não está mais disponível.');
+    }
+
+    if (!leituraFalhou && !stored) {
+      await encerrarSessaoInvalida();
+      throw new Error('Esta conta não está mais disponível.');
+    }
+
+    if (stored?.status === 'INATIVO') {
+      await encerrarSessaoInvalida();
+      throw new Error('Esta conta está inativa. Procure um administrador.');
     }
 
     const resolved: AppUser =
@@ -70,13 +94,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(resolved);
     writeCachedSession(resolved);
     return resolved;
-  }, []);
+  }, [encerrarSessaoInvalida]);
 
   useEffect(() => {
     const unsubscribe = observeAuth(async (user) => {
       setFirebaseUser(user);
       if (user) {
-        await loadProfile(user);
+        try {
+          await loadProfile(user);
+        } catch {
+          setProfile(null);
+        }
+      } else {
+        setProfile(null);
       }
       setLoading(false);
     });

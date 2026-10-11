@@ -10,7 +10,7 @@ import { useToast } from '../contexts/ToastContext';
 import { changeTaskStatus, deleteTask, listTasks } from '../services/firebase/tasks';
 import { listUsers } from '../services/firebase/users';
 import { formatDate, isOverdue } from '../utils/date';
-import { friendlyError, priorityClass } from '../utils/format';
+import { friendlyError, normalizeSearch, priorityClass } from '../utils/format';
 import {
   TASK_PRIORITY_LABEL,
   TASK_STATUS_LABEL,
@@ -96,12 +96,12 @@ export function TasksPage() {
   const filtered = useMemo(() => {
     let result = tasks;
 
-    const termo = search.trim().toLowerCase();
+    const termo = normalizeSearch(search);
     if (termo) {
       result = result.filter(
         (task) =>
-          task.title.toLowerCase().includes(termo) ||
-          task.description.toLowerCase().includes(termo),
+          normalizeSearch(task.title).includes(termo) ||
+          normalizeSearch(task.description).includes(termo),
       );
     }
     if (status) {

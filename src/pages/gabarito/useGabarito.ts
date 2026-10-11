@@ -177,6 +177,24 @@ export function useGabarito() {
       }
       if (active) setEmail(user.email);
 
+      if (import.meta.env.DEV) {
+        try {
+          const resposta = await fetch('/gabarito-local.json', { cache: 'no-store' });
+          if (!resposta.ok) throw new Error('gabarito local indisponível');
+          const dados = await resposta.json();
+          const list: Bug[] = dados.bugs ?? [];
+          cache = { bugs: list, updatedAt: new Date(), persistido: false };
+          if (!active) return;
+          setBugs(list);
+          setUpdatedAt(new Date());
+          setPersistido(false);
+          setState(list.length > 0 ? 'ready' : 'empty');
+        } catch {
+          if (active) setState('empty');
+        }
+        return;
+      }
+
       try {
         const snapshot = await getDoc(doc(db, 'internal', 'qa-gabarito'));
 

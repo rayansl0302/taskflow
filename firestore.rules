@@ -30,7 +30,9 @@ service cloud.firestore {
       allow create: if isAdmin() || isOwner(userId);
 
       // O proprio usuario atualiza o seu perfil; ADMIN atualiza qualquer um.
-      allow update: if isAdmin() || isOwner(userId);
+      // Ninguem altera o proprio papel: isso vale para USER e para ADMIN.
+      allow update: if (isAdmin() && request.auth.uid != userId)
+        || ((isAdmin() || isOwner(userId)) && request.resource.data.role == resource.data.role);
 
       allow delete: if isAdmin();
     }

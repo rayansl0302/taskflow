@@ -6,7 +6,7 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 13 corrigidos · 0 encontrados · 4 parciais · 31 pendentes · **35 ainda plantados** de 48
+**Acompanhamento:** 26 corrigidos · 0 encontrados · 1 parcial · 21 pendentes · **22 ainda plantados** de 48
 
 ## Ciclos de teste executados
 
@@ -17,6 +17,7 @@
 | Testes na visão do admin — Reteste | Karolayne Silva Ramos | 21/09/2026 a 26/09/2026 | 7 |
 | Homologação — Sprint 01 | Karolayne Silva Ramos | 22/09/2026 | 6 |
 | Testes na visão do admin — 05/10 | Karolayne Silva Ramos | 04/10/2026 a 11/10/2026 | 7 |
+| Reteste — ciclo 4 | Karolayne Silva Ramos | 07/10/2026 a 12/10/2026 | 24 |
 
 ---
 
@@ -26,22 +27,22 @@
 |---|---|---|---|---|---|
 | BUG-001 | Corrigido | Login aceita senha incorreta | Autenticação | CRÍTICA | Média |
 | BUG-002 | Corrigido | Tela protegida continua acessível após logout | Autenticação | CRÍTICA | Média |
-| BUG-003 | Parcial | Usuário INATIVO consegue usar o sistema | Autenticação | ALTA | Baixa |
+| BUG-003 | Corrigido | Usuário INATIVO consegue usar o sistema | Autenticação | ALTA | Baixa |
 | BUG-004 | Corrigido | Senha vazia exibe erro técnico do Firebase | Autenticação / UX | BAIXA | Baixa |
-| BUG-005 | Pendente | E-mail de login não é normalizado | Autenticação | BAIXA | Média |
-| BUG-006 | Pendente | Recuperação de senha sempre informa sucesso | Autenticação | MÉDIA | Média |
+| BUG-005 | Corrigido | E-mail de login não é normalizado | Autenticação | BAIXA | Média |
+| BUG-006 | Corrigido | Recuperação de senha sempre informa sucesso | Autenticação | MÉDIA | Média |
 | BUG-007 | Pendente | Redirecionamento pós-login ignora a rota de origem | Navegação | BAIXA | Média |
 | BUG-008 | Pendente | USER acessa /users digitando a URL | Autorização | CRÍTICA | Baixa |
 | BUG-009 | Pendente | IDOR em /tasks/:id | Autorização | CRÍTICA | Média |
 | BUG-010 | Pendente | Regras do Firestore permitem ler e alterar tarefas de terceiros | Segurança | CRÍTICA | Alta |
-| BUG-011 | Parcial | USER se promove a ADMIN pelo próprio perfil | Segurança | CRÍTICA | Alta |
+| BUG-011 | Corrigido | USER se promove a ADMIN pelo próprio perfil | Segurança | CRÍTICA | Alta |
 | BUG-012 | Pendente | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
 | BUG-013 | Pendente | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
-| BUG-014 | Parcial | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
+| BUG-014 | Corrigido | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
 | BUG-015 | Corrigido | Tarefa é criada sem título | Validação | ALTA | Baixa |
-| BUG-016 | Pendente | Descrição aceita mais de 500 caracteres | Validação | MÉDIA | Média |
+| BUG-016 | Corrigido | Descrição aceita mais de 500 caracteres | Validação | MÉDIA | Média |
 | BUG-017 | Corrigido | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
-| BUG-018 | Pendente | Duplo clique em Salvar cria duas tarefas | Concorrência | ALTA | Média |
+| BUG-018 | Corrigido | Duplo clique em Salvar cria duas tarefas | Concorrência | ALTA | Média |
 | BUG-019 | Pendente | Edição não persiste a prioridade | CRUD | ALTA | Média |
 | BUG-020 | Pendente | Exclusão de tarefa concluída não remove do banco | CRUD | ALTA | Média |
 | BUG-021 | Pendente | Status alterado na listagem volta ao original | CRUD / Firestore | ALTA | Média |
@@ -49,12 +50,12 @@
 | BUG-023 | Pendente | Refresh no formulário perde os dados sem aviso | UX | BAIXA | Baixa |
 | BUG-024 | Pendente | Edição simultânea sobrescreve sem aviso | Concorrência | ALTA | Alta |
 | BUG-025 | Pendente | Troca rápida de status gera estado inconsistente | Concorrência | MÉDIA | Alta |
-| BUG-026 | Pendente | Criar usuário derruba a sessão do ADMIN | Autenticação | CRÍTICA | Média |
-| BUG-027 | Pendente | Perfil não é obrigatório ao criar usuário | Validação | MÉDIA | Baixa |
+| BUG-026 | Corrigido | Criar usuário derruba a sessão do ADMIN | Autenticação | CRÍTICA | Média |
+| BUG-027 | Corrigido | Perfil não é obrigatório ao criar usuário | Validação | MÉDIA | Baixa |
 | BUG-028 | Parcial | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
-| BUG-029 | Pendente | Exclusão de usuário sem confirmação | UX | MÉDIA | Baixa |
+| BUG-029 | Corrigido | Exclusão de usuário sem confirmação | UX | MÉDIA | Baixa |
 | BUG-030 | Pendente | Exclusão de usuário deixa tarefas órfãs | CRUD | ALTA | Média |
-| BUG-031 | Pendente | Nome composto apenas por espaços é aceito | Validação | BAIXA | Média |
+| BUG-031 | Corrigido | Nome composto apenas por espaços é aceito | Validação | BAIXA | Média |
 | BUG-032 | Corrigido | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
 | BUG-033 | Corrigido | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
 | BUG-034 | Pendente | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
@@ -62,11 +63,11 @@
 | BUG-036 | Corrigido | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
 | BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
 | BUG-038 | Corrigido | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
-| BUG-039 | Pendente | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
+| BUG-039 | Corrigido | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
 | BUG-040 | Pendente | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
 | BUG-041 | Corrigido | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
 | BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
-| BUG-043 | Pendente | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
+| BUG-043 | Corrigido | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
 | BUG-044 | Corrigido | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
 | BUG-045 | Pendente | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
 | BUG-046 | Pendente | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
@@ -77,10 +78,10 @@
 
 | Severidade | Total | Ainda plantados |
 |---|---:|---:|
-| CRÍTICA | 8 | 6 |
-| ALTA | 13 | 10 |
-| MÉDIA | 17 | 12 |
-| BAIXA | 10 | 7 |
+| CRÍTICA | 8 | 3 |
+| ALTA | 13 | 7 |
+| MÉDIA | 17 | 7 |
+| BAIXA | 10 | 5 |
 
 ---
 
@@ -147,9 +148,11 @@ O guard de rota aceita como prova de autenticação um retrato do perfil guardad
 
 ## BUG-003 — Usuário INATIVO consegue usar o sistema
 
-**Situação:** Parcial · **Área:** Autenticação · **Severidade:** ALTA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** ALTA · **Dificuldade:** Baixa
 
-**Reportado pelo QA:** CICLO-03 BUG-006 — notou que o sistema permite delegar tarefa a um usuário INATIVO, ou seja, que o status não surte efeito. Não chegou a testar o acesso: a conta inativa continua conseguindo entrar.
+**Reportado pelo QA:** CICLO-03 BUG-006 — delegação a usuário inativo. RETESTE BUG-003 e BUG-016 — a conta inativa continua conseguindo entrar.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -204,7 +207,11 @@ O formulário valida a obrigatoriedade do e-mail, mas não a da senha, e o campo
 
 ## BUG-005 — E-mail de login não é normalizado
 
-**Situação:** Pendente · **Área:** Autenticação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** BAIXA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-001 — e-mail de login com espaços nas pontas.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -229,7 +236,11 @@ O valor do campo é enviado exatamente como digitado, sem trim() nem toLowerCase
 
 ## BUG-006 — Recuperação de senha sempre informa sucesso
 
-**Situação:** Pendente · **Área:** Autenticação · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-002 — recuperação de senha segue com campo vazio ou e-mail inválido.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -358,9 +369,11 @@ As regras liberam read, create e update para qualquer usuário autenticado (allo
 
 ## BUG-011 — USER se promove a ADMIN pelo próprio perfil
 
-**Situação:** Parcial · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Alta
+**Situação:** Corrigido · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Alta
 
-**Reportado pelo QA:** ADMIN BUG-008 — reportou que o campo "Perfil de acesso" não pode ser alterado, mas não descobriu que o bloqueio é só visual e que o campo cede à navegação por teclado, permitindo o escalonamento de privilégio.
+**Reportado pelo QA:** ADMIN BUG-008 — o campo parecia bloqueado. RETESTE BUG-022 — o administrador altera o próprio perfil para USER e perde o acesso administrativo.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -438,9 +451,11 @@ O array de cards do dashboard é fixo e inclui sempre o total de usuários; a ve
 
 ## BUG-014 — Usuário excluído continua conseguindo logar
 
-**Situação:** Parcial · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Média
 
-**Reportado pelo QA:** ADMIN BUG-009 — notou o sistema exibindo "Usuário" para uma conta de administrador, que é o perfil implícito criado quando a leitura de users/{uid} falha. Viu o sintoma, sem chegar à causa nem à consequência de segurança (usuário excluído continua entrando).
+**Reportado pelo QA:** ADMIN BUG-009 — perfil implícito. RETESTE BUG-015 — usuário excluído continua conseguindo logar.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -497,7 +512,11 @@ A função só valida o mínimo de 3 caracteres quando o campo não está vazio 
 
 ## BUG-016 — Descrição aceita mais de 500 caracteres
 
-**Situação:** Pendente · **Área:** Validação · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-006 — descrição aceita mais de 500 caracteres.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -555,7 +574,11 @@ A única regra aplicada ao prazo é a obrigatoriedade. Não há comparação com
 
 ## BUG-018 — Duplo clique em Salvar cria duas tarefas
 
-**Situação:** Pendente · **Área:** Concorrência · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Concorrência · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-008 — duplo clique em Salvar cria tarefas duplicadas.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -765,7 +788,11 @@ A atualização da lista usa setTasks(tasks.map(...)) — lendo 'tasks' do closu
 
 ## BUG-026 — Criar usuário derruba a sessão do ADMIN
 
-**Situação:** Pendente · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autenticação · **Severidade:** CRÍTICA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-012 — ao cadastrar usuário, o admin sai do próprio perfil.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -792,7 +819,11 @@ A criação usa createUserWithEmailAndPassword no SDK do cliente, que autentica 
 
 ## BUG-027 — Perfil não é obrigatório ao criar usuário
 
-**Situação:** Pendente · **Área:** Validação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-013 — cadastro de usuário sem selecionar perfil.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -846,7 +877,11 @@ O e-mail é um dado duplicado: existe no documento do Firestore (usado pela inte
 
 ## BUG-029 — Exclusão de usuário sem confirmação
 
-**Situação:** Pendente · **Área:** UX · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** UX · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-014 — não é possível cancelar a exclusão de usuário.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -896,7 +931,11 @@ A exclusão remove só o documento do usuário; não existe cascata, reatribuiç
 
 ## BUG-031 — Nome composto apenas por espaços é aceito
 
-**Situação:** Pendente · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Validação · **Severidade:** BAIXA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-011 — nome composto apenas por espaços é aceito.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1120,7 +1159,11 @@ O título é comparado com task.title.includes(search), sem normalização, enqu
 
 ## BUG-039 — Pesquisa de usuários trata nome e e-mail de formas diferentes
 
-**Situação:** Pendente · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Pesquisa · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-009 — a busca de usuários para no primeiro nome quando entra um espaço.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1222,7 +1265,11 @@ O contador de concluídas foi escrito como status === 'CONCLUIDA' || status === 
 
 ## BUG-043 — Dashboard exibe números em cache (inclusive de outro usuário)
 
-**Situação:** Pendente · **Área:** Cache / Estado · **Severidade:** ALTA · **Dificuldade:** Alta
+**Situação:** Corrigido · **Área:** Cache / Estado · **Severidade:** ALTA · **Dificuldade:** Alta
+
+**Reportado pelo QA:** RETESTE BUG-004 — o dashboard não atualiza a quantidade depois de criar uma tarefa.
+
+**Corrigido em:** 10/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1355,9 +1402,9 @@ O layout autenticado é uma rota sem path, que só renderiza quando alguma rota 
 
 **Situação:** Corrigido · **Área:** Responsividade · **Severidade:** MÉDIA · **Dificuldade:** Baixa
 
-**Reportado pelo QA:** SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular.
+**Reportado pelo QA:** SPRINT-01 MEL-001 — reportado como melhoria, com evidência da tela no celular. RETESTE BUG-020 (ciclo 4) — reportado novamente citando celular e tablet.
 
-**Corrigido em:** 22/09/2026 — não está mais no sistema.
+**Corrigido em:** 22/09/2026 (celular) e 10/10/2026 (tablet) — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1367,6 +1414,8 @@ Existe um breakpoint em 768px que esconde a barra lateral, mas o contêiner prin
 
 - `src/styles/global.css → .app-shell { min-width: 1180px }`
 - `src/styles/global.css → .filters { grid-template-columns: 2fr 1fr 1fr 1fr }`
+- `src/styles/global.css → .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)) }`
+- `src/styles/global.css → faixa de tablet sem breakpoint (769px a 1024px)`
 - `tabelas sem contêiner com overflow-x`
 
 **Como reproduzir**
@@ -1379,5 +1428,7 @@ Existe um breakpoint em 768px que esconde a barra lateral, mas o contêiner prin
 **Resultado atual:** A página inteira rola na horizontal, os filtros ficam espremidos e as tabelas estouram a área visível.
 
 **Como se chega nele:** Testes de responsividade em desktop, tablet e mobile.
+
+**Observações:** A correção de 22/09/2026 cobriu apenas larguras até 768px. No ciclo 4 o relatório citou tablet: entre 769px e 1024px a barra lateral de 248px continuava fixa, a página voltava a rolar na horizontal (977px em uma viewport de 820px), os filtros ficavam com 84px por coluna e as métricas do dashboard mantinham cinco colunas. Fechado em 10/10/2026 com um breakpoint para a faixa de tablet.
 
 ---

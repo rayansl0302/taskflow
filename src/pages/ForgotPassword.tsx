@@ -3,24 +3,32 @@ import { Link } from 'react-router-dom';
 import { Field } from '../components/Field';
 import { requestPasswordReset } from '../services/firebase/auth';
 import { useToast } from '../contexts/ToastContext';
+import { friendlyError } from '../utils/format';
+import { validateEmail } from '../utils/validators';
 
 export function ForgotPasswordPage() {
-  const { success } = useToast();
+  const { success, error: notifyError } = useToast();
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    const normalizedEmail = email.trim().toLowerCase();
+    const problem = validateEmail(normalizedEmail);
+    setEmailError(problem);
+    if (problem) return;
+
     setSubmitting(true);
     try {
-      await requestPasswordReset(email);
-    } catch {
-      // e-mails nao cadastrados nao sao revelados ao usuario
-    } finally {
-      setSubmitting(false);
+      await requestPasswordReset(normalizedEmail);
       setSent(true);
       success('Enviamos um link de recuperação para o seu e-mail.');
+    } catch (error) {
+      notifyError(friendlyError(error));
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -38,7 +46,7 @@ export function ForgotPasswordPage() {
           </div>
         ) : (
           <form className="form" onSubmit={handleSubmit} noValidate>
-            <Field label="E-mail" htmlFor="reset-email">
+            <Field label="E-mail" htmlFor="reset-email" error={emailError ?? undefined}>
               <input
                 id="reset-email"
                 className="input"

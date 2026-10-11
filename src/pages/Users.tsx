@@ -3,10 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { PageHeader } from '../components/PageHeader';
 import { Spinner } from '../components/Spinner';
 import { EmptyState } from '../components/EmptyState';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useToast } from '../contexts/ToastContext';
 import { deleteUser, listUsers } from '../services/firebase/users';
 import { formatDate } from '../utils/date';
-import { friendlyError, initials } from '../utils/format';
+import { friendlyError, initials, normalizeSearch } from '../utils/format';
 import { ROLE_LABEL, type AppUser } from '../types';
 
 export function UsersPage() {
@@ -18,6 +19,7 @@ export function UsersPage() {
   const [search, setSearch] = useState('');
   const [role, setRole] = useState('');
   const [status, setStatus] = useState('');
+  const [pendingDelete, setPendingDelete] = useState<AppUser | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -35,21 +37,27 @@ export function UsersPage() {
 
   const filtered = useMemo(() => {
     return users.filter((user) => {
+      const termo = normalizeSearch(search);
       const matchesSearch =
-        !search || user.name.includes(search) || user.email.includes(search.toLowerCase());
+        !termo ||
+        normalizeSearch(user.name).includes(termo) ||
+        normalizeSearch(user.email).includes(termo);
       const matchesRole = !role || user.role === role;
       const matchesStatus = !status || user.status === status;
       return matchesSearch && matchesRole && matchesStatus;
     });
   }, [users, search, role, status]);
 
-  async function handleDelete(user: AppUser) {
+  async function confirmDelete() {
+    if (!pendingDelete) return;
     try {
-      await deleteUser(user.id);
-      setUsers((current) => current.filter((item) => item.id !== user.id));
+      await deleteUser(pendingDelete.id);
+      setUsers((current) => current.filter((item) => item.id !== pendingDelete.id));
       success('Usuário excluído com sucesso.');
     } catch (error) {
       notifyError(friendlyError(error));
+    } finally {
+      setPendingDelete(null);
     }
   }
 
@@ -132,7 +140,7 @@ export function UsersPage() {
                     <button
                       type="button"
                       className="btn btn--danger btn--sm"
-                      onClick={() => handleDelete(user)}
+                      onClick={() => setPendingDelete(user)}
                     >
                       Excluir
                     </button>
@@ -143,6 +151,15 @@ export function UsersPage() {
           </table>
         )}
       </section>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Excluir usuário"
+        message="Deseja realmente excluir este usuário? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </>
   );
 }

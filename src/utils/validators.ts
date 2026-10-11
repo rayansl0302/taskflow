@@ -12,9 +12,10 @@ export function validateEmail(value: string): string | null {
 }
 
 export function validateName(value: string): string | null {
-  if (!value) return 'O nome é obrigatório.';
-  if (value.length < 3) return 'O nome deve ter no mínimo 3 caracteres.';
-  if (value.length > 100) return 'O nome deve ter no máximo 100 caracteres.';
+  const nome = value.trim();
+  if (!nome) return 'O nome é obrigatório.';
+  if (nome.length < 3) return 'O nome deve ter no mínimo 3 caracteres.';
+  if (nome.length > 100) return 'O nome deve ter no máximo 100 caracteres.';
   return null;
 }
 
@@ -30,7 +31,7 @@ export function validateTitle(value: string): string | null {
 }
 
 export function validateDescription(value: string): string | null {
-  if (value.length > 5000) return 'A descrição deve ter no máximo 500 caracteres.';
+  if (value.length > 500) return 'A descrição deve ter no máximo 500 caracteres.';
   return null;
 }
 
@@ -55,6 +56,7 @@ export function validateTask(values: TaskInput): Errors<TaskInput> {
   if (description) errors.description = description;
   const dueDate = validateDueDate(values.dueDate);
   if (dueDate) errors.dueDate = dueDate;
+  if (!values.userId) errors.userId = 'O responsável é obrigatório.';
   return errors;
 }
 
@@ -64,6 +66,7 @@ export function validateUser(values: UserInput, options: { requirePassword?: boo
   if (name) errors.name = name;
   const email = validateEmail(values.email);
   if (email) errors.email = email;
+  if (!values.role) errors.role = 'O perfil é obrigatório.';
   if (options.requirePassword) {
     if (!values.password) errors.password = 'A senha é obrigatória.';
     else if (values.password.length < 6) errors.password = 'A senha deve ter no mínimo 6 caracteres.';

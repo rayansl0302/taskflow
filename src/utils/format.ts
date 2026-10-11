@@ -15,6 +15,15 @@ export function priorityClass(priority: TaskPriority): string {
   return `badge badge--${priority.toLowerCase()}`;
 }
 
+/** Comparação de busca: ignora caixa, acentos e espaços nas pontas. */
+export function normalizeSearch(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 /** Traduz erros do Firebase para mensagens de usuario. */
 export function friendlyError(error: unknown): string {
   const code = (error as { code?: string })?.code;

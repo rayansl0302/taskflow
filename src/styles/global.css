@@ -826,6 +826,31 @@ a {
 /* ------------------------------------------------------------------ */
 /* Responsivo                                                          */
 /* ------------------------------------------------------------------ */
+/* Tablets: a barra lateral continua fixa, então a área útil fica estreita.
+   Sem isto a tabela estoura o cartão e a página inteira rola na horizontal. */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .content {
+    padding: 20px;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* A tabela rola dentro do cartão, como no celular. */
+  .card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 560px;
+  }
+}
+
 @media (max-width: 768px) {
   .topbar__menu {
     display: inline-flex;

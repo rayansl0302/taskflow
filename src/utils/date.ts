@@ -39,13 +39,6 @@ export function isOverdue(dueDate: Date | null | undefined): boolean {
 }
 
 /**
- * Hoje no formato de <input type="date">, no fuso do usuário.
- *
- * `toISOString()` devolveria a data em UTC — o que, à noite em fusos
- * negativos, já aponta para o dia seguinte e faria o prazo de hoje ser
- * recusado como se fosse passado.
- */
-/**
  * Teto aceito para o prazo de uma tarefa.
  *
  * O <input type="date"> aceita anos de até seis dígitos; sem um limite, um
@@ -55,6 +48,13 @@ export function maxInputValue(): string {
   return '2100-12-31';
 }
 
+/**
+ * Hoje no formato de <input type="date">, no fuso do usuário.
+ *
+ * `toISOString()` devolveria a data em UTC — o que, à noite em fusos
+ * negativos, já aponta para o dia seguinte e faria o prazo de hoje ser
+ * recusado como se fosse passado.
+ */
 export function todayInputValue(): string {
   const agora = new Date();
   const mes = String(agora.getMonth() + 1).padStart(2, '0');

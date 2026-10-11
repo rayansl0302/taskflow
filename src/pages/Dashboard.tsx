@@ -17,21 +17,9 @@ interface Metrics {
   users: number;
 }
 
-const CACHE_KEY = 'taskflow:dashboard-metrics';
-const CACHE_TTL = 10 * 60 * 1000;
-
-function readCache(): { metrics: Metrics; savedAt: number } | null {
-  try {
-    const raw = window.sessionStorage.getItem(CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
 export function DashboardPage() {
   const { profile, isAdmin } = useAuth();
-  const [metrics, setMetrics] = useState<Metrics | null>(() => readCache()?.metrics ?? null);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [recent, setRecent] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [falha, setFalha] = useState<string | null>(null);
@@ -40,21 +28,9 @@ export function DashboardPage() {
     let active = true;
 
     async function load() {
-      const cached = readCache();
-      const fresh = Boolean(cached && Date.now() - cached.savedAt < CACHE_TTL);
-      if (cached && fresh) {
-        setMetrics(cached.metrics);
-        setLoading(false);
-      }
-
       const tasks = await listTasksForMetrics(isAdmin ? undefined : profile?.id);
       if (!active) return;
       setRecent(tasks.slice(0, 5));
-
-      if (fresh) {
-        setLoading(false);
-        return;
-      }
 
       const users = await listUsers();
       if (!active) return;
@@ -69,10 +45,6 @@ export function DashboardPage() {
 
       setMetrics(computed);
       setLoading(false);
-      window.sessionStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({ metrics: computed, savedAt: Date.now() }),
-      );
     }
 
     // Uma consulta que falha não pode deixar a tela presa no indicador de

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PageHeader } from '../components/PageHeader';
 import { Field } from '../components/Field';
 import { Spinner } from '../components/Spinner';
+import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { createAuthAccount } from '../services/firebase/auth';
 import { createUserProfile, getUser, updateUser } from '../services/firebase/users';
@@ -23,6 +24,7 @@ const EMPTY: UserInput = {
 export function UserFormPage() {
   const { id } = useParams();
   const isEdit = Boolean(id);
+  const { profile } = useAuth();
   const { success, error: notifyError } = useToast();
   const navigate = useNavigate();
 
@@ -32,6 +34,7 @@ export function UserFormPage() {
   const [taskCount, setTaskCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const editingSelf = Boolean(id && profile?.id === id);
 
   useEffect(() => {
     if (!id) return;
@@ -160,11 +163,17 @@ export function UserFormPage() {
             </Field>
           )}
 
-          <Field label="Perfil" htmlFor="role" error={errors.role}>
+          <Field
+            label="Perfil"
+            htmlFor="role"
+            error={errors.role}
+            hint={editingSelf ? 'Você não pode alterar o próprio perfil de acesso.' : undefined}
+          >
             <select
               id="role"
               className="input"
               value={values.role}
+              disabled={editingSelf}
               onChange={(event) => update('role', event.target.value as Role)}
             >
               <option value="">Selecione</option>

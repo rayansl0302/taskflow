@@ -11,7 +11,7 @@ import { friendlyError, initials } from '../utils/format';
 import { ROLE_LABEL, type Role } from '../types';
 
 export function ProfilePage() {
-  const { profile, refreshProfile, isAdmin } = useAuth();
+  const { profile, refreshProfile } = useAuth();
   const { success, error: notifyError } = useToast();
 
   const [name, setName] = useState(profile?.name ?? '');
@@ -44,7 +44,7 @@ export function ProfilePage() {
 
     setSaving(true);
     try {
-      await updateUser(profile.id, { name, email, role });
+      await updateUser(profile.id, { name, email, role: profile.role });
       await refreshProfile();
       success('Perfil atualizado com sucesso.');
     } catch (error) {
@@ -99,12 +99,13 @@ export function ProfilePage() {
           <Field
             label="Perfil de acesso"
             htmlFor="profile-role"
-            hint={isAdmin ? undefined : 'Somente um administrador pode alterar o perfil de acesso.'}
+            hint="O perfil de acesso só pode ser alterado por um administrador, na gestão de usuários."
           >
             <select
               id="profile-role"
-              className={`input${isAdmin ? '' : ' is-locked'}`}
+              className="input is-locked"
               value={role}
+              disabled
               onChange={(event) => setRole(event.target.value as Role)}
             >
               <option value="USER">Usuário</option>

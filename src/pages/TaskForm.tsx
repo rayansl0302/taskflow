@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PageHeader } from '../components/PageHeader';
 import { Field } from '../components/Field';
@@ -43,6 +43,7 @@ export function TaskFormPage() {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
@@ -90,11 +91,13 @@ export function TaskFormPage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (savingRef.current) return;
 
     const validation = validateTask(values);
     setErrors(validation);
     if (hasErrors(validation)) return;
 
+    savingRef.current = true;
     setSaving(true);
     try {
       if (isEdit && id) {
@@ -107,6 +110,7 @@ export function TaskFormPage() {
       navigate('/dashboard');
     } catch (error) {
       notifyError(friendlyError(error));
+      savingRef.current = false;
       setSaving(false);
     }
   }
@@ -185,13 +189,14 @@ export function TaskFormPage() {
               id="description"
               className="input textarea"
               rows={4}
+              maxLength={500}
               value={values.description}
               onChange={(event) => update('description', event.target.value)}
               placeholder="Detalhe o que precisa ser feito"
             />
           </Field>
 
-          <Field label="Responsável" htmlFor="userId">
+          <Field label="Responsável" htmlFor="userId" error={errors.userId}>
             <select
               id="userId"
               className="input"
@@ -200,11 +205,13 @@ export function TaskFormPage() {
               onChange={(event) => update('userId', event.target.value)}
             >
               <option value="">Selecione</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
+              {users
+                .filter((user) => user.status === 'ATIVO' || user.id === values.userId)
+                .map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
             </select>
           </Field>
 
@@ -263,7 +270,7 @@ export function TaskFormPage() {
                 Excluir
               </button>
             )}
-            <button type="submit" className="btn btn--primary">
+            <button type="submit" className="btn btn--primary" disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>

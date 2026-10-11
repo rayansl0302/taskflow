@@ -20,7 +20,8 @@ export function LoginPage() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const emailProblem = validateEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const emailProblem = validateEmail(normalizedEmail);
     const passwordProblem = password ? null : 'A senha é obrigatória.';
     setEmailError(emailProblem);
     setPasswordError(passwordProblem);
@@ -28,7 +29,7 @@ export function LoginPage() {
 
     setSubmitting(true);
     try {
-      await login(email, password);
+      await login(normalizedEmail, password);
       success('Bem-vindo ao TaskFlow!');
       navigate('/dashboard');
     } catch (error) {
