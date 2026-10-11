@@ -145,6 +145,28 @@ O que ainda está no sistema se concentra em:
 
 ---
 
+## Estado do ambiente ao fim do ciclo
+
+Os testes deixaram o projeto real em um estado que impediria o próximo ciclo. Conferido e
+reparado em 11/10/2026:
+
+| O que estava | Causa | O que foi feito |
+|---|---|---|
+| Nenhuma conta ADMIN no sistema | Ela exercitou o BUG-011 e rebaixou a própria conta de administrador | `admin@taskflow.com` devolvida a ADMIN |
+| `maria.silva` e `carlos.inativo` sem perfil | Excluídas durante os testes de exclusão de usuário | Perfis recriados, o Carlos de volta como INATIVO |
+| 24 das 55 tarefas sem responsável existente | Consequência do BUG-030, que segue plantado | Caíram para 1 ao recriar os dois perfis; a que sobrou foi deixada como está |
+
+Duas observações para os próximos ciclos:
+
+- A conta do Carlos precisa continuar INATIVA: é o único caminho para testar o bloqueio de
+  login de conta inativa.
+- A restauração do ADMIN só foi possível porque as regras novas ainda não estavam publicadas.
+  Depois de publicá-las, nenhuma conta altera o próprio papel — inclusive para voltar a ser
+  administrador. Com um único ADMIN no sistema, convém que a correção do BUG-011 permaneça,
+  já que é ela que impede o rebaixamento acontecer de novo pela tela.
+
+---
+
 ## Preparação do próximo ciclo
 
 Os defeitos acima foram **removidos do sistema** em 10/10/2026, junto com o responsável obrigatório e o acento na pesquisa de tarefas.

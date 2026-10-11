@@ -170,10 +170,13 @@ A(Paragraph(
 ))
 
 # ---------------------------------------------------------------- frente 2
-A(Paragraph("2. O mesmo endereço, outro crachá", H1))
+A(Paragraph("2. O que a conta comum alcança", H1))
 A(Paragraph(
-    "A frente mais densa. Um botão escondido não é a mesma coisa que uma porta "
-    "trancada: quem souber o endereço pode bater nela direto.",
+    "A frente mais densa. Vale saber como este sistema é construído: não existe um "
+    "servidor nosso no meio do caminho — o navegador conversa <b>direto com o banco "
+    "de dados</b>, e quem decide o que cada conta pode ler ou gravar é uma regra que "
+    "mora no servidor do banco, não a tela. Por isso esconder um botão e proibir uma "
+    "ação são coisas diferentes aqui, e a diferença só aparece quando você insiste.",
     CORPO,
 ))
 A(Paragraph("Os experimentos", H2))
@@ -184,16 +187,40 @@ A(lista([
     "um por um. Alguma tela abre que não deveria?",
     "Abra uma tarefa sua e olhe o endereço: ele termina com um código. "
     "Pegue o código de uma tarefa <b>de outra pessoa</b> e coloque no lugar.",
-    "Tente não só <b>ver</b> a tela de outra pessoa, mas <b>salvar</b> uma alteração nela.",
+    "Se a tarefa alheia abrir, não pare em olhar: mude um campo e clique em "
+    "<b>Salvar</b>. Conseguir ver e conseguir gravar são dois achados diferentes, e "
+    "o segundo é mais grave que o primeiro.",
+    "Quando uma tela abrir para a conta comum sem que devesse, repare se ela veio "
+    "<b>preenchida</b>. Abrir vazia, ou com mensagem de erro, é um problema; abrir "
+    "trazendo nome, e-mail e perfil de todo mundo é outro problema, maior, e merece "
+    "ser registrado separadamente. A tela que apareceu e os dados que chegaram são "
+    "duas perguntas diferentes.",
     "Coloque o painel do administrador e o do usuário comum lado a lado. "
     "Compare cartão por cartão: tem algum número ali que o usuário comum não "
     "teria por que enxergar?",
 ]))
 A(Paragraph("A pergunta", H2))
 A(Paragraph(
-    "<i>Esconder o botão é o mesmo que proibir a ação?</i>",
+    "<i>A tela não me ofereceu, mas o sistema teria me deixado fazer?</i>",
     CORPO,
 ))
+A(Spacer(1, 4))
+A(caixa([
+    Paragraph("Se quiser ir um passo além", CELULA_CAB),
+    Spacer(1, 5),
+    Paragraph(
+        "Aperte F12 e abra a aba <b>Rede</b> antes de carregar uma tela. Como o "
+        "navegador busca os dados direto do banco, dá para ver a resposta que chegou. "
+        "Compare o que veio com o que a tela desenhou: às vezes chega mais informação "
+        "do que a página mostra, e o que não aparece também conta.",
+        CORPO,
+    ),
+    Paragraph(
+        "Isso é um extra. Todos os achados desta frente também aparecem sem abrir o "
+        "F12, pelos experimentos acima.",
+        CORPO_CINZA,
+    ),
+]))
 
 # ---------------------------------------------------------------- frente 3
 A(Paragraph("3. Para onde o sistema te leva", H1))
