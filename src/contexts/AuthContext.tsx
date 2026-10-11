@@ -15,6 +15,27 @@ import type { AppUser } from '../types';
 
 const SESSION_CACHE_KEY = 'taskflow:last-session';
 
+/**
+ * Conta responsável pelo desafio — a que abre /gabarito.
+ *
+ * Ela existe apenas no Authentication: não tem documento em `users`, de
+ * propósito, para não aparecer na listagem, nos indicadores nem no seletor
+ * de responsável que o profissional avaliado enxerga. Por isso precisa
+ * escapar da checagem de perfil ausente, que existe para barrar contas
+ * excluídas (BUG-014). O valor também fica embutido porque a Vercel ignora
+ * os arquivos .env do repositório, do mesmo jeito que a configuração do
+ * Firebase em services/firebase/config.ts.
+ */
+const OWNER_EMAIL = (
+  import.meta.env.VITE_GABARITO_OWNER_EMAIL || 'rayansl0302@gmail.com'
+)
+  .trim()
+  .toLowerCase();
+
+function isOwnerAccount(user: User): boolean {
+  return (user.email ?? '').trim().toLowerCase() === OWNER_EMAIL;
+}
+
 interface AuthContextValue {
   firebaseUser: User | null;
   profile: AppUser | null;
@@ -56,7 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loadProfile = useCallback(async (user: User) => {
     // A autenticação não depende da leitura do perfil: se o Firestore recusar
     // a consulta, seguimos com um perfil mínimo montado a partir da conta.
-    // Documento ausente e conta inativa são outro caso: a sessão não pode continuar.
+    // Documento ausente e conta inativa são outro caso: a sessão não pode
+    // continuar — com a exceção da conta responsável, que não tem perfil.
     let stored: AppUser | null = null;
     let leituraFalhou = false;
     try {
@@ -72,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error('Esta conta não está mais disponível.');
     }
 
-    if (!leituraFalhou && !stored) {
+    if (!leituraFalhou && !stored && !isOwnerAccount(user)) {
       await encerrarSessaoInvalida();
       throw new Error('Esta conta não está mais disponível.');
     }
