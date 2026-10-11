@@ -18,6 +18,7 @@ const STATUS_LABEL = {
   encontrado: 'Encontrado',
   parcial: 'Parcial',
   pendente: 'Pendente',
+  'fora-de-escopo': 'Fora do escopo',
 };
 
 const SEVERIDADES = ['CRÍTICA', 'ALTA', 'MÉDIA', 'BAIXA'];
@@ -31,6 +32,8 @@ export function toMarkdown(data) {
   const encontrados = contar('encontrado');
   const parciais = contar('parcial');
   const pendentes = contar('pendente');
+  const foraDeEscopo = contar('fora-de-escopo');
+  const avaliaveis = bugs.length - foraDeEscopo;
 
   const lines = [];
   lines.push(`# ${data.titulo}`, '');
@@ -38,11 +41,20 @@ export function toMarkdown(data) {
   lines.push(`> ${data.descricao}`, '');
   lines.push(`**Total de defeitos inseridos: ${bugs.length}**`, '');
 
+  if (foraDeEscopo > 0) {
+    lines.push(
+      `**${foraDeEscopo} ${foraDeEscopo === 1 ? 'defeito sai' : 'defeitos saem'} da avaliação** ` +
+        `por não ter caminho de detecção pela interface — o back-end é o próprio Firestore ` +
+        `e não há endpoint para exercitar. Restam **${avaliaveis} avaliáveis**.`,
+      '',
+    );
+  }
+
   if (corrigidos + encontrados + parciais > 0) {
     lines.push(
       `**Acompanhamento:** ${corrigidos} corrigidos · ${encontrados} encontrados · ` +
         `${parciais} ${parciais === 1 ? 'parcial' : 'parciais'} · ${pendentes} pendentes · ` +
-        `**${encontrados + parciais + pendentes} ainda plantados** de ${bugs.length}`,
+        `**${encontrados + parciais + pendentes} ainda plantados** de ${avaliaveis} avaliáveis`,
       '',
     );
   }

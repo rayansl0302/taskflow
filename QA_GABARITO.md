@@ -6,7 +6,9 @@
 
 **Total de defeitos inseridos: 48**
 
-**Acompanhamento:** 26 corrigidos · 0 encontrados · 1 parcial · 21 pendentes · **22 ainda plantados** de 48
+**2 defeitos saem da avaliação** por não ter caminho de detecção pela interface — o back-end é o próprio Firestore e não há endpoint para exercitar. Restam **46 avaliáveis**.
+
+**Acompanhamento:** 26 corrigidos · 0 encontrados · 1 parcial · 19 pendentes · **20 ainda plantados** de 46 avaliáveis
 
 ## Ciclos de teste executados
 
@@ -34,9 +36,9 @@
 | BUG-007 | Pendente | Redirecionamento pós-login ignora a rota de origem | Navegação | BAIXA | Média |
 | BUG-008 | Pendente | USER acessa /users digitando a URL | Autorização | CRÍTICA | Baixa |
 | BUG-009 | Pendente | IDOR em /tasks/:id | Autorização | CRÍTICA | Média |
-| BUG-010 | Pendente | Regras do Firestore permitem ler e alterar tarefas de terceiros | Segurança | CRÍTICA | Alta |
+| BUG-010 | Fora do escopo | Regras do Firestore permitem ler e alterar tarefas de terceiros | Segurança | CRÍTICA | Alta |
 | BUG-011 | Corrigido | USER se promove a ADMIN pelo próprio perfil | Segurança | CRÍTICA | Alta |
-| BUG-012 | Pendente | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
+| BUG-012 | Fora do escopo | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
 | BUG-013 | Pendente | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
 | BUG-014 | Corrigido | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
 | BUG-015 | Corrigido | Tarefa é criada sem título | Validação | ALTA | Baixa |
@@ -343,7 +345,9 @@ A listagem filtra corretamente por userId, o que dá a impressão de isolamento.
 
 ## BUG-010 — Regras do Firestore permitem ler e alterar tarefas de terceiros
 
-**Situação:** Pendente · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Alta
+**Situação:** Fora do escopo · **Área:** Segurança · **Severidade:** CRÍTICA · **Dificuldade:** Alta
+
+**Corrigido em:** 11/10/2026 (escrita) — não está mais no sistema.
 
 **Por que acontece**
 
@@ -364,6 +368,8 @@ As regras liberam read, create e update para qualquer usuário autenticado (allo
 **Resultado atual:** Leitura e escrita liberadas para toda a coleção; o front-end é a única barreira.
 
 **Como se chega nele:** Chamada direta ao Firestore / teste de API, comparando com o que a interface permite.
+
+**Observações:** Nao ha caminho pela interface que revele este defeito sozinho. O back-end e o proprio Firestore: nao existe endpoint nosso para exercitar, e os passos originais exigiam escrever codigo com o SDK no console do navegador. A parte de escrita foi fechada em 11/10/2026 (regra de update de tasks restrita ao dono ou ao ADMIN), porque era perigosa e invisivel. A leitura continua liberada de proposito: a listagem precisa resolver o nome do responsavel de tarefas que nao sao suas, e e ela que sustenta o BUG-009, que a interface revela e segue valendo para avaliacao.
 
 ---
 
@@ -402,7 +408,7 @@ O campo 'Perfil de acesso' parece bloqueado porque a classe .is-locked aplica po
 
 ## BUG-012 — Qualquer usuário autenticado lê a coleção users
 
-**Situação:** Pendente · **Área:** Segurança · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Fora do escopo · **Área:** Segurança · **Severidade:** ALTA · **Dificuldade:** Média
 
 **Por que acontece**
 
@@ -424,6 +430,8 @@ A regra foi afrouxada para que a listagem de tarefas conseguisse exibir o nome d
 **Resultado atual:** Nome e e-mail de todos os usuários trafegam para qualquer conta autenticada.
 
 **Como se chega nele:** Inspeção do tráfego / comparação entre o que a tela mostra e o que a API devolve.
+
+**Observações:** Os proprios passos exigiam o DevTools na aba Network. Nao foi alterado no codigo: a listagem de tarefas le a colecao users para mostrar o nome do responsavel, entao restringir essa leitura quebraria a tela para qualquer conta comum e ainda mascararia o BUG-030, que se manifesta justamente pelo UID cru na coluna Responsavel. O que a interface revela deste tema e o BUG-008, que continua valendo para avaliacao.
 
 ---
 

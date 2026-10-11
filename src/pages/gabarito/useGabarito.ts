@@ -13,7 +13,12 @@ import { observeAuth } from '../../services/firebase/auth';
 const FONTE_PADRAO =
   'https://raw.githubusercontent.com/rayansl0302/taskflow/main/docs/gabarito.json';
 
-export type BugStatus = 'corrigido' | 'encontrado' | 'parcial' | 'pendente';
+export type BugStatus =
+  | 'corrigido'
+  | 'encontrado'
+  | 'parcial'
+  | 'pendente'
+  | 'fora-de-escopo';
 
 export interface Bug {
   id: string;
@@ -38,16 +43,30 @@ export interface Bug {
   ciclo?: number;
 }
 
-const STATUS_VALIDOS: BugStatus[] = ['corrigido', 'encontrado', 'parcial', 'pendente'];
+const STATUS_VALIDOS: BugStatus[] = [
+  'corrigido',
+  'encontrado',
+  'parcial',
+  'pendente',
+  'fora-de-escopo',
+];
 
 export function bugStatus(bug: Bug): BugStatus {
   const bruto = bug.status as BugStatus | undefined;
   return bruto && STATUS_VALIDOS.includes(bruto) ? bruto : 'pendente';
 }
 
-/** Continua no sistema, disponível para o próximo ciclo encontrar. */
+/**
+ * Continua no sistema e ao alcance de quem testa pela interface.
+ *
+ * `fora-de-escopo` cobre o defeito que existe mas nenhum caminho da tela
+ * revela — típico de regra do Firestore, já que o back-end é o próprio
+ * banco e não há endpoint próprio para exercitar. Ele não entra na conta
+ * do que falta encontrar, para o placar não cobrar o impossível.
+ */
 export function aindaPlantado(bug: Bug): boolean {
-  return bugStatus(bug) !== 'corrigido';
+  const situacao = bugStatus(bug);
+  return situacao !== 'corrigido' && situacao !== 'fora-de-escopo';
 }
 
 export const STATUS_LABEL: Record<BugStatus, string> = {
@@ -55,6 +74,7 @@ export const STATUS_LABEL: Record<BugStatus, string> = {
   encontrado: 'Encontrado',
   parcial: 'Parcial',
   pendente: 'Pendente',
+  'fora-de-escopo': 'Fora do escopo',
 };
 
 /**

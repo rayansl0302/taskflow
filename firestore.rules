@@ -41,11 +41,15 @@ service cloud.firestore {
     // tasks
     // ------------------------------------------------------------------
     match /tasks/{taskId} {
+      // A leitura segue liberada a qualquer conta autenticada: a listagem
+      // precisa resolver o nome do responsavel de tarefas que nao sao suas.
       allow read: if isSignedIn();
 
       allow create: if isSignedIn();
 
-      allow update: if isSignedIn();
+      // Gravar, nao. Sem isto qualquer conta autenticada altera a tarefa de
+      // outra pessoa, e nada na interface denuncia que isso e possivel.
+      allow update: if isAdmin() || isOwner(resource.data.userId);
 
       allow delete: if isAdmin() || isOwner(resource.data.userId);
     }

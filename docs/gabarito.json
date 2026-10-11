@@ -214,7 +214,9 @@
       "esperado": "O USER só deve ler e escrever documentos em que userId == request.auth.uid.",
       "atual": "Leitura e escrita liberadas para toda a coleção; o front-end é a única barreira.",
       "descoberta": "Chamada direta ao Firestore / teste de API, comparando com o que a interface permite.",
-      "status": "pendente"
+      "status": "fora-de-escopo",
+      "corrigidoEm": "11/10/2026 (escrita)",
+      "observacoes": "Nao ha caminho pela interface que revele este defeito sozinho. O back-end e o proprio Firestore: nao existe endpoint nosso para exercitar, e os passos originais exigiam escrever codigo com o SDK no console do navegador. A parte de escrita foi fechada em 11/10/2026 (regra de update de tasks restrita ao dono ou ao ADMIN), porque era perigosa e invisivel. A leitura continua liberada de proposito: a listagem precisa resolver o nome do responsavel de tarefas que nao sao suas, e e ela que sustenta o BUG-009, que a interface revela e segue valendo para avaliacao."
     },
     {
       "id": "BUG-011",
@@ -261,7 +263,8 @@
       "esperado": "O USER recebe apenas os dados estritamente necessários, sem exposição da base de usuários.",
       "atual": "Nome e e-mail de todos os usuários trafegam para qualquer conta autenticada.",
       "descoberta": "Inspeção do tráfego / comparação entre o que a tela mostra e o que a API devolve.",
-      "status": "pendente"
+      "status": "fora-de-escopo",
+      "observacoes": "Os proprios passos exigiam o DevTools na aba Network. Nao foi alterado no codigo: a listagem de tarefas le a colecao users para mostrar o nome do responsavel, entao restringir essa leitura quebraria a tela para qualquer conta comum e ainda mascararia o BUG-030, que se manifesta justamente pelo UID cru na coluna Responsavel. O que a interface revela deste tema e o BUG-008, que continua valendo para avaliacao."
     },
     {
       "id": "BUG-013",

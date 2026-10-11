@@ -56,6 +56,7 @@ export function GabaritoPage() {
       encontrado: 0,
       parcial: 0,
       pendente: 0,
+      'fora-de-escopo': 0,
     };
     bugs.forEach((bug) => {
       contagem[bugStatus(bug)] += 1;
