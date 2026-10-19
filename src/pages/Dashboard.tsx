@@ -77,7 +77,10 @@ export function DashboardPage() {
     { label: 'Pendentes', value: metrics?.pending ?? 0, tone: 'pending' },
     { label: 'Em andamento', value: metrics?.inProgress ?? 0, tone: 'progress' },
     { label: 'Concluídas', value: metrics?.done ?? 0, tone: 'done' },
-    { label: 'Total de usuários', value: metrics?.users ?? 0, tone: 'users' },
+    // O total de usuários é informação de administração, não do próprio trabalho.
+    ...(isAdmin
+      ? [{ label: 'Total de usuários', value: metrics?.users ?? 0, tone: 'users' }]
+      : []),
   ];
 
   return (

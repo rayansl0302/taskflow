@@ -4,13 +4,15 @@ import { PageHeader } from '../components/PageHeader';
 import { Spinner } from '../components/Spinner';
 import { EmptyState } from '../components/EmptyState';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
-import { deleteUser, listUsers } from '../services/firebase/users';
+import { deleteUserAndReassignTasks, listUsers } from '../services/firebase/users';
 import { formatDate } from '../utils/date';
 import { friendlyError, initials, normalizeSearch } from '../utils/format';
 import { ROLE_LABEL, type AppUser } from '../types';
 
 export function UsersPage() {
+  const { profile } = useAuth();
   const { success, error: notifyError } = useToast();
   const navigate = useNavigate();
 
@@ -49,11 +51,15 @@ export function UsersPage() {
   }, [users, search, role, status]);
 
   async function confirmDelete() {
-    if (!pendingDelete) return;
+    if (!pendingDelete || !profile) return;
     try {
-      await deleteUser(pendingDelete.id);
+      const transferidas = await deleteUserAndReassignTasks(pendingDelete.id, profile.id);
       setUsers((current) => current.filter((item) => item.id !== pendingDelete.id));
-      success('Usuário excluído com sucesso.');
+      success(
+        transferidas > 0
+          ? `Usuário excluído. ${transferidas} tarefa(s) passaram para você.`
+          : 'Usuário excluído com sucesso.',
+      );
     } catch (error) {
       notifyError(friendlyError(error));
     } finally {
@@ -155,7 +161,11 @@ export function UsersPage() {
       <ConfirmDialog
         open={pendingDelete !== null}
         title="Excluir usuário"
-        message="Deseja realmente excluir este usuário? Esta ação não pode ser desfeita."
+        message={
+          `Deseja realmente excluir ${pendingDelete?.name ?? 'este usuário'}? ` +
+          'As tarefas sob responsabilidade dele passam para você. ' +
+          'Esta ação não pode ser desfeita.'
+        }
         confirmLabel="Excluir"
         onConfirm={confirmDelete}
         onCancel={() => setPendingDelete(null)}

@@ -82,6 +82,7 @@ export async function updateTask(id: string, input: TaskInput): Promise<void> {
     description: input.description,
     userId: input.userId,
     status: input.status,
+    priority: input.priority,
     dueDate: Timestamp.fromDate(parseDateInput(input.dueDate)),
     updatedAt: Timestamp.now(),
   });
@@ -90,7 +91,7 @@ export async function updateTask(id: string, input: TaskInput): Promise<void> {
 /** Alteracao rapida de status a partir da listagem. */
 export async function changeTaskStatus(id: string, status: TaskStatus): Promise<void> {
   await updateDoc(doc(db, COLLECTION, id), {
-    state: status,
+    status,
     updatedAt: Timestamp.now(),
   });
 }

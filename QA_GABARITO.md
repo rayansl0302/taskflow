@@ -8,7 +8,7 @@
 
 **2 defeitos saem da avaliação** por não ter caminho de detecção pela interface — o back-end é o próprio Firestore e não há endpoint para exercitar. Restam **46 avaliáveis**.
 
-**Acompanhamento:** 26 corrigidos · 0 encontrados · 1 parcial · 19 pendentes · **20 ainda plantados** de 46 avaliáveis
+**Acompanhamento:** 41 corrigidos · 0 encontrados · 0 parciais · 5 pendentes · **5 ainda plantados** de 46 avaliáveis
 
 ## Ciclos de teste executados
 
@@ -20,6 +20,7 @@
 | Homologação — Sprint 01 | Karolayne Silva Ramos | 22/09/2026 | 6 |
 | Testes na visão do admin — 05/10 | Karolayne Silva Ramos | 04/10/2026 a 11/10/2026 | 7 |
 | Reteste — ciclo 4 | Karolayne Silva Ramos | 07/10/2026 a 12/10/2026 | 24 |
+| Reteste — ciclo 5 | Karolayne Silva Ramos | 12/10/2026 a 21/10/2026 | 17 |
 
 ---
 
@@ -33,57 +34,57 @@
 | BUG-004 | Corrigido | Senha vazia exibe erro técnico do Firebase | Autenticação / UX | BAIXA | Baixa |
 | BUG-005 | Corrigido | E-mail de login não é normalizado | Autenticação | BAIXA | Média |
 | BUG-006 | Corrigido | Recuperação de senha sempre informa sucesso | Autenticação | MÉDIA | Média |
-| BUG-007 | Pendente | Redirecionamento pós-login ignora a rota de origem | Navegação | BAIXA | Média |
-| BUG-008 | Pendente | USER acessa /users digitando a URL | Autorização | CRÍTICA | Baixa |
-| BUG-009 | Pendente | IDOR em /tasks/:id | Autorização | CRÍTICA | Média |
+| BUG-007 | Corrigido | Redirecionamento pós-login ignora a rota de origem | Navegação | BAIXA | Média |
+| BUG-008 | Corrigido | USER acessa /users digitando a URL | Autorização | CRÍTICA | Baixa |
+| BUG-009 | Corrigido | IDOR em /tasks/:id | Autorização | CRÍTICA | Média |
 | BUG-010 | Fora do escopo | Regras do Firestore permitem ler e alterar tarefas de terceiros | Segurança | CRÍTICA | Alta |
 | BUG-011 | Corrigido | USER se promove a ADMIN pelo próprio perfil | Segurança | CRÍTICA | Alta |
 | BUG-012 | Fora do escopo | Qualquer usuário autenticado lê a coleção users | Segurança | ALTA | Média |
-| BUG-013 | Pendente | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
+| BUG-013 | Corrigido | USER visualiza a métrica 'Total de usuários' | Autorização | MÉDIA | Baixa |
 | BUG-014 | Corrigido | Usuário excluído continua conseguindo logar | Segurança | CRÍTICA | Média |
 | BUG-015 | Corrigido | Tarefa é criada sem título | Validação | ALTA | Baixa |
 | BUG-016 | Corrigido | Descrição aceita mais de 500 caracteres | Validação | MÉDIA | Média |
 | BUG-017 | Corrigido | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
 | BUG-018 | Corrigido | Duplo clique em Salvar cria duas tarefas | Concorrência | ALTA | Média |
-| BUG-019 | Pendente | Edição não persiste a prioridade | CRUD | ALTA | Média |
+| BUG-019 | Corrigido | Edição não persiste a prioridade | CRUD | ALTA | Média |
 | BUG-020 | Pendente | Exclusão de tarefa concluída não remove do banco | CRUD | ALTA | Média |
-| BUG-021 | Pendente | Status alterado na listagem volta ao original | CRUD / Firestore | ALTA | Média |
-| BUG-022 | Pendente | Salvar tarefa redireciona para o dashboard | Navegação | BAIXA | Baixa |
-| BUG-023 | Pendente | Refresh no formulário perde os dados sem aviso | UX | BAIXA | Baixa |
+| BUG-021 | Corrigido | Status alterado na listagem volta ao original | CRUD / Firestore | ALTA | Média |
+| BUG-022 | Corrigido | Salvar tarefa redireciona para o dashboard | Navegação | BAIXA | Baixa |
+| BUG-023 | Corrigido | Refresh no formulário perde os dados sem aviso | UX | BAIXA | Baixa |
 | BUG-024 | Pendente | Edição simultânea sobrescreve sem aviso | Concorrência | ALTA | Alta |
 | BUG-025 | Pendente | Troca rápida de status gera estado inconsistente | Concorrência | MÉDIA | Alta |
 | BUG-026 | Corrigido | Criar usuário derruba a sessão do ADMIN | Autenticação | CRÍTICA | Média |
 | BUG-027 | Corrigido | Perfil não é obrigatório ao criar usuário | Validação | MÉDIA | Baixa |
-| BUG-028 | Parcial | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
+| BUG-028 | Corrigido | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
 | BUG-029 | Corrigido | Exclusão de usuário sem confirmação | UX | MÉDIA | Baixa |
-| BUG-030 | Pendente | Exclusão de usuário deixa tarefas órfãs | CRUD | ALTA | Média |
+| BUG-030 | Corrigido | Exclusão de usuário deixa tarefas órfãs | CRUD | ALTA | Média |
 | BUG-031 | Corrigido | Nome composto apenas por espaços é aceito | Validação | BAIXA | Média |
 | BUG-032 | Corrigido | Validação de e-mail aceita formato inválido | Validação | BAIXA | Média |
 | BUG-033 | Corrigido | Perfil próprio não valida tamanho do nome | Validação | BAIXA | Média |
-| BUG-034 | Pendente | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
+| BUG-034 | Corrigido | Último registro da página se repete na página seguinte | Paginação | MÉDIA | Média |
 | BUG-035 | Corrigido | Aplicar filtro não retorna para a primeira página | Paginação | MÉDIA | Baixa |
 | BUG-036 | Corrigido | Contador de resultados ignora os filtros | Filtros | MÉDIA | Baixa |
-| BUG-037 | Pendente | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
+| BUG-037 | Corrigido | Filtro 'Cancelada' nunca retorna resultados | Filtros | MÉDIA | Baixa |
 | BUG-038 | Corrigido | Pesquisa de tarefas é sensível a maiúsculas | Pesquisa | MÉDIA | Baixa |
 | BUG-039 | Corrigido | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
-| BUG-040 | Pendente | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
+| BUG-040 | Corrigido | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
 | BUG-041 | Corrigido | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
 | BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
 | BUG-043 | Corrigido | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
 | BUG-044 | Corrigido | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
-| BUG-045 | Pendente | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
+| BUG-045 | Corrigido | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
 | BUG-046 | Pendente | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
-| BUG-047 | Pendente | URL inexistente exibe tela em branco | Rotas | MÉDIA | Baixa |
+| BUG-047 | Corrigido | URL inexistente exibe tela em branco | Rotas | MÉDIA | Baixa |
 | BUG-048 | Corrigido | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
 
 ### Distribuição por severidade
 
 | Severidade | Total | Ainda plantados |
 |---|---:|---:|
-| CRÍTICA | 8 | 3 |
-| ALTA | 13 | 7 |
-| MÉDIA | 17 | 7 |
-| BAIXA | 10 | 5 |
+| CRÍTICA | 8 | 1 |
+| ALTA | 13 | 3 |
+| MÉDIA | 17 | 2 |
+| BAIXA | 10 | 1 |
 
 ---
 
@@ -268,7 +269,11 @@ O envio está dentro de um try/catch com catch vazio, e a mensagem de sucesso é
 
 ## BUG-007 — Redirecionamento pós-login ignora a rota de origem
 
-**Situação:** Pendente · **Área:** Navegação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Navegação · **Severidade:** BAIXA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-013 — após o login o sistema vai ao dashboard em vez da rota pedida.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -293,7 +298,11 @@ O ProtectedRoute guarda a rota pretendida em location.state.from ao redirecionar
 
 ## BUG-008 — USER acessa /users digitando a URL
 
-**Situação:** Pendente · **Área:** Autorização · **Severidade:** CRÍTICA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Autorização · **Severidade:** CRÍTICA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-003 — USER acessa a tela administrativa /users pela URL.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -319,7 +328,11 @@ As rotas /users/new e /users/:id estão protegidas pelo AdminRoute, mas a listag
 
 ## BUG-009 — IDOR em /tasks/:id
 
-**Situação:** Pendente · **Área:** Autorização · **Severidade:** CRÍTICA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Autorização · **Severidade:** CRÍTICA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-004 e BUG-011 — usuário comum acessa e edita tarefa de outra pessoa pelo endereço direto.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -437,7 +450,11 @@ A regra foi afrouxada para que a listagem de tarefas conseguisse exibir o nome d
 
 ## BUG-013 — USER visualiza a métrica 'Total de usuários'
 
-**Situação:** Pendente · **Área:** Autorização · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Autorização · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-012 — conta comum enxerga o total de usuários no dashboard.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -612,7 +629,11 @@ O estado 'saving' é usado apenas para trocar o rótulo do botão para 'Salvando
 
 ## BUG-019 — Edição não persiste a prioridade
 
-**Situação:** Pendente · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-001 — prioridade não persiste após F5.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -668,7 +689,11 @@ A função tem um return antecipado quando o status é CONCLUIDA (comentado como
 
 ## BUG-021 — Status alterado na listagem volta ao original
 
-**Situação:** Pendente · **Área:** CRUD / Firestore · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** CRUD / Firestore · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-002 — status alterado pela listagem não permanece.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -697,7 +722,11 @@ A alteração rápida feita pelo select da listagem grava no campo 'state' em ve
 
 ## BUG-022 — Salvar tarefa redireciona para o dashboard
 
-**Situação:** Pendente · **Área:** Navegação · **Severidade:** BAIXA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Navegação · **Severidade:** BAIXA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-014 — salvar a edição leva ao dashboard em vez de voltar à listagem.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -720,7 +749,11 @@ O destino pós-salvamento é fixo, independentemente da origem. Quem veio da lis
 
 ## BUG-023 — Refresh no formulário perde os dados sem aviso
 
-**Situação:** Pendente · **Área:** UX · **Severidade:** BAIXA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** UX · **Severidade:** BAIXA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-006 — F5 no formulário perde os dados sem aviso.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -856,9 +889,11 @@ O select começa em 'Selecione', cujo value é string vazia, e a validação cob
 
 ## BUG-028 — Alterar o e-mail do usuário não altera o login
 
-**Situação:** Parcial · **Área:** CRUD / Sincronismo · **Severidade:** ALTA · **Dificuldade:** Alta
+**Situação:** Corrigido · **Área:** CRUD / Sincronismo · **Severidade:** ALTA · **Dificuldade:** Alta
 
-**Reportado pelo QA:** SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo.
+**Reportado pelo QA:** SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo. | RETESTE BUG-009 — após o ADMIN trocar o e-mail, o antigo continua autenticando.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -914,7 +949,11 @@ O componente ConfirmDialog existe e é usado no módulo de tarefas, mas a tela d
 
 ## BUG-030 — Exclusão de usuário deixa tarefas órfãs
 
-**Situação:** Pendente · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-010 — tarefas do usuário excluído passam a exibir um identificador sem sentido no responsável.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1029,7 +1068,11 @@ A tela de perfil não usa a função validateName() compartilhada: verifica apen
 
 ## BUG-034 — Último registro da página se repete na página seguinte
 
-**Situação:** Pendente · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Paginação · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-008 — item do fim da página 1 reaparece no topo da página 2. (O título da ocorrência fala em duas abas, mas os passos e o resultado descrevem a paginação.)
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1112,7 +1155,11 @@ O rótulo usa a lista completa carregada do servidor, e não a lista após pesqu
 
 ## BUG-037 — Filtro 'Cancelada' nunca retorna resultados
 
-**Situação:** Pendente · **Área:** Filtros · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Filtros · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-015 — filtro de status Cancelada não retorna resultados.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1195,7 +1242,11 @@ O nome é comparado sem normalização nenhuma (casa apenas com a grafia exata g
 
 ## BUG-040 — Ordenação por prioridade é alfabética
 
-**Situação:** Pendente · **Área:** Ordenação · **Severidade:** BAIXA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Ordenação · **Severidade:** BAIXA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-016 — prioridades em Alta, Baixa, Média.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1334,7 +1385,11 @@ new Date('2026-09-20') é interpretado pelo JavaScript como meia-noite em UTC. G
 
 ## BUG-045 — Tarefa com prazo para hoje aparece como atrasada
 
-**Situação:** Pendente · **Área:** Datas · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Datas · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-017 — tarefa com prazo para hoje marcada como atrasada.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1384,7 +1439,11 @@ A tela mostra o spinner e, em paralelo, decide entre tabela e estado vazio apena
 
 ## BUG-047 — URL inexistente exibe tela em branco
 
-**Situação:** Pendente · **Área:** Rotas · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** Rotas · **Severidade:** MÉDIA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-007 — rota inexistente exibe tela em branco.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 

@@ -79,9 +79,11 @@ export function UserFormPage() {
     setSaving(true);
     try {
       if (isEdit && id) {
+        // O e-mail fica de fora: ele e a identidade de login, guardada no
+        // Authentication. Gravar so aqui faria a tela exibir um endereco que
+        // nao autentica, enquanto o antigo continua valendo (BUG-028).
         await updateUser(id, {
           name: values.name,
-          email: values.email,
           role: values.role,
           status: values.status,
         });
@@ -139,12 +141,22 @@ export function UserFormPage() {
             />
           </Field>
 
-          <Field label="E-mail" htmlFor="user-email" error={errors.email}>
+          <Field
+            label="E-mail"
+            htmlFor="user-email"
+            error={errors.email}
+            hint={
+              isEdit
+                ? 'O e-mail e usado para entrar no sistema e nao pode ser alterado por aqui.'
+                : undefined
+            }
+          >
             <input
               id="user-email"
               className="input"
               type="email"
               value={values.email}
+              disabled={isEdit}
               onChange={(event) => update('email', event.target.value)}
               placeholder="usuario@taskflow.com"
             />

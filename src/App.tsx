@@ -12,6 +12,7 @@ import { UserFormPage } from './pages/UserForm';
 import { ProfilePage } from './pages/Profile';
 import { GabaritoPage } from './pages/Gabarito';
 import { GabaritoBugPage } from './pages/GabaritoBug';
+import { NotFoundPage } from './pages/NotFound';
 
 export default function App() {
   return (
@@ -36,7 +37,14 @@ export default function App() {
         <Route path="/tasks/new" element={<TaskFormPage />} />
         <Route path="/tasks/:id" element={<TaskFormPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/users" element={<UsersPage />} />
+        <Route
+          path="/users"
+          element={
+            <AdminRoute>
+              <UsersPage />
+            </AdminRoute>
+          }
+        />
         <Route
           path="/users/new"
           element={
@@ -54,6 +62,9 @@ export default function App() {
           }
         />
       </Route>
+
+      {/* Qualquer endereco desconhecido: sem isto a tela fica em branco. */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

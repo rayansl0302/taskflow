@@ -9,6 +9,7 @@ import {
   query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from './config';
 import type { AppUser, UserInput } from '../../types';
@@ -58,4 +59,29 @@ export async function updateUser(id: string, input: Partial<UserInput>): Promise
 
 export async function deleteUser(id: string): Promise<void> {
   await deleteDoc(doc(db, COLLECTION, id));
+}
+
+/**
+ * Exclui o usuario e transfere as tarefas dele para outro responsavel.
+ *
+ * Apagar so o perfil deixava as tarefas apontando para um identificador que
+ * nao existe mais, e a listagem passava a mostrar o UID cru no lugar do nome
+ * (BUG-030). Transferir preserva os registros e mantem a coluna coerente.
+ *
+ * Devolve quantas tarefas mudaram de dono.
+ */
+export async function deleteUserAndReassignTasks(
+  id: string,
+  novoResponsavelId: string,
+): Promise<number> {
+  const tarefas = await getDocs(query(collection(db, 'tasks'), where('userId', '==', id)));
+
+  await Promise.all(
+    tarefas.docs.map((tarefa) =>
+      updateDoc(tarefa.ref, { userId: novoResponsavelId, updatedAt: Timestamp.now() }),
+    ),
+  );
+
+  await deleteDoc(doc(db, COLLECTION, id));
+  return tarefas.size;
 }

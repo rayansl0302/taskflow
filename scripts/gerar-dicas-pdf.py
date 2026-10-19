@@ -2,11 +2,11 @@
 """Gera o PDF de dicas para o próximo ciclo de testes.
 
 Diferente do guia exploratório, que ensina técnica em geral, este material é
-recortado sobre o que ainda está plantado no sistema: sete frentes, o número
-de achados que cada uma rende e os experimentos que levam até eles.
+recortado sobre o que ainda está plantado no sistema: as frentes que sobraram,
+o número de achados de cada uma e os experimentos que levam até eles.
 
-Nenhum defeito é nomeado nem descrito. O que o documento entrega é o
-endereço da caça — onde procurar e com qual gesto —, não a presa.
+Nenhum defeito é nomeado nem descrito. O que o documento entrega é o endereço
+da caça — onde procurar e com qual gesto —, não a presa.
 """
 import json
 import os
@@ -37,32 +37,23 @@ from _pdf_estilo import (
 # Cobertura
 #
 # Cada frente aponta para os defeitos que ela pretende revelar. O mapa não
-# entra no PDF: serve para conferir, a cada ciclo, que as sete frentes ainda
-# cobrem exatamente o que continua plantado — e para que os números impressos
-# venham daqui, em vez de serem digitados à mão e envelhecerem em silêncio.
+# entra no PDF: serve para conferir, a cada ciclo, que as frentes ainda cobrem
+# exatamente o que continua plantado — e para que os números impressos venham
+# daqui, em vez de serem digitados à mão e envelhecerem em silêncio.
 # ------------------------------------------------------------------
 FRENTES = [
+    ("Ao mesmo tempo",
+     "Duas abas abertas e cliques rápidos demais.",
+     ["BUG-024", "BUG-025"]),
     ("Confirme no recarregar",
      "Salvar não é o fim do teste. Recarregue e confira.",
-     ["BUG-019", "BUG-020", "BUG-021"]),
-    ("O que a conta comum alcança",
-     "Repita como usuário comum o que você fez como administrador.",
-     ["BUG-008", "BUG-009", "BUG-013"]),
-    ("Para onde o sistema te leva",
-     "Observe onde você parou depois de cada ação.",
-     ["BUG-007", "BUG-022", "BUG-023", "BUG-046", "BUG-047"]),
-    ("Listas grandes",
-     "Páginas, filtros e ordenação, opção por opção.",
-     ["BUG-034", "BUG-037", "BUG-040"]),
+     ["BUG-020"]),
     ("Conte você mesma",
      "Confira na mão o que os números do painel afirmam.",
-     ["BUG-042", "BUG-045"]),
-    ("Ao mesmo tempo",
-     "Duas abas e cliques rápidos.",
-     ["BUG-024", "BUG-025"]),
-    ("O rastro que fica",
-     "Depois de mudar algo, procure os vestígios no resto do sistema.",
-     ["BUG-028", "BUG-030"]),
+     ["BUG-042"]),
+    ("O primeiro segundo",
+     "Olhe a tela antes de ela terminar de carregar.",
+     ["BUG-046"]),
 ]
 
 
@@ -101,47 +92,40 @@ def conferir_cobertura():
 
 TOTAL = conferir_cobertura()
 
-# As duas frentes mais densas, para a sugestao de por onde comecar.
-_ranking = sorted(enumerate(FRENTES, start=1), key=lambda par: -len(par[1][2]))[:2]
-MAIORES = sorted(n for n, _ in _ranking)
-SOMA_MAIORES = sum(len(f[2]) for _, f in _ranking)
-
 historia = []
 A = historia.append
 
 # ---------------------------------------------------------------- abertura
-A(Paragraph("Onde procurar agora", TITULO))
+A(Paragraph("O que ainda resta", TITULO))
 A(Paragraph("TaskFlow — apoio ao próximo ciclo de testes", SUBTITULO))
 
 A(caixa([
     Paragraph("Como usar este material", CELULA_CAB),
     Spacer(1, 5),
     Paragraph(
-        "O sistema ainda tem <b>%d defeitos</b> que nenhum ciclo encontrou até agora. "
-        "Eles não estão espalhados por igual: concentram-se em sete frentes, e este "
-        "documento diz quantos moram em cada uma." % TOTAL,
+        "O ciclo anterior foi o melhor até agora: quase tudo que havia para encontrar "
+        "pelos caminhos comuns já foi encontrado. Sobraram <b>%d defeitos</b>, e eles "
+        "são de um tipo diferente — nenhum aparece quando você faz uma coisa de cada "
+        "vez, com calma, e olha o resultado final." % TOTAL,
         CORPO,
     ),
     Paragraph(
-        "O que você não vai achar aqui é o defeito em si. Cada frente traz o "
-        "<b>gesto</b> que o revela e a <b>pergunta</b> que faz você olhar para o lugar "
-        "certo. Faça o gesto, observe com calma e compare com o que o sistema deveria "
-        "fazer. O julgamento continua sendo seu.",
+        "Eles se escondem em três lugares: no <b>meio do caminho</b> (antes de a tela "
+        "terminar de carregar), na <b>repetição</b> (duas abas, cliques rápidos) e na "
+        "<b>conferência</b> (o número que o sistema afirma contra o que você conta). "
+        "Por isso as dicas daqui pedem mais insistência do que as anteriores.",
         CORPO,
     ),
     Paragraph(
-        "Sugestão de ordem: comece pelas frentes %d e %d, as mais densas — juntas "
-        "respondem por %d dos %d." % (MAIORES[0], MAIORES[1], SOMA_MAIORES, TOTAL),
+        "Como sempre: o defeito em si não está escrito aqui. Cada frente traz o gesto e "
+        "a pergunta; o julgamento continua sendo seu.",
         CORPO_CINZA,
     ),
 ]))
 
 A(Spacer(1, 12))
 A(Paragraph("O mapa", H1))
-A(Paragraph(
-    "Quanto cada frente rende:",
-    CORPO,
-))
+A(Paragraph("Quanto cada frente rende:", CORPO))
 A(Spacer(1, 4))
 A(tabela(
     [["FRENTE", "O GESTO", "ACHADOS"]] + [
@@ -153,171 +137,103 @@ A(tabela(
 ))
 
 # ---------------------------------------------------------------- frente 1
-A(Paragraph("1. Confirme no recarregar", H1))
+A(Paragraph("1. Ao mesmo tempo", H1))
 A(Paragraph(
-    "A mensagem verde de sucesso é uma promessa da tela, não um recibo do banco de "
-    "dados. Os dois nem sempre combinam.",
+    "A frente mais densa, e a menos natural de testar. Sistemas costumam ser "
+    "experimentados por uma pessoa só, fazendo uma coisa de cada vez e esperando a tela "
+    "responder. O trabalho real tem duas pessoas na mesma tarefa e gente com pressa.",
     CORPO,
 ))
 A(Paragraph("Os experimentos", H2))
 A(lista([
-    "Abra uma tarefa, mude <b>um campo por vez</b>, salve, e aperte F5. "
-    "Faça isso com cada campo do formulário, separadamente. Algum deles volta "
-    "sozinho ao valor antigo?",
-    "Mude o status de uma tarefa <b>direto na listagem</b>, pelo seletor da linha. "
-    "Agora saia da tela e volte. Ficou como você deixou?",
-    "Exclua uma tarefa de cada um dos quatro status — pendente, em andamento, "
-    "concluída e cancelada. Recarregue depois de cada exclusão. Todas sumiram mesmo?",
+    "Abra a <b>mesma tarefa em duas abas</b>. Na aba 1 mude um campo; na aba 2, que "
+    "ainda mostra os dados antigos, mude um campo <b>diferente</b>. Salve a aba 1, "
+    "depois salve a aba 2. Recarregue as duas e veja o que sobrou de cada alteração.",
+    "Repita o teste acima invertendo a ordem de quem salva primeiro. O resultado é o "
+    "mesmo?",
+    "Na listagem, troque o status de <b>duas tarefas diferentes</b> uma logo após a "
+    "outra, <b>sem esperar</b> a tela responder entre um clique e outro. Olhe as duas "
+    "linhas antes de recarregar.",
+    "Agora recarregue e olhe as mesmas duas linhas de novo. O que a tela mostrava e o "
+    "que ficou guardado contam a mesma história?",
 ]))
 A(Paragraph("A pergunta", H2))
 A(Paragraph(
-    "<i>Se eu fechasse o navegador agora e abrisse de novo amanhã, encontraria o que "
-    "a tela está me mostrando?</i>",
+    "<i>O sistema me avisou que alguém tinha mexido antes de mim, ou passou por cima "
+    "em silêncio?</i>",
     CORPO,
 ))
 
 # ---------------------------------------------------------------- frente 2
-A(Paragraph("2. O que a conta comum alcança", H1))
+A(Paragraph("2. Confirme no recarregar", H1))
 A(Paragraph(
-    "O sistema decide o que mostrar a cada perfil escondendo botões e itens de menu. "
-    "Esconder, porém, não é o mesmo que proibir: a diferença só aparece quando você "
-    "insiste em chegar pelo endereço, sem passar pelo botão.",
+    "Você já usou esta técnica e ela rendeu. Vale uma passada final, porque falta um "
+    "caso — e ele só aparece se você variar <b>em qual situação</b> a tarefa está "
+    "quando você age sobre ela.",
     CORPO,
 ))
 A(Paragraph("Os experimentos", H2))
 A(lista([
-    "Entre como administrador e <b>anote todos os endereços</b> que aparecem na barra "
-    "enquanto você navega. Faça uma lista.",
-    "Saia, entre com uma conta comum e <b>digite cada endereço da lista</b> na barra, "
-    "um por um. Alguma tela abre que não deveria?",
-    "Abra uma tarefa sua e olhe o endereço: ele termina com um código. "
-    "Pegue o código de uma tarefa <b>de outra pessoa</b> e coloque no lugar. "
-    "O que você consegue ver?",
-    "Coloque o painel do administrador e o do usuário comum lado a lado. "
-    "Compare cartão por cartão: tem algum número ali que o usuário comum não "
-    "teria por que enxergar?",
+    "Exclua uma tarefa de <b>cada um dos quatro status</b> — pendente, em andamento, "
+    "concluída e cancelada. Uma de cada, não quatro pendentes.",
+    "Depois de cada exclusão, confirme que a linha sumiu e <b>recarregue a página</b>. "
+    "Ela continua sumida?",
+    "Se alguma voltar, repita só com aquela para ter certeza, e anote em que situação "
+    "a tarefa estava.",
 ]))
 A(Paragraph("A pergunta", H2))
 A(Paragraph(
-    "<i>A tela não me ofereceu, mas o sistema teria me deixado chegar?</i>",
+    "<i>A mensagem de sucesso vale para qualquer tarefa, ou só para algumas?</i>",
     CORPO,
 ))
 
 # ---------------------------------------------------------------- frente 3
-A(Paragraph("3. Para onde o sistema te leva", H1))
+A(Paragraph("3. Conte você mesma", H1))
 A(Paragraph(
-    "Depois de cada ação o sistema decide onde você vai parar. Essa decisão erra com "
-    "frequência, e é fácil não reparar porque a tela que aparece funciona bem.",
+    "Os cartões do painel afirmam números. Trate cada um como uma declaração a ser "
+    "conferida, não como um fato.",
     CORPO,
 ))
 A(Paragraph("Os experimentos", H2))
 A(lista([
-    "<b>Antes</b> de fazer login, cole na barra o endereço de uma tela interna. "
-    "O sistema vai pedir que você entre. Depois de entrar, você caiu onde queria ir?",
-    "Estando na listagem de tarefas, edite uma e salve. Você voltou para a listagem, "
-    "de onde tinha saído?",
-    "Preencha metade de um formulário longo e aperte F5 sem salvar. "
-    "O sistema avisou alguma coisa antes de perder o que você digitou?",
-    "Digite um endereço que não existe, algo como uma palavra inventada depois da "
-    "barra. O que aparece?",
-    "Olhe o <b>primeiro segundo</b> de cada tela que mostra lista. Vale a pena simular "
-    "internet lenta (F12, aba Rede, opção de limitar a velocidade). O que o sistema "
-    "afirma enquanto ainda está buscando os dados?",
+    "Abra a listagem, filtre por <b>um status de cada vez</b> e anote quantas tarefas "
+    "aparecem em cada situação. Faça a lista completa antes de olhar o painel.",
+    "Agora compare com os cartões. Some os seus números e some os do painel: dá o "
+    "mesmo total?",
+    "Se algum cartão estiver maior do que a sua contagem, procure <b>qual outro status "
+    "preencheria a diferença</b> exatamente.",
+    "Vale pensar no significado: há status que parecem vizinhos mas querem dizer coisas "
+    "opostas para quem usa o sistema.",
 ]))
 A(Paragraph("A pergunta", H2))
 A(Paragraph(
-    "<i>O sistema está me dizendo que não há nada, ou que ainda não sabe?</i>",
+    "<i>Cada cartão conta exatamente o que o título dele promete?</i>",
     CORPO,
 ))
 
 # ---------------------------------------------------------------- frente 4
-A(Paragraph("4. Listas grandes", H1))
+A(Paragraph("4. O primeiro segundo", H1))
 A(Paragraph(
-    "Filtro, ordenação e paginação parecem detalhe, mas é onde o usuário passa o dia. "
-    "Teste cada opção, não só a primeira.",
+    "Quase todo teste olha a tela depois que ela terminou de carregar. O que o sistema "
+    "afirma <b>enquanto ainda está buscando</b> os dados também é informação, e também "
+    "pode estar errado.",
     CORPO,
 ))
 A(Paragraph("Os experimentos", H2))
 A(lista([
-    "Com tarefas suficientes para passar de uma página, <b>anote o título do último "
-    "item da página 1</b> e vá para a página 2. Olhe o primeiro item dela.",
-    "Abra cada seletor de filtro e percorra <b>todas</b> as opções, uma por uma. "
-    "Alguma delas nunca traz resultado, mesmo existindo registros naquela situação?",
-    "Ordene a lista por cada critério disponível. Para cada um, pergunte-se se "
-    "aquela ordem serve para quem usa o sistema de verdade — em especial quando a "
-    "ordem envolve <b>níveis</b>, e não palavras ou datas.",
+    "Aperte F12, vá à aba <b>Rede</b> e ligue a opção de limitar a velocidade da "
+    "conexão (procure por <i>Slow 3G</i> ou equivalente). Isso estica o primeiro "
+    "segundo e dá tempo de olhar.",
+    "Com a conexão lenta ligada, recarregue as telas que mostram lista e observe o "
+    "intervalo entre a página aparecer e os dados chegarem.",
+    "Leia o que está escrito nesse intervalo. O sistema está dizendo que <b>está "
+    "buscando</b>, ou já está afirmando alguma coisa sobre o resultado?",
+    "Teste também em uma conta que tem tarefas: se a afirmação do primeiro segundo for "
+    "desmentida um instante depois, você encontrou algo.",
 ]))
 A(Paragraph("A pergunta", H2))
 A(Paragraph(
-    "<i>Essa ordem é a que o computador acha fácil, ou a que o trabalho pede?</i>",
-    CORPO,
-))
-
-# ---------------------------------------------------------------- frente 5
-A(Paragraph("5. Conte você mesma", H1))
-A(Paragraph(
-    "Os cartões do painel afirmam números. Trate cada um como uma declaração a ser "
-    "conferida, e não como um fato.",
-    CORPO,
-))
-A(Paragraph("Os experimentos", H2))
-A(lista([
-    "Abra a listagem, filtre por cada status e <b>conte na mão</b>. "
-    "Compare com o cartão correspondente no painel. Bate?",
-    "Preste atenção especial nos status que parecem vizinhos mas significam coisas "
-    "opostas para quem usa o sistema. Confira um por um se o cartão conta só o que "
-    "o nome dele promete.",
-    "Crie três tarefas com prazo para <b>ontem</b>, para <b>hoje</b> e para "
-    "<b>amanhã</b>. Olhe como cada uma é apresentada na listagem.",
-]))
-A(Paragraph("A pergunta", H2))
-A(Paragraph(
-    "<i>Cada cartão conta exatamente o que o título dele promete? E o que significa, "
-    "para quem usa, uma tarefa que vence hoje?</i>",
-    CORPO,
-))
-
-# ---------------------------------------------------------------- frente 6
-A(Paragraph("6. Ao mesmo tempo", H1))
-A(Paragraph(
-    "Sistemas costumam ser testados por uma pessoa calma, fazendo uma coisa de cada "
-    "vez. O mundo real não é assim.",
-    CORPO,
-))
-A(Paragraph("Os experimentos", H2))
-A(lista([
-    "Abra a <b>mesma tarefa em duas abas</b>. Na aba 1 mude um campo; na aba 2 mude "
-    "um campo diferente. Salve a aba 1, depois salve a aba 2. "
-    "Agora recarregue as duas. O que sobrou de cada alteração?",
-    "Troque o status de uma tarefa <b>várias vezes seguidas, bem rápido</b>, sem "
-    "esperar a tela responder entre um clique e outro. Depois recarregue e veja "
-    "onde a tarefa parou.",
-]))
-A(Paragraph("A pergunta", H2))
-A(Paragraph(
-    "<i>O sistema avisou que outra pessoa tinha mexido antes de mim, ou simplesmente "
-    "passou por cima?</i>",
-    CORPO,
-))
-
-# ---------------------------------------------------------------- frente 7
-A(Paragraph("7. O rastro que fica", H1))
-A(Paragraph(
-    "Mudar um cadastro costuma ter consequências em outros cantos do sistema. "
-    "Vá atrás delas: o defeito quase nunca está na tela onde você fez a mudança.",
-    CORPO,
-))
-A(Paragraph("Os experimentos", H2))
-A(lista([
-    "Altere o <b>e-mail</b> de um usuário pela tela de edição. Saia e tente entrar "
-    "com o e-mail novo. Depois tente com o antigo. Qual dos dois funciona?",
-    "Exclua um usuário que <b>tinha tarefas atribuídas</b> a ele. "
-    "Em seguida vá até a listagem de tarefas e procure as tarefas que eram dele. "
-    "O que aparece na coluna de responsável?",
-]))
-A(Paragraph("A pergunta", H2))
-A(Paragraph(
-    "<i>Quando um cadastro muda, quem mais no sistema precisava ficar sabendo?</i>",
+    "<i>O sistema está me dizendo que não há nada, ou que ainda não sabe?</i>",
     CORPO,
 ))
 
@@ -329,15 +245,16 @@ A(KeepTogether([
         Spacer(1, 5),
         Paragraph(
             "Para cada achado, escreva os <b>passos</b> na ordem exata, o que você "
-            "<b>esperava</b>, o que <b>aconteceu</b> e anexe a evidência. "
-            "O passo que mais se esquece é o último: diga se você recarregou a página "
-            "antes de concluir, porque isso muda o diagnóstico.",
+            "<b>esperava</b>, o que <b>aconteceu</b> e anexe a evidência. Nesta etapa "
+            "dois detalhes mudam o diagnóstico: diga se você <b>recarregou</b> a página "
+            "antes de concluir, e diga <b>quanto tempo</b> esperou entre uma ação e "
+            "outra.",
             CORPO,
         ),
         Paragraph(
-            "Separe o que é <b>defeito</b> (o sistema faz diferente do que deveria) do "
-            "que é <b>sugestão</b> (o sistema está correto, mas poderia ser melhor). "
-            "As duas coisas são bem-vindas, em listas separadas.",
+            "Confira também se o título que você deu descreve o mesmo que os seus "
+            "passos. Quando os dois discordam, quem lê o relatório precisa adivinhar "
+            "qual dos dois é o defeito.",
             CORPO,
         ),
     ]),
@@ -353,7 +270,7 @@ A(KeepTogether([
 construir(
     os.path.join(RAIZ, "docs", "TaskFlow_Dicas_Proximo_Ciclo.pdf"),
     historia,
-    titulo="TaskFlow — Onde procurar agora",
+    titulo="TaskFlow — O que ainda resta",
     assunto="Material de apoio para o próximo ciclo de testes",
-    rodape_texto="TaskFlow — onde procurar agora",
+    rodape_texto="TaskFlow — o que ainda resta",
 )

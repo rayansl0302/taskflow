@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { Field } from '../components/Field';
@@ -10,6 +10,11 @@ export function LoginPage() {
   const { login } = useAuth();
   const { success, error: notifyError } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // O ProtectedRoute guarda de onde a pessoa veio ao ser mandada para ca.
+  // Sem ler esse estado, ela precisa refazer a navegacao depois de entrar.
+  const origem = (location.state as { from?: string } | null)?.from;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +36,7 @@ export function LoginPage() {
     try {
       await login(normalizedEmail, password);
       success('Bem-vindo ao TaskFlow!');
-      navigate('/dashboard');
+      navigate(origem && origem !== '/login' ? origem : '/dashboard', { replace: true });
     } catch (error) {
       notifyError(friendlyError(error));
     } finally {

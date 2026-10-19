@@ -32,10 +32,19 @@ export function formatDateTime(date: Date | null | undefined): string {
   })}`;
 }
 
-/** Indica se a tarefa ja passou do prazo. */
+/**
+ * Indica se a tarefa ja passou do prazo.
+ *
+ * O prazo vale ate o fim do dia: comparar com o instante atual marcaria como
+ * atrasada, logo de manha, a tarefa que vence hoje — o prazo e a data, nao
+ * a meia-noite dela.
+ */
 export function isOverdue(dueDate: Date | null | undefined): boolean {
   if (!dueDate) return false;
-  return dueDate.getTime() < Date.now();
+  const agora = new Date();
+  const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+  const prazo = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+  return prazo.getTime() < hoje.getTime();
 }
 
 /**

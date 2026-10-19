@@ -154,7 +154,10 @@
       ],
       "esperado": "Retorno para /tasks/new após o login.",
       "atual": "O usuário cai sempre no /dashboard e precisa refazer a navegação.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-013 — após o login o sistema vai ao dashboard em vez da rota pedida.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-008",
@@ -174,7 +177,10 @@
       "esperado": "Acesso negado ou redirecionamento para uma tela permitida.",
       "atual": "A listagem administrativa é exibida, com e-mails de todos os usuários e botões de editar e excluir.",
       "descoberta": "Alteração manual da URL com perfil não administrativo.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-003 — USER acessa a tela administrativa /users pela URL.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-009",
@@ -194,7 +200,10 @@
       "esperado": "Acesso negado — o USER só pode abrir as próprias tarefas.",
       "atual": "Os dados são exibidos e a tarefa pode ser editada e excluída por quem não é dono.",
       "descoberta": "Troca manual do ID na URL entre usuários diferentes.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-004 e BUG-011 — usuário comum acessa e edita tarefa de outra pessoa pelo endereço direto.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-010",
@@ -281,7 +290,10 @@
       ],
       "esperado": "Métricas de usuários visíveis apenas para ADMIN; o USER vê somente dados das próprias tarefas.",
       "atual": "O card 'Total de usuários' aparece para todos os perfis.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-012 — conta comum enxerga o total de usuários no dashboard.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-014",
@@ -418,7 +430,10 @@
       "esperado": "Prioridade atualizada junto com os demais campos.",
       "atual": "Título e status são salvos, mas a prioridade volta ao valor anterior.",
       "descoberta": "Reabrir o registro após salvar / comparar com o documento no banco.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-001 — prioridade não persiste após F5.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-020",
@@ -462,7 +477,10 @@
       "atual": "O status volta ao valor anterior; no Firestore surge um campo 'state' que a aplicação nunca lê.",
       "observacoes": "Alterar o status pelo formulário de edição funciona. A divergência entre os dois caminhos é parte do achado.",
       "descoberta": "Refresh após a ação / comparação entre interface e banco.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-002 — status alterado pela listagem não permanece.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-022",
@@ -480,7 +498,10 @@
       ],
       "esperado": "Retorno à listagem, preservando o contexto de navegação.",
       "atual": "O usuário é levado ao dashboard e precisa refazer filtro e paginação.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-014 — salvar a edição leva ao dashboard em vez de voltar à listagem.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-023",
@@ -498,7 +519,10 @@
       ],
       "esperado": "Aviso de alterações não salvas antes de descartar o conteúdo.",
       "atual": "O formulário volta vazio, sem nenhuma mensagem.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-006 — F5 no formulário perde os dados sem aviso.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-024",
@@ -607,9 +631,10 @@
       "esperado": "O login passa a funcionar com o novo e-mail.",
       "atual": "O e-mail novo não existe no Authentication; só o antigo autentica, enquanto a tela mostra o novo.",
       "descoberta": "Comparação entre o dado exibido e o comportamento real de autenticação.",
-      "status": "parcial",
-      "reporte": "SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo.",
-      "ciclo": 2
+      "status": "corrigido",
+      "reporte": "SPRINT-01 BUG-002 — notou que o novo e-mail é salvo sem nenhuma validação ou confirmação, sem chegar a testar o login com o endereço novo. | RETESTE BUG-009 — após o ADMIN trocar o e-mail, o antigo continua autenticando.",
+      "ciclo": 5,
+      "corrigidoEm": "19/10/2026"
     },
     {
       "id": "BUG-029",
@@ -651,7 +676,10 @@
       ],
       "esperado": "Tratamento explícito: impedir a exclusão, reatribuir ou remover as tarefas em conjunto.",
       "atual": "As tarefas continuam existindo e a coluna Responsável passa a exibir o UID cru do usuário excluído.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-010 — tarefas do usuário excluído passam a exibir um identificador sem sentido no responsável.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-031",
@@ -738,7 +766,10 @@
       "esperado": "Páginas sem sobreposição, com todos os registros distribuídos uma única vez.",
       "atual": "O último item da página anterior reaparece como primeiro da página seguinte.",
       "descoberta": "Conferir o encadeamento entre páginas, e não apenas a contagem total.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-008 — item do fim da página 1 reaparece no topo da página 2. (O título da ocorrência fala em duas abas, mas os passos e o resultado descrevem a paginação.)",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-035",
@@ -801,7 +832,10 @@
       "esperado": "Listagem das tarefas com status CANCELADA.",
       "atual": "Estado vazio, como se não houvesse nenhuma tarefa cancelada.",
       "observacoes": "Os outros três status funcionam, o que faz o problema passar despercebido em um teste superficial.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-015 — filtro de status Cancelada não retorna resultados.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-038",
@@ -865,7 +899,10 @@
       ],
       "esperado": "BAIXA → MEDIA → ALTA → URGENTE (ou o inverso), seguindo a criticidade.",
       "atual": "ALTA → BAIXA → MEDIA → URGENTE (ordem alfabética dos códigos).",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-016 — prioridades em Alta, Baixa, Média.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-041",
@@ -973,7 +1010,10 @@
       "esperado": "Nenhuma marcação de atraso no próprio dia do vencimento.",
       "atual": "A tarefa recebe a tag vermelha 'Atrasada' já no dia do prazo.",
       "descoberta": "Testes de data de fronteira: hoje, ontem, amanhã.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-017 — tarefa com prazo para hoje marcada como atrasada.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-046",
@@ -1010,7 +1050,10 @@
       "esperado": "Página 404 com caminho de volta, ou redirecionamento.",
       "atual": "Tela totalmente branca, sem menu, sem mensagem e sem forma de navegar.",
       "descoberta": "Alteração manual da URL / erros de digitação.",
-      "status": "pendente"
+      "status": "corrigido",
+      "reporte": "RETESTE BUG-007 — rota inexistente exibe tela em branco.",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 5
     },
     {
       "id": "BUG-048",
@@ -1084,6 +1127,13 @@
       "periodo": "07/10/2026 a 12/10/2026",
       "emitido": "10/10/2026",
       "ocorrencias": 24
+    },
+    {
+      "nome": "Reteste — ciclo 5",
+      "responsavel": "Karolayne Silva Ramos",
+      "periodo": "12/10/2026 a 21/10/2026",
+      "emitido": "19/10/2026",
+      "ocorrencias": 17
     }
   ]
 }

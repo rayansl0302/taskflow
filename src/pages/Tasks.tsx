@@ -26,8 +26,16 @@ const STATUS_OPTIONS = [
   { value: 'PENDENTE', label: 'Pendente' },
   { value: 'EM_ANDAMENTO', label: 'Em andamento' },
   { value: 'CONCLUIDA', label: 'Concluída' },
-  { value: 'CANCELADO', label: 'Cancelada' },
+  { value: 'CANCELADA', label: 'Cancelada' },
 ];
+
+/** Da maior para a menor urgencia, que e a ordem que o trabalho pede. */
+const PESO_PRIORIDADE: Record<string, number> = {
+  URGENTE: 0,
+  ALTA: 1,
+  MEDIA: 2,
+  BAIXA: 3,
+};
 
 const PRIORITY_OPTIONS = [
   { value: '', label: 'Todas as prioridades' },
@@ -113,14 +121,16 @@ export function TasksPage() {
 
     return [...result].sort((a, b) => {
       if (sort === 'title') return a.title.localeCompare(b.title);
-      if (sort === 'priority') return a.priority.localeCompare(b.priority);
+      if (sort === 'priority') {
+        return (PESO_PRIORIDADE[a.priority] ?? 99) - (PESO_PRIORIDADE[b.priority] ?? 99);
+      }
       if (sort === 'dueDate') return (a.dueDate?.getTime() ?? 0) - (b.dueDate?.getTime() ?? 0);
       return (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0);
     });
   }, [tasks, search, status, priority, sort]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const start = (page - 1) * (PAGE_SIZE - 1);
+  const start = (page - 1) * PAGE_SIZE;
   const visible = filtered.slice(start, start + PAGE_SIZE);
 
   async function handleQuickStatus(task: Task, next: TaskStatus) {
@@ -235,7 +245,7 @@ export function TasksPage() {
                       {task.title || '(sem título)'}
                     </Link>
                   </td>
-                  <td>{usersById[task.userId]?.name ?? task.userId}</td>
+                  <td>{usersById[task.userId]?.name ?? 'Usuário removido'}</td>
                   <td>
                     <select
                       className="select-inline"

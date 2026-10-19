@@ -44,6 +44,8 @@ export function TaskFormPage() {
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
+  // Retrato do formulario como ele foi carregado, para saber se ha o que perder.
+  const [inicial, setInicial] = useState(() => JSON.stringify(EMPTY));
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
@@ -54,7 +56,11 @@ export function TaskFormPage() {
 
   useEffect(() => {
     if (!id) {
-      setValues((current) => ({ ...current, userId: profile?.id ?? '' }));
+      setValues((current) => {
+        const novo = { ...current, userId: profile?.id ?? '' };
+        setInicial(JSON.stringify(novo));
+        return novo;
+      });
       return;
     }
 
@@ -67,15 +73,25 @@ export function TaskFormPage() {
           navigate('/tasks');
           return;
         }
+        // A rota nao prova autorizacao: quem nao e dono nem ADMIN pode ter
+        // chegado aqui trocando o identificador no endereco.
+        if (!isAdmin && found.userId !== profile?.id) {
+          notifyError('Voce nao tem acesso a esta tarefa.');
+          navigate('/tasks', { replace: true });
+          return;
+        }
+
         setTask(found);
-        setValues({
+        const carregado = {
           title: found.title,
           description: found.description,
           userId: found.userId,
           status: found.status,
           priority: found.priority,
           dueDate: toDateInputValue(found.dueDate),
-        });
+        };
+        setValues(carregado);
+        setInicial(JSON.stringify(carregado));
       } catch (error) {
         notifyError(friendlyError(error));
       } finally {
@@ -83,7 +99,27 @@ export function TaskFormPage() {
       }
     }
     load();
-  }, [id, profile?.id]);
+  }, [id, profile?.id, isAdmin]);
+
+  /**
+   * Avisa antes de descartar o que foi digitado (BUG-023).
+   *
+   * O dialogo e do navegador: a pagina nao tem como substitui-lo, mas tem como
+   * pedir que ele apareca. Sem isto, um F5 no meio do preenchimento leva tudo
+   * embora em silencio.
+   */
+  useEffect(() => {
+    if (savingRef.current) return;
+    if (JSON.stringify(values) === inicial) return;
+
+    function avisar(evento: BeforeUnloadEvent) {
+      evento.preventDefault();
+      evento.returnValue = '';
+    }
+
+    window.addEventListener('beforeunload', avisar);
+    return () => window.removeEventListener('beforeunload', avisar);
+  }, [values, inicial]);
 
   function update<K extends keyof TaskInput>(key: K, value: TaskInput[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -107,7 +143,7 @@ export function TaskFormPage() {
         await createTask(values);
         success('Tarefa criada com sucesso.');
       }
-      navigate('/dashboard');
+      navigate('/tasks');
     } catch (error) {
       notifyError(friendlyError(error));
       savingRef.current = false;
@@ -147,7 +183,7 @@ export function TaskFormPage() {
         <section className="card card--meta">
           <div>
             <span className="meta__label">Responsável</span>
-            <strong>{owner?.name ?? task.userId}</strong>
+            <strong>{owner?.name ?? 'Usuário removido'}</strong>
           </div>
           <div>
             <span className="meta__label">Criada em</span>
