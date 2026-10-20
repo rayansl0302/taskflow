@@ -136,7 +136,12 @@ export function TasksPage() {
   async function handleQuickStatus(task: Task, next: TaskStatus) {
     try {
       await changeTaskStatus(task.id, next);
-      setTasks(tasks.map((item) => (item.id === task.id ? { ...item, status: next } : item)));
+      // O updater funcional parte sempre da lista mais recente. Com `tasks` do
+      // closure, duas trocas rapidas em sequencia partiam do mesmo retrato e a
+      // segunda desfazia a primeira na tela.
+      setTasks((atual) =>
+        atual.map((item) => (item.id === task.id ? { ...item, status: next } : item)),
+      );
       success('Status atualizado com sucesso.');
     } catch (error) {
       notifyError(friendlyError(error));
@@ -148,7 +153,7 @@ export function TasksPage() {
     const target = pendingDelete;
     setPendingDelete(null);
     try {
-      await deleteTask(target.id, target.status);
+      await deleteTask(target.id);
       setTasks((current) => current.filter((item) => item.id !== target.id));
       success('Tarefa excluída com sucesso.');
     } catch (error) {
@@ -213,9 +218,11 @@ export function TasksPage() {
 
         <p className="muted results-count">{filtered.length} tarefa(s) encontrada(s)</p>
 
-        {loading && <Spinner label="Carregando tarefas..." />}
-
-        {visible.length === 0 ? (
+        {/* Enquanto a consulta corre, a tela nao afirma que nao ha nada: so o
+            indicador de carregamento aparece. */}
+        {loading ? (
+          <Spinner label="Carregando tarefas..." />
+        ) : visible.length === 0 ? (
           <EmptyState
             title="Nenhuma tarefa encontrada"
             description="Ajuste os filtros ou crie uma nova tarefa."

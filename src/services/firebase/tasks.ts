@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -76,15 +77,56 @@ export async function createTask(input: TaskInput): Promise<string> {
   return reference.id;
 }
 
-export async function updateTask(id: string, input: TaskInput): Promise<void> {
-  await updateDoc(doc(db, COLLECTION, id), {
-    title: input.title,
-    description: input.description,
-    userId: input.userId,
-    status: input.status,
-    priority: input.priority,
-    dueDate: Timestamp.fromDate(parseDateInput(input.dueDate)),
-    updatedAt: Timestamp.now(),
+/**
+ * A tarefa mudou entre o momento em que foi aberta e o da gravacao.
+ *
+ * Acontece quando duas pessoas (ou duas abas) editam o mesmo registro: a
+ * segunda gravacao carrega os campos como estavam quando a tela abriu e
+ * desfaria, em silencio, o que a primeira acabou de salvar.
+ */
+export class ConflitoDeEdicao extends Error {
+  constructor() {
+    super(
+      'Esta tarefa foi alterada por outra pessoa enquanto você editava. ' +
+        'Recarregue a página para ver a versão atual antes de salvar.',
+    );
+    this.name = 'ConflitoDeEdicao';
+  }
+}
+
+/**
+ * Grava a tarefa, recusando a escrita se ela mudou desde que foi aberta.
+ *
+ * `vistaEm` e o `updatedAt` que a tela carregou. A transacao le o documento no
+ * servidor e so grava se os dois ainda baterem; sem isso a ultima gravacao
+ * vence sempre, levando junto o que a outra pessoa escreveu.
+ */
+export async function updateTask(
+  id: string,
+  input: TaskInput,
+  vistaEm?: Date | null,
+): Promise<void> {
+  const referencia = doc(db, COLLECTION, id);
+
+  await runTransaction(db, async (transacao) => {
+    const atual = await transacao.get(referencia);
+    if (!atual.exists()) throw new Error('Tarefa não encontrada.');
+
+    const dados = atual.data();
+    const gravadaEm = dados.updatedAt instanceof Timestamp ? dados.updatedAt.toDate() : null;
+    if (vistaEm && gravadaEm && gravadaEm.getTime() !== vistaEm.getTime()) {
+      throw new ConflitoDeEdicao();
+    }
+
+    transacao.update(referencia, {
+      title: input.title,
+      description: input.description,
+      userId: input.userId,
+      status: input.status,
+      priority: input.priority,
+      dueDate: Timestamp.fromDate(parseDateInput(input.dueDate)),
+      updatedAt: Timestamp.now(),
+    });
   });
 }
 
@@ -96,9 +138,7 @@ export async function changeTaskStatus(id: string, status: TaskStatus): Promise<
   });
 }
 
-export async function deleteTask(id: string, status?: TaskStatus): Promise<void> {
-  // Tarefas concluidas permanecem no historico do periodo.
-  if (status === 'CONCLUIDA') return;
+export async function deleteTask(id: string): Promise<void> {
   await deleteDoc(doc(db, COLLECTION, id));
 }
 

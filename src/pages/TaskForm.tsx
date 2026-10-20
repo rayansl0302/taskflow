@@ -137,7 +137,9 @@ export function TaskFormPage() {
     setSaving(true);
     try {
       if (isEdit && id) {
-        await updateTask(id, values);
+        // `task.updatedAt` e a versao que esta tela carregou: se o documento
+        // mudou desde entao, a gravacao e recusada em vez de sobrescrever.
+        await updateTask(id, values, task?.updatedAt);
         success('Tarefa atualizada com sucesso.');
       } else {
         await createTask(values);
@@ -155,7 +157,7 @@ export function TaskFormPage() {
     if (!task) return;
     setConfirmDelete(false);
     try {
-      await deleteTask(task.id, task.status);
+      await deleteTask(task.id);
       success('Tarefa excluída com sucesso.');
       navigate('/tasks');
     } catch (error) {

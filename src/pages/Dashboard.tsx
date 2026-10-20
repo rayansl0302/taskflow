@@ -39,7 +39,7 @@ export function DashboardPage() {
         total: tasks.length,
         pending: tasks.filter((task) => task.status === 'PENDENTE').length,
         inProgress: tasks.filter((task) => task.status === 'EM_ANDAMENTO').length,
-        done: tasks.filter((task) => task.status === 'CONCLUIDA' || task.status === 'CANCELADA').length,
+        done: tasks.filter((task) => task.status === 'CONCLUIDA').length,
         users: users.length,
       };
 

@@ -58,6 +58,14 @@ def conferir_cobertura():
 
     invisiveis = {"corrigido", "fora-de-escopo"}
     plantados = {b["id"] for b in bugs if b.get("status", "pendente") not in invisiveis}
+    if not plantados:
+        print(
+            "Nada mais plantado: os %d defeitos avaliáveis foram encontrados e "
+            "corrigidos." % len([b for b in bugs if b.get("status") == "corrigido"])
+        )
+        print("Não há material de apoio a gerar — o desafio terminou.")
+        sys.exit(0)
+
     cobertos = {bug for _, ids in ROTEIROS for bug in ids}
 
     faltando = sorted(plantados - cobertos)

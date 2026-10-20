@@ -455,7 +455,10 @@
       "atual": "A tarefa reaparece após o refresh — o documento nunca foi apagado.",
       "descoberta": "Refresh após a exclusão / conferência no Firestore.",
       "observacoes": "Com tarefas em outros status a exclusão funciona, o que faz o defeito passar despercebido em um teste rápido.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 6,
+      "reporte": "RETESTE BUG-003 — tarefa concluída não é excluída e continua cadastrada."
     },
     {
       "id": "BUG-021",
@@ -543,7 +546,10 @@
       "esperado": "Aviso de conflito ou mesclagem controlada das alterações.",
       "atual": "A segunda gravação desfaz silenciosamente a alteração feita na primeira.",
       "descoberta": "Abertura do mesmo registro em múltiplas abas.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 6,
+      "reporte": "RETESTE BUG-001 — testes 1A e 1B: a gravação da outra aba desfaz a alteração anterior."
     },
     {
       "id": "BUG-025",
@@ -563,7 +569,10 @@
       "esperado": "As duas linhas refletem os novos status.",
       "atual": "Uma das alterações desaparece da tela, embora a requisição tenha sido enviada.",
       "descoberta": "Execução de duas ações em sequência rápida.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 6,
+      "reporte": "RETESTE BUG-002 — duas trocas de status em sequência rápida não permanecem após o F5."
     },
     {
       "id": "BUG-026",
@@ -944,7 +953,10 @@
       ],
       "esperado": "O card conta apenas tarefas com status CONCLUIDA.",
       "atual": "Total inflado; a soma dos cards não corresponde à listagem por status.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 6,
+      "reporte": "RETESTE BUG-004 — painel exibe 16 concluídas contra 9 da listagem, diferença de 7."
     },
     {
       "id": "BUG-043",
@@ -1032,7 +1044,10 @@
       "esperado": "Apenas o indicador de carregamento até os dados chegarem.",
       "atual": "'Nenhuma tarefa encontrada' pisca junto com o spinner, sugerindo base vazia.",
       "observacoes": "Em /users o comportamento está correto — a comparação evidencia o defeito.",
-      "status": "pendente"
+      "status": "corrigido",
+      "corrigidoEm": "19/10/2026",
+      "ciclo": 6,
+      "reporte": "RETESTE BUG-005 — \"Nenhuma tarefa encontrada\" aparece antes de os dados chegarem, em Slow 3G."
     },
     {
       "id": "BUG-047",
@@ -1134,6 +1149,13 @@
       "periodo": "12/10/2026 a 21/10/2026",
       "emitido": "19/10/2026",
       "ocorrencias": 17
+    },
+    {
+      "nome": "Reteste — ciclo 6",
+      "responsavel": "Karolayne Silva Ramos",
+      "periodo": "18/10/2026 a 19/10/2026",
+      "emitido": "19/10/2026",
+      "ocorrencias": 5
     }
   ]
 }

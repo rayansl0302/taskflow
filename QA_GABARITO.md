@@ -8,7 +8,7 @@
 
 **2 defeitos saem da avaliação** por não ter caminho de detecção pela interface — o back-end é o próprio Firestore e não há endpoint para exercitar. Restam **46 avaliáveis**.
 
-**Acompanhamento:** 41 corrigidos · 0 encontrados · 0 parciais · 5 pendentes · **5 ainda plantados** de 46 avaliáveis
+**Acompanhamento:** 46 corrigidos · 0 encontrados · 0 parciais · 0 pendentes · **0 ainda plantados** de 46 avaliáveis
 
 ## Ciclos de teste executados
 
@@ -21,6 +21,7 @@
 | Testes na visão do admin — 05/10 | Karolayne Silva Ramos | 04/10/2026 a 11/10/2026 | 7 |
 | Reteste — ciclo 4 | Karolayne Silva Ramos | 07/10/2026 a 12/10/2026 | 24 |
 | Reteste — ciclo 5 | Karolayne Silva Ramos | 12/10/2026 a 21/10/2026 | 17 |
+| Reteste — ciclo 6 | Karolayne Silva Ramos | 18/10/2026 a 19/10/2026 | 5 |
 
 ---
 
@@ -47,12 +48,12 @@
 | BUG-017 | Corrigido | Prazo no passado é aceito | Validação / Datas | MÉDIA | Baixa |
 | BUG-018 | Corrigido | Duplo clique em Salvar cria duas tarefas | Concorrência | ALTA | Média |
 | BUG-019 | Corrigido | Edição não persiste a prioridade | CRUD | ALTA | Média |
-| BUG-020 | Pendente | Exclusão de tarefa concluída não remove do banco | CRUD | ALTA | Média |
+| BUG-020 | Corrigido | Exclusão de tarefa concluída não remove do banco | CRUD | ALTA | Média |
 | BUG-021 | Corrigido | Status alterado na listagem volta ao original | CRUD / Firestore | ALTA | Média |
 | BUG-022 | Corrigido | Salvar tarefa redireciona para o dashboard | Navegação | BAIXA | Baixa |
 | BUG-023 | Corrigido | Refresh no formulário perde os dados sem aviso | UX | BAIXA | Baixa |
-| BUG-024 | Pendente | Edição simultânea sobrescreve sem aviso | Concorrência | ALTA | Alta |
-| BUG-025 | Pendente | Troca rápida de status gera estado inconsistente | Concorrência | MÉDIA | Alta |
+| BUG-024 | Corrigido | Edição simultânea sobrescreve sem aviso | Concorrência | ALTA | Alta |
+| BUG-025 | Corrigido | Troca rápida de status gera estado inconsistente | Concorrência | MÉDIA | Alta |
 | BUG-026 | Corrigido | Criar usuário derruba a sessão do ADMIN | Autenticação | CRÍTICA | Média |
 | BUG-027 | Corrigido | Perfil não é obrigatório ao criar usuário | Validação | MÉDIA | Baixa |
 | BUG-028 | Corrigido | Alterar o e-mail do usuário não altera o login | CRUD / Sincronismo | ALTA | Alta |
@@ -69,11 +70,11 @@
 | BUG-039 | Corrigido | Pesquisa de usuários trata nome e e-mail de formas diferentes | Pesquisa | MÉDIA | Média |
 | BUG-040 | Corrigido | Ordenação por prioridade é alfabética | Ordenação | BAIXA | Média |
 | BUG-041 | Corrigido | Dashboard considera no máximo 20 tarefas | Dashboard | ALTA | Média |
-| BUG-042 | Pendente | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
+| BUG-042 | Corrigido | 'Concluídas' soma as tarefas canceladas | Dashboard | MÉDIA | Média |
 | BUG-043 | Corrigido | Dashboard exibe números em cache (inclusive de outro usuário) | Cache / Estado | ALTA | Alta |
 | BUG-044 | Corrigido | Data salva aparece um dia antes | Datas / Timezone | ALTA | Média |
 | BUG-045 | Corrigido | Tarefa com prazo para hoje aparece como atrasada | Datas | MÉDIA | Média |
-| BUG-046 | Pendente | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
+| BUG-046 | Corrigido | Estado vazio aparece durante o carregamento | UX / Loading | BAIXA | Baixa |
 | BUG-047 | Corrigido | URL inexistente exibe tela em branco | Rotas | MÉDIA | Baixa |
 | BUG-048 | Corrigido | Layout não é responsivo | Responsividade | MÉDIA | Baixa |
 
@@ -82,9 +83,9 @@
 | Severidade | Total | Ainda plantados |
 |---|---:|---:|
 | CRÍTICA | 8 | 1 |
-| ALTA | 13 | 3 |
-| MÉDIA | 17 | 2 |
-| BAIXA | 10 | 1 |
+| ALTA | 13 | 1 |
+| MÉDIA | 17 | 0 |
+| BAIXA | 10 | 0 |
 
 ---
 
@@ -660,7 +661,11 @@ O payload do updateDoc monta title, description, userId, status, dueDate e updat
 
 ## BUG-020 — Exclusão de tarefa concluída não remove do banco
 
-**Situação:** Pendente · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** CRUD · **Severidade:** ALTA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-003 — tarefa concluída não é excluída e continua cadastrada.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -776,7 +781,11 @@ O formulário mantém tudo em estado de componente, sem persistência temporári
 
 ## BUG-024 — Edição simultânea sobrescreve sem aviso
 
-**Situação:** Pendente · **Área:** Concorrência · **Severidade:** ALTA · **Dificuldade:** Alta
+**Situação:** Corrigido · **Área:** Concorrência · **Severidade:** ALTA · **Dificuldade:** Alta
+
+**Reportado pelo QA:** RETESTE BUG-001 — testes 1A e 1B: a gravação da outra aba desfaz a alteração anterior.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -803,7 +812,11 @@ A gravação é um updateDoc direto, sem controle de versão: não há comparaç
 
 ## BUG-025 — Troca rápida de status gera estado inconsistente
 
-**Situação:** Pendente · **Área:** Concorrência · **Severidade:** MÉDIA · **Dificuldade:** Alta
+**Situação:** Corrigido · **Área:** Concorrência · **Severidade:** MÉDIA · **Dificuldade:** Alta
+
+**Reportado pelo QA:** RETESTE BUG-002 — duas trocas de status em sequência rápida não permanecem após o F5.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1300,7 +1313,11 @@ Os indicadores são calculados no cliente a partir de uma consulta limitada a 20
 
 ## BUG-042 — 'Concluídas' soma as tarefas canceladas
 
-**Situação:** Pendente · **Área:** Dashboard · **Severidade:** MÉDIA · **Dificuldade:** Média
+**Situação:** Corrigido · **Área:** Dashboard · **Severidade:** MÉDIA · **Dificuldade:** Média
+
+**Reportado pelo QA:** RETESTE BUG-004 — painel exibe 16 concluídas contra 9 da listagem, diferença de 7.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
@@ -1414,7 +1431,11 @@ A função compara dueDate.getTime() com Date.now(), incluindo o horário. Como 
 
 ## BUG-046 — Estado vazio aparece durante o carregamento
 
-**Situação:** Pendente · **Área:** UX / Loading · **Severidade:** BAIXA · **Dificuldade:** Baixa
+**Situação:** Corrigido · **Área:** UX / Loading · **Severidade:** BAIXA · **Dificuldade:** Baixa
+
+**Reportado pelo QA:** RETESTE BUG-005 — "Nenhuma tarefa encontrada" aparece antes de os dados chegarem, em Slow 3G.
+
+**Corrigido em:** 19/10/2026 — não está mais no sistema.
 
 **Por que acontece**
 
